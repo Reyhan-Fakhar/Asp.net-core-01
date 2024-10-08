@@ -1,49 +1,168 @@
-﻿<!DOCTYPE html>
+﻿
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Project_02.EndPoint.Site</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/Project_02.EndPoint.Site.styles.css" asp-append-version="true" />
-</head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Project_02.EndPoint.Site</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+    <title>Metrica - Responsive Bootstrap 4 Admin Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="A premium admin dashboard template by Mannatthemes" name="description" />
+    <meta content="Mannatthemes" name="author" />
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2024 - Project_02.EndPoint.Site - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="~/dark-rtl/assets/images/favicon.ico">
+
+    <!--Morris Chart CSS -->
+    <link rel="stylesheet" href="~/dark-rtl/assets/plugins/morris/morris.css">
+
+    <!-- App css -->
+    <link href="~/dark-rtl/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/dark-rtl/assets/css/icons.css" rel="stylesheet" type="text/css" />
+    <link href="~/dark-rtl/assets/css/metisMenu.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/dark-rtl/assets/css/style.css" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+    <!-- Top Bar Start -->
+    <div class="topbar">
+
+        <!-- LOGO -->
+        <div class="topbar-left">
+            <a href="~/dark-rtl/projects/projects-index.html" class="logo">
+                <span>
+                    <img src="~/dark-rtl/assets/images/logo-sm.png" alt="logo-small" class="logo-sm">
+                </span>
+                <span>
+                    <img src="~/dark-rtl/assets/images/logo.png" alt="logo-large" class="logo-lg">
+                </span>
+            </a>
         </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+        <!--end logo-->
+        <!-- Navbar -->
+        <nav class="navbar-custom">
+            <ul class="list-unstyled topbar-nav float-right mb-0">
+                <li class="dropdown">
+                    <a class="nav-link dropdown-toggle waves-effect waves-light nav-user" data-toggle="dropdown" href="#" role="button"
+                       aria-haspopup="false" aria-expanded="false">
+                        <img src="~/dark-rtl/assets/images/users/user-4.jpg" alt="profile-user" class="rounded-circle" />
+                        <span class="ml-1 nav-user-name hidden-sm">Amelia <i class="mdi mdi-chevron-down"></i> </span>
+                    </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="~/users/show"><i class="dripicons-user text-muted mr-2"></i> پنل کاربری</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="/login"><i class="dripicons-exit text-muted mr-2"></i> خروج</a>
+                    </div>
+                </li>
+            </ul><!--end topbar-nav-->
+
+            <ul class="list-unstyled topbar-nav mb-0">
+                <li>
+                    <button class="button-menu-mobile nav-link waves-effect waves-light">
+                        <i class="dripicons-menu nav-icon"></i>
+                    </button>
+                </li>
+                <li>
+                    <button class="nav-link waves-effect waves-light" onclick="ChangeTheme()">
+                        <i class="mdi mdi-theme-light-dark"></i>
+                    </button>
+                </li>
+            </ul>
+        </nav>
+        <!-- end navbar-->
+    </div>
+    <!-- Top Bar End -->
+
+    <div class="page-wrapper">
+        <!-- Left Sidenav -->
+        <div class="left-sidenav">
+            <div class="main-icon-menu">
+            </div><!--end main-icon-menu-->
+            <div class="main-menu-inner">
+                <div class="menu-body slimscroll">
+                    <div id="MetricaProject" class="main-icon-menu-pane active">
+                        <ul class="nav metismenu in" id="main_menu_side_nav">
+                            <li class="nav-item active">
+                                <a class="nav-link" href="~/" aria-expanded="false"><i class="mdi mdi-view-dashboard-variant"></i><span class="w-100">داشبورد</span></a>
+                            </li><!--end nav-item-->
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" aria-expanded="false"><i class="mdi mdi-account-key"></i><span class="w-100">مدیریت نقش ها</span><span class="menu-arrow"><i class="mdi mdi-chevron-right"></i></span></a>
+                                <ul class="nav mm-collapse" aria-expanded="false">
+
+                                    <li class="nav-item"><a class="nav-link" href="~/roles/index"><i class="mdi mdi-account-multiple-outline"></i>لیست نقش ها</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="~/roles/create"><i class="mdi mdi-account-multiple-plus-outline"></i>افزودن نقش جدید</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="~/roles/edit"><i class="mdi mdi-account-switch"></i>ویرایش نقش</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="~/roles/delete"><i class="mdi mdi-account-multiple-minus-outline"></i>حذف نقش</a></li>
+
+                                </ul>
+                            </li><!--end nav-item-->
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" aria-expanded="false"><i class="mdi mdi-account-group"></i><span class="w-100">مدیریت کاربران</span><span class="menu-arrow"><i class="mdi mdi-chevron-right"></i></span></a>
+                                <ul class="nav mm-collapse" aria-expanded="false">
+                                    <li class="nav-item active"><a class="nav-link" href="~/users/show"><i class="mdi mdi-account-card-details"></i>پنل کاربری</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="~/users/index"><i class="mdi mdi-account-details"></i>لیست کاربران</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="~/users/create"><i class="mdi mdi-account-plus"></i>افزودن کاربر جدید</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="~/users/edit"><i class="mdi mdi-account-edit"></i>ویرایش کاربر</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="~/users/delete"><i class="mdi mdi-account-minus"></i>حذف کاربر</a></li>
+                                </ul>
+                            </li><!--end nav-item-->
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" aria-expanded="false"><i class="dripicons-document"></i><span class="w-100">مدیریت مشتریان</span><span class="menu-arrow"><i class="mdi mdi-chevron-right"></i></span></a>
+                                <ul class="nav mm-collapse" aria-expanded="false">
+                                    <li class="nav-item active"><a class="nav-link" href="~/users/show"><i class="dripicons-view-thumb"></i>پنل کاربری</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="~/users/index"><i class="dripicons-view-thumb"></i>لیست کاربران</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="~/users/create"><i class="dripicons-view-thumb"></i>افزودن کاربر جدید</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="~/users/edit"><i class="dripicons-user-group"></i>ویرایش کاربر</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="~/users/delete"><i class="dripicons-user-group"></i>حذف کاربر</a></li>
+                                </ul>
+                            </li><!--end nav-item-->
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" aria-expanded="false"><i class="dripicons-graph-line"></i><span class="w-100">مدیریت درخواست ها</span><span class="menu-arrow"><i class="mdi mdi-chevron-right"></i></span></a>
+                                <ul class="nav mm-collapse" aria-expanded="false">
+                                    <li class="nav-item active"><a class="nav-link" href="~/users/show"><i class="dripicons-view-thumb"></i>پنل کاربری</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="~/users/index"><i class="dripicons-view-thumb"></i>لیست کاربران</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="~/users/create"><i class="dripicons-view-thumb"></i>افزودن کاربر جدید</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="~/users/edit"><i class="dripicons-user-group"></i>ویرایش کاربر</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="~/users/delete"><i class="dripicons-user-group"></i>حذف کاربر</a></li>
+                                </ul>
+                            </li><!--end nav-item-->
+                        </ul>
+                    </div><!-- end  Project-->
+                </div><!--end menu-body-->
+            </div><!-- end main-menu-inner-->
+        </div>
+        <!-- end left-sidenav-->
+        <!-- Page Content-->
+        <div class="page-content">
+
+            @RenderBody()
+
+            <footer class="footer text-center text-sm-left">
+                &copy; 2019 Metrica <span class="text-muted d-none d-sm-inline-block float-right">Crafted with <i class="mdi mdi-heart text-danger"></i> by Mannatthemes</span>
+            </footer><!--end footer-->
+        </div>
+        <!-- end page content -->
+    </div>
+    <!-- end page-wrapper -->
+    <!-- jQuery  -->
+    <script src="~/dark-rtl/assets/js/jquery.min.js"></script>
+    <script src="~/dark-rtl/assets/js/bootstrap.bundle.min.js"></script>
+    <script src="~/dark-rtl/assets/js/metisMenu.min.js"></script>
+    <script src="~/dark-rtl/assets/js/waves.min.js"></script>
+    <script src="~/dark-rtl/assets/js/jquery.slimscroll.min.js"></script>
+
+    <!--Plugins-->
+    <script src="~/dark-rtl/assets/plugins/morris/morris.min.js"></script>
+    <script src="~/dark-rtl/assets/plugins/raphael/raphael.min.js"></script>
+    <script src="~/dark-rtl/assets/plugins/moment/moment.js"></script>
+    <script src="~/dark-rtl/assets/plugins/apexcharts/apexcharts.min.js"></script>
+
+
+    <script src="~/dark-rtl/assets/pages/jquery.projects_dashboard.init.js"></script>
+
+
+    <!-- App js -->
+    <script src="~/dark-rtl/assets/js/app.js"></script>
+
 </body>
 </html>

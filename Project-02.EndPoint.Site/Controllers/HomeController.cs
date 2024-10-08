@@ -1,6 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Project_02.EndPoint.Site.Models;
-using System.Diagnostics;
 
 namespace Project_02.EndPoint.Site.Controllers
 {
@@ -23,10 +21,5 @@ namespace Project_02.EndPoint.Site.Controllers
             return View();
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
     }
 }
