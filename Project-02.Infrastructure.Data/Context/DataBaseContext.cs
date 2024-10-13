@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Project_02.Domain.Models.Customer;
 using Project_02.Domain.Models.Permissions;
 using Project_02.Domain.Models.User;
 
@@ -11,14 +12,15 @@ namespace Project_02.Infrastructure.Data.Context
         #region User
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
-        public DbSet<UserRole> UserRoles { get; set; }
         #endregion
 
         #region Permission
-
         public DbSet<Permission> Permission { get; set; }
         public DbSet<RolePermission> RolePermission { get; set; }
+        #endregion
 
+        #region Customer
+        public DbSet<Customer> Customers { get; set; }
         #endregion
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -33,6 +35,8 @@ namespace Project_02.Infrastructure.Data.Context
             modelBuilder.Entity<User>().HasQueryFilter(u => !u.IsRemoved);
 
             modelBuilder.Entity<Role>().HasQueryFilter(r => !r.IsRemoved);
+
+            modelBuilder.Entity<Customer>().HasQueryFilter(r => !r.IsRemoved);
 
             base.OnModelCreating(modelBuilder);
         }

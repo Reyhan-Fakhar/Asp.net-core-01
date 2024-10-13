@@ -22,6 +22,56 @@ namespace Project_02.Infrastructure.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Project_02.Domain.Models.Customer.Customer", b =>
+                {
+                    b.Property<long>("CustomerId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("CustomerId"));
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime>("InsertTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsRemoved")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Province")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("RemoveTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("UpdateTime")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("CustomerId");
+
+                    b.ToTable("Customers");
+                });
+
             modelBuilder.Entity("Project_02.Domain.Models.Permissions.Permission", b =>
                 {
                     b.Property<long>("PermissionId")
@@ -54,7 +104,7 @@ namespace Project_02.Infrastructure.Data.Migrations
 
                     b.HasIndex("ParentId");
 
-                    b.ToTable("Permission", (string)null);
+                    b.ToTable("Permission");
                 });
 
             modelBuilder.Entity("Project_02.Domain.Models.Permissions.RolePermission", b =>
@@ -89,7 +139,7 @@ namespace Project_02.Infrastructure.Data.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("RolePermission", (string)null);
+                    b.ToTable("RolePermission");
                 });
 
             modelBuilder.Entity("Project_02.Domain.Models.User.Role", b =>
@@ -119,7 +169,7 @@ namespace Project_02.Infrastructure.Data.Migrations
 
                     b.HasKey("RoleId");
 
-                    b.ToTable("Roles", (string)null);
+                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("Project_02.Domain.Models.User.User", b =>
@@ -150,6 +200,9 @@ namespace Project_02.Infrastructure.Data.Migrations
                     b.Property<DateTime?>("RemoveTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<long>("RoleId")
+                        .HasColumnType("bigint");
+
                     b.Property<DateTime?>("UpdateTime")
                         .HasColumnType("datetime2");
 
@@ -160,42 +213,9 @@ namespace Project_02.Infrastructure.Data.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("Users", (string)null);
-                });
-
-            modelBuilder.Entity("Project_02.Domain.Models.User.UserRole", b =>
-                {
-                    b.Property<long>("UserRoleId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("UserRoleId"));
-
-                    b.Property<DateTime>("InsertTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsRemoved")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("RemoveTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long>("RoleId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("UpdateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("UserRoleId");
-
                     b.HasIndex("RoleId");
 
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserRoles", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("Project_02.Domain.Models.Permissions.Permission", b =>
@@ -210,13 +230,13 @@ namespace Project_02.Infrastructure.Data.Migrations
                     b.HasOne("Project_02.Domain.Models.Permissions.Permission", "Permission")
                         .WithMany("RolePermissions")
                         .HasForeignKey("PermissionId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Project_02.Domain.Models.User.Role", "Role")
                         .WithMany("Permissions")
                         .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Permission");
@@ -224,23 +244,15 @@ namespace Project_02.Infrastructure.Data.Migrations
                     b.Navigation("Role");
                 });
 
-            modelBuilder.Entity("Project_02.Domain.Models.User.UserRole", b =>
+            modelBuilder.Entity("Project_02.Domain.Models.User.User", b =>
                 {
                     b.HasOne("Project_02.Domain.Models.User.Role", "Role")
-                        .WithMany("UserRoles")
+                        .WithMany("Users")
                         .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Project_02.Domain.Models.User.User", "User")
-                        .WithMany("UserRoles")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Role");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Project_02.Domain.Models.Permissions.Permission", b =>
@@ -254,12 +266,7 @@ namespace Project_02.Infrastructure.Data.Migrations
                 {
                     b.Navigation("Permissions");
 
-                    b.Navigation("UserRoles");
-                });
-
-            modelBuilder.Entity("Project_02.Domain.Models.User.User", b =>
-                {
-                    b.Navigation("UserRoles");
+                    b.Navigation("Users");
                 });
 #pragma warning restore 612, 618
         }

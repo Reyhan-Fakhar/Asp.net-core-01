@@ -15,7 +15,7 @@ namespace Project_02.Domain.Models.User
         public string RoleName { get; set; }
 
         #region Relation
-        public virtual List<UserRole> UserRoles { get; set; }
+        public virtual ICollection<User> Users { get; set; }
         public List<RolePermission> Permissions { get; set; }
         #endregion
     }

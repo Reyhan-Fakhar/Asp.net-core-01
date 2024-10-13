@@ -1,4 +1,5 @@
 ﻿using Project_02.Domain.Models.User;
+using Project_02.Domain.ViewModels;
 
 namespace Project_02.Domain.Interfaces
 {
@@ -9,11 +10,7 @@ namespace Project_02.Domain.Interfaces
         Task UpdateUser(User user);
         Task<IEnumerable<User>> GetAllUsers();
         Task<User> GetUserById(long userId);
-        #endregion
-
-        #region Role
-        Task DeleteRoleFromUser(long userId);
-        Role GetRoleById(long roleId);
+        Task<DtResult<UserResultViewModel>> GetData(DtParameters dtParameters);
         #endregion
     }
 }

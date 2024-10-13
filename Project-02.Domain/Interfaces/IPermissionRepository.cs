@@ -1,15 +1,17 @@
 ﻿using Project_02.Domain.Models.Permissions;
 using Project_02.Domain.Models.User;
+using Project_02.Domain.ViewModels;
 
 namespace Project_02.Domain.Interfaces
 {
     public interface IPermissionRepository
     {
         #region Roles
-        Task AddRole(Role role);
+        Task<long> AddRole(Role role);
         Task UpdateRole(Role role);
         Task<IEnumerable<Role>> GetAllRoles();
         Task<Role> GetRoleById(long roleId);
+        Task<DtResult<RoleResultViewModel>> GetData(DtParameters dtParameters);
         #endregion
 
         #region Permission
@@ -17,7 +19,7 @@ namespace Project_02.Domain.Interfaces
         Task DeletePermissionFromRole(long roleId);
         //bool CheckPermission(long permissionId, string userName);
         Task<IEnumerable<Permission>> GetAllPermission();
-        Task<List<long>> GetPermissionByRole(long roleId);
+        Task<List<long>> GetAllRolePermissions(long roleId);
         #endregion
     }
 }

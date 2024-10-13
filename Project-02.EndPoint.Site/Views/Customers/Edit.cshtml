@@ -1,0 +1,32 @@
+﻿@model Project_02.Domain.ViewModels.CustomerRequestViewModel
+
+<h1>ویرایش مشتری</h1>
+
+<form asp-action="Edit" method="post">
+    
+    <div>
+        <label>نام و نام خانوادگی</label>
+        <input asp-for="FullName" />
+    </div>
+    <div>
+        <label>استان</label>
+        <input asp-for="Province" />
+    </div>
+    <div>
+        <label>شهر</label>
+        <input asp-for="City" />
+    </div>
+    <div>
+        <label>شماره تلفن</label>
+        <input asp-for="PhoneNumber" />
+    </div>
+    <div>
+        <label>آدرس</label>
+        <input asp-for="Address" />
+    </div>
+    <div>
+        <label>توضیحات</label>
+        <textarea asp-for="Description"></textarea>
+    </div>
+    <button type="submit">ذخیره تغییرات</button>
+</form>

@@ -21,14 +21,15 @@ namespace Project_02.Domain.Models.User
         public string Password { get; set; }
 
         [Display(Name = "شماره تلفن")]
-        [Phone]
+        [RegularExpression(@"^((98|\+98|0098|0)*(9)[0-9]{9})+$", ErrorMessage = "شماره تلفن وارد شده معتبر نیست.")]
         public string PhoneNumber { get; set; }
 
         [Display(Name = "وضعیت")]
         public bool IsActive { get; set; }
 
         #region Relation
-        public ICollection<UserRole> UserRoles { get; set; }
+        public long RoleId { get; set; }
+        public virtual Role Role { get; set; }
         #endregion
     }
 }

@@ -1,9 +1,8 @@
-﻿
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <title>Metrica - Responsive Bootstrap 4 Admin Dashboard</title>
+    <title>Project-02</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="A premium admin dashboard template by Mannatthemes" name="description" />
     <meta content="Mannatthemes" name="author" />
@@ -19,6 +18,8 @@
     <link href="~/dark-rtl/assets/css/icons.css" rel="stylesheet" type="text/css" />
     <link href="~/dark-rtl/assets/css/metisMenu.min.css" rel="stylesheet" type="text/css" />
     <link href="~/dark-rtl/assets/css/style.css" rel="stylesheet" type="text/css" />
+
+    @await RenderSectionAsync("MyStyles", false)
 
 </head>
 
@@ -99,7 +100,7 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="#" aria-expanded="false"><i class="mdi mdi-account-group"></i><span class="w-100">مدیریت کاربران</span><span class="menu-arrow"><i class="mdi mdi-chevron-right"></i></span></a>
                                 <ul class="nav mm-collapse" aria-expanded="false">
-                                    <li class="nav-item active"><a class="nav-link" href="~/users/show"><i class="mdi mdi-account-card-details"></i>پنل کاربری</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="~/users/show"><i class="mdi mdi-account-card-details"></i>پنل کاربری</a></li>
                                     <li class="nav-item"><a class="nav-link" href="~/users/index"><i class="mdi mdi-account-details"></i>لیست کاربران</a></li>
                                     <li class="nav-item"><a class="nav-link" href="~/users/create"><i class="mdi mdi-account-plus"></i>افزودن کاربر جدید</a></li>
                                     <li class="nav-item"><a class="nav-link" href="~/users/edit"><i class="mdi mdi-account-edit"></i>ویرایش کاربر</a></li>
@@ -109,11 +110,10 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="#" aria-expanded="false"><i class="dripicons-document"></i><span class="w-100">مدیریت مشتریان</span><span class="menu-arrow"><i class="mdi mdi-chevron-right"></i></span></a>
                                 <ul class="nav mm-collapse" aria-expanded="false">
-                                    <li class="nav-item active"><a class="nav-link" href="~/users/show"><i class="dripicons-view-thumb"></i>پنل کاربری</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="~/users/index"><i class="dripicons-view-thumb"></i>لیست کاربران</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="~/users/create"><i class="dripicons-view-thumb"></i>افزودن کاربر جدید</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="~/users/edit"><i class="dripicons-user-group"></i>ویرایش کاربر</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="~/users/delete"><i class="dripicons-user-group"></i>حذف کاربر</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="~/customers/index"><i class="dripicons-view-thumb"></i>لیست مشتریان</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="~/customers/create"><i class="dripicons-view-thumb"></i>افزودن مشتری جدید</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="~/customers/edit"><i class="dripicons-user-group"></i>ویرایش مشتری</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="~/customers/delete"><i class="dripicons-user-group"></i>حذف مشتری</a></li>
                                 </ul>
                             </li><!--end nav-item-->
                             <li class="nav-item">
@@ -160,9 +160,10 @@
 
     <script src="~/dark-rtl/assets/pages/jquery.projects_dashboard.init.js"></script>
 
-
     <!-- App js -->
     <script src="~/dark-rtl/assets/js/app.js"></script>
+    
+    @await RenderSectionAsync("MyScripts", false)
 
-</body>
+    </body>
 </html>

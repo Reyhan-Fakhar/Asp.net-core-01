@@ -1,4 +1,4 @@
-﻿using Project_02.Application.ViewModels;
+﻿using Project_02.Domain.ViewModels;
 
 namespace Project_02.Application.Interfaces
 {
@@ -6,10 +6,10 @@ namespace Project_02.Application.Interfaces
     {
         #region User
         Task CreateUser(UserRequestViewModel request);
-        Task EditUser(UserRequestViewModel request);
+        Task EditUser(UserRequestViewModel request, long userId);
         Task DeleteUser(long userId);
         Task ChangeStatuesUser(long userId);
-        Task<IEnumerable<UserResultViewModel>> GetAllUsers(int pageId, int take);
+        Task<DtResult<UserResultViewModel>> GetData(DtParameters dtParameters);
         #endregion
     }
 }

@@ -1,7 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Project_02.Application.Convertor;
+using Project_02.Application.Helper;
 using Project_02.Domain.Interfaces;
 using Project_02.Domain.Models.Permissions;
 using Project_02.Domain.Models.User;
+using Project_02.Domain.ViewModels;
 using Project_02.Infrastructure.Data.Context;
 
 namespace Project_02.Infrastructure.Data.Repository
@@ -16,10 +19,11 @@ namespace Project_02.Infrastructure.Data.Repository
         }
 
         #region Role
-        public async Task AddRole(Role role)
+        public async Task<long> AddRole(Role role)
         {
             await _context.Roles.AddAsync(role);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(); 
+            return role.RoleId; 
         }
         public async Task UpdateRole(Role role)
         {
@@ -34,24 +38,82 @@ namespace Project_02.Infrastructure.Data.Repository
         {
             return await _context.Roles.FindAsync(roleId);
         }
+        public async Task<DtResult<RoleResultViewModel>> GetData(DtParameters dtParameters)
+        {
+            try
+            {
+                var searchBy = dtParameters.Search?.Value;
+
+                var result = _context.Roles
+                    .Include(r => r.Permissions)
+                    .AsQueryable();
+
+                var column = dtParameters.Columns[dtParameters.Order[0].Column].Data;
+                var sort = dtParameters.Order[0].Dir.ConvertDtOrderDirToSort();
+
+                switch (column)
+                {
+                    case "roleName":
+                        result = sort == Sort.OrderBy ? result.OrderBy(r => r.RoleName) : result.OrderByDescending(r => r.RoleName);
+                        break;
+
+                    default:
+                        result = sort == Sort.OrderBy ? result.OrderBy(r => r.RoleId) : result.OrderByDescending(r => r.RoleId);
+                        break;
+                }
+
+                if (!string.IsNullOrEmpty(searchBy))
+                {
+                    result = result.Where(x =>
+                        x.RoleName.Contains(searchBy));
+                }
+
+                var filteredResultsCount = await result.CountAsync();
+                var totalResultsCount = await _context.Roles.CountAsync();
+
+                var finalResult = new DtResult<RoleResultViewModel>
+                {
+                    Draw = dtParameters.Draw,
+                    RecordsTotal = totalResultsCount,
+                    RecordsFiltered = filteredResultsCount,
+                    Data = await result
+                        .Skip(dtParameters.Start)
+                        .Take(dtParameters.Length)
+                        .Select(x => new RoleResultViewModel()
+                        {
+                            RoleName = x.RoleName,
+                            CreateDate = x.InsertTime.ToShamsi()
+                        }).ToListAsync()
+                };
+
+                return finalResult;
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw;
+            }
+        }
         #endregion
 
         #region Permission
-
         public async Task AddPermissionToRole(long permissionId, long roleId)
         {
-            await _context.RolePermission.AddAsync(new RolePermission()
+            var rolePermission = new RolePermission
             {
                 PermissionId = permissionId,
-                RoleId = roleId
-            });
+                RoleId = roleId,
+            };
+            await _context.RolePermission.AddAsync(rolePermission);
             await _context.SaveChangesAsync();
         }
 
         public async Task DeletePermissionFromRole(long roleId)
         {
-            _context.RolePermission.Where(r => r.RoleId == roleId)
-                .ToList().ForEach(p => _context.RolePermission.Remove(p));
+            var rolePermission = await _context.RolePermission.Where(r => r.RoleId == roleId).ToListAsync();
+            _context.RolePermission.RemoveRange(rolePermission);
+            await _context.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<Permission>> GetAllPermission()
@@ -59,11 +121,12 @@ namespace Project_02.Infrastructure.Data.Repository
             return await _context.Permission.ToListAsync();
         }
 
-        public async Task<List<long>> GetPermissionByRole(long roleId)
+        public async Task<List<long>> GetAllRolePermissions(long roleId)
         {
             return await _context.RolePermission
                 .Where(r => r.RoleId == roleId)
-                .Select(p => p.PermissionId).ToListAsync();
+                .Select(p => p.PermissionId)
+                .ToListAsync();
         }
         #endregion
 

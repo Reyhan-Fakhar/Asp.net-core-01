@@ -1,7 +1,7 @@
 ﻿using Project_02.Application.Interfaces;
-using Project_02.Application.ViewModels;
 using Project_02.Domain.Interfaces;
 using Project_02.Domain.Models.User;
+using Project_02.Domain.ViewModels;
 
 namespace Project_02.Application.Services
 {
@@ -28,16 +28,9 @@ namespace Project_02.Application.Services
                 UserName = request.UserName,
                 Password = request.Password,
                 PhoneNumber = request.PhoneNumber,
+                RoleId = request.RoleId,
                 IsActive = true,
-                InsertTime = DateTime.Now
             };
-
-            var userRoles = request.Roles
-                .Select(item => _userRepository.GetRoleById(item.RoleId))
-                .Select(role => new UserRole() { Role = role, RoleId = role.RoleId, User = newUser, UserId = newUser.UserId })
-                .ToList();
-
-            newUser.UserRoles = userRoles;
             await _userRepository.AddUser(newUser);
         }
         public async Task DeleteUser(long userId)
@@ -47,36 +40,51 @@ namespace Project_02.Application.Services
             user.RemoveTime = DateTime.Now;
             await _userRepository.UpdateUser(user);
         }
-        public async Task EditUser(UserRequestViewModel request)
+        public async Task EditUser(UserRequestViewModel request, long userId)
         {
-            var newUser = new User
-            {
-                UserName = request.UserName,
-                Password = request.Password,
-                PhoneNumber = request.PhoneNumber,
-                IsActive = true,
-                UpdateTime = DateTime.Now
-            };
-            await _userRepository.DeleteRoleFromUser(newUser.UserId);
-            var userRoles = request.Roles
-                .Select(item => _userRepository.GetRoleById(item.RoleId))
-                .Select(role => new UserRole() { Role = role, RoleId = role.RoleId, User = newUser, UserId = newUser.UserId })
-                .ToList();
-
-            newUser.UserRoles = userRoles;
+            var newUser = await _userRepository.GetUserById(userId);
+            newUser.UserName = request.UserName;
+            newUser.Password = request.Password;
+            newUser.PhoneNumber = request.PhoneNumber;
+            newUser.RoleId = request.RoleId;
+            newUser.UpdateTime = DateTime.Now;
+            
             await _userRepository.UpdateUser(newUser);
         }
-        public async Task<IEnumerable<UserResultViewModel>> GetAllUsers(int pageId = 1, int take = 20)
+        public async Task<DtResult<UserResultViewModel>> GetData(DtParameters dtParameters)
         {
-            var result = await _userRepository.GetAllUsers();
-            var skip = (pageId - 1) * take;
+            var result = await _userRepository.GetData(dtParameters);
 
-            return result.Select(u => new UserResultViewModel()
+            var row = dtParameters.Start + 1;
+
+            foreach (var model in result.Data)
             {
-                CurrentPage = pageId,
-                PageCount = result.Count() / take,
-                Users = result.OrderBy(ui => ui.UserId).Skip(skip).Take(take).ToList()
-            });
+                model.Row = row;
+                row++;
+
+                model.Operation =
+                    $"<div class=\"dropdown d-inline-block\">" +
+                    "<a class=\"nav-link dropdown-toggle arrow-none\" id=\"dLabel6\" data-toggle=\"dropdown\" href=\"#\" role=\"button\" aria-haspopup=\"false\" aria-expanded=\"false\">" +
+                    "<i class=\"fas fa-ellipsis-v font-20 text-muted\"></i>" +
+                    "</a>" +
+                    "<div class=\"dropdown-menu\" aria-labelledby=\"dLabel6\">";
+
+                model.Operation +=
+                    $"<a class=\"dropdown-item\" href=\"/User/Edit/{model.UserId}\">" +
+                    "<i class=\"dripicons-pencil\"></i> ویرایش" +
+                    "</a>";
+
+                model.Operation += $"<a class=\"dropdown-item\" onclick=\"ChangeStatuesUser({model.UserId})\">" +
+                                   "<i class=\"dripicons-swap\"></i> تغییر وضعیت" +
+                                   "</a>";
+
+                model.Operation += $"<a class=\"dropdown-item\" onclick=\"DeleteUser({model.UserId})\">" +
+                                   "<i class=\"dripicons-trash\"></i> حذف" +
+                                   "</a>";
+
+                model.Operation += " </div> </div>";
+            }
+            return result;
         }
         #endregion
 
