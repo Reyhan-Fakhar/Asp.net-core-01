@@ -46,13 +46,13 @@
                 <li class="dropdown">
                     <a class="nav-link dropdown-toggle waves-effect waves-light nav-user" data-toggle="dropdown" href="#" role="button"
                        aria-haspopup="false" aria-expanded="false">
-                        <img src="~/dark-rtl/assets/images/users/user-4.jpg" alt="profile-user" class="rounded-circle" />
-                        <span class="ml-1 nav-user-name hidden-sm">Amelia <i class="mdi mdi-chevron-down"></i> </span>
+                        <img src="~/dark-rtl/assets/images/users/user-4.jpg" alt="profile-user" class="rounded-circle"/>
+                        <span class="ml-1 nav-user-name hidden-sm">@User.Identity.Name<i class="mdi mdi-chevron-down"></i> </span>
                     </a>
                     <div class="dropdown-menu">
                         <a class="dropdown-item" href="~/users/show"><i class="dripicons-user text-muted mr-2"></i> پنل کاربری</a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="/login"><i class="dripicons-exit text-muted mr-2"></i> خروج</a>
+                        <a class="dropdown-item" href="/accounts/login"><i class="dripicons-exit text-muted mr-2"></i> خروج</a>
                     </div>
                 </li>
             </ul><!--end topbar-nav-->
@@ -83,8 +83,11 @@
                 <div class="menu-body slimscroll">
                     <div id="MetricaProject" class="main-icon-menu-pane active">
                         <ul class="nav metismenu in" id="main_menu_side_nav">
-                            <li class="nav-item active">
-                                <a class="nav-link" href="~/" aria-expanded="false"><i class="mdi mdi-view-dashboard-variant"></i><span class="w-100">داشبورد</span></a>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" aria-expanded="false"><i class="mdi mdi-view-dashboard-variant"></i><span class="w-100">داشبورد</span><span class="menu-arrow"><i class="mdi mdi-chevron-right"></i></span></a>
+                                <ul class="nav mm-collapse" aria-expanded="false">
+                                    <li class="nav-item"><a class="nav-link" href="~/accounts/show"><i class="mdi mdi-account-card-details"></i>پنل کاربری</a></li>
+                                </ul>
                             </li><!--end nav-item-->
                             <li class="nav-item">
                                 <a class="nav-link" href="#" aria-expanded="false"><i class="mdi mdi-account-key"></i><span class="w-100">مدیریت نقش ها</span><span class="menu-arrow"><i class="mdi mdi-chevron-right"></i></span></a>
@@ -93,18 +96,13 @@
                                     <li class="nav-item"><a class="nav-link" href="~/roles/index"><i class="mdi mdi-account-multiple-outline"></i>لیست نقش ها</a></li>
                                     <li class="nav-item"><a class="nav-link" href="~/roles/create"><i class="mdi mdi-account-multiple-plus-outline"></i>افزودن نقش جدید</a></li>
                                     <li class="nav-item"><a class="nav-link" href="~/roles/edit"><i class="mdi mdi-account-switch"></i>ویرایش نقش</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="~/roles/delete"><i class="mdi mdi-account-multiple-minus-outline"></i>حذف نقش</a></li>
-
                                 </ul>
                             </li><!--end nav-item-->
                             <li class="nav-item">
                                 <a class="nav-link" href="#" aria-expanded="false"><i class="mdi mdi-account-group"></i><span class="w-100">مدیریت کاربران</span><span class="menu-arrow"><i class="mdi mdi-chevron-right"></i></span></a>
                                 <ul class="nav mm-collapse" aria-expanded="false">
-                                    <li class="nav-item"><a class="nav-link" href="~/users/show"><i class="mdi mdi-account-card-details"></i>پنل کاربری</a></li>
                                     <li class="nav-item"><a class="nav-link" href="~/users/index"><i class="mdi mdi-account-details"></i>لیست کاربران</a></li>
                                     <li class="nav-item"><a class="nav-link" href="~/users/create"><i class="mdi mdi-account-plus"></i>افزودن کاربر جدید</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="~/users/edit"><i class="mdi mdi-account-edit"></i>ویرایش کاربر</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="~/users/delete"><i class="mdi mdi-account-minus"></i>حذف کاربر</a></li>
                                 </ul>
                             </li><!--end nav-item-->
                             <li class="nav-item">
@@ -112,8 +110,6 @@
                                 <ul class="nav mm-collapse" aria-expanded="false">
                                     <li class="nav-item"><a class="nav-link" href="~/customers/index"><i class="dripicons-view-thumb"></i>لیست مشتریان</a></li>
                                     <li class="nav-item"><a class="nav-link" href="~/customers/create"><i class="dripicons-view-thumb"></i>افزودن مشتری جدید</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="~/customers/edit"><i class="dripicons-user-group"></i>ویرایش مشتری</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="~/customers/delete"><i class="dripicons-user-group"></i>حذف مشتری</a></li>
                                 </ul>
                             </li><!--end nav-item-->
                             <li class="nav-item">

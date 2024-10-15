@@ -17,17 +17,10 @@ namespace Project_02.EndPoint.Site.Controllers
         {
             _permissionService = permissionService;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> GetAllRole([FromBody] DtParameters dtParameters)
-        {
-            var dtResult = await _permissionService.GetData(dtParameters);
-
-            return Json(dtResult);
+            var roles = await _permissionService.GetAllRoles();
+            return View(roles);
         }
 
         [HttpGet]
@@ -44,22 +37,33 @@ namespace Project_02.EndPoint.Site.Controllers
         {
             var roleId = await _permissionService.CreateRole(model);
             await _permissionService.AddPermissionsToRole(selectedPermissions, roleId);
-            return RedirectToAction("Index");
+            return RedirectToAction("Create");
         }
 
         [HttpGet]
-        public async Task<IActionResult> Edit()
+        public async Task<IActionResult> Edit(long? roleId)
         {
+            
+            if (roleId.HasValue)
+            {
+                var selectedRoleId = roleId.Value;
+                var role = _permissionService.GetRoleById(selectedRoleId);
+                ViewBag.RoleId = selectedRoleId;
+                ViewBag.RoleName = role.Result.RoleName;
+            }
+
             var permissions = await _permissionService.GetAllPermissions();
             ViewBag.Permissions = permissions;
 
+            var roles = await _permissionService.GetAllRoles();
+            ViewBag.Roles = roles;
+            
             return View();
         }
         
         [HttpPost]
         public async Task<IActionResult> Edit(long roleId, List<long> selectedPermissions)
         {
-
             await _permissionService.EditPermissionsRole(selectedPermissions, roleId);
             return RedirectToAction("Index");
         }

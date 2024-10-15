@@ -9,9 +9,10 @@ namespace Project_02.Domain.Interfaces
         #region Roles
         Task<long> AddRole(Role role);
         Task UpdateRole(Role role);
-        Task<IEnumerable<Role>> GetAllRoles();
+        Task<List<RoleResultViewModel>> GetAllRoles();
         Task<Role> GetRoleById(long roleId);
         Task<DtResult<RoleResultViewModel>> GetData(DtParameters dtParameters);
+        public bool IsExistRoleName(string roleName);
         #endregion
 
         #region Permission

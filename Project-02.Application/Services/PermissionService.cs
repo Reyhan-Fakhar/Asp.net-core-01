@@ -1,4 +1,5 @@
-﻿using Project_02.Application.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using Project_02.Application.Interfaces;
 using Project_02.Domain.Interfaces;
 using Project_02.Domain.Models.Permissions;
 using Project_02.Domain.Models.User;
@@ -22,7 +23,7 @@ namespace Project_02.Application.Services
             {
                 RoleName = request.RoleName,
             };
-            return await _permissionRepository.AddRole(newRole); // باید متد async فراخوانی شود
+            return await _permissionRepository.AddRole(newRole); 
         }
         public async Task DeleteRole(long roleId)
         {
@@ -31,8 +32,11 @@ namespace Project_02.Application.Services
             role.RemoveTime = DateTime.Now;
             await _permissionRepository.UpdateRole(role);
         }
-
-        public async Task<IEnumerable<Role>> GetAllRoles()
+        public async Task<Role> GetRoleById(long roleId)
+        {
+            return await _permissionRepository.GetRoleById(roleId);
+        }
+        public async Task<List<RoleResultViewModel>> GetAllRoles()
         {
             return await _permissionRepository.GetAllRoles();
         }

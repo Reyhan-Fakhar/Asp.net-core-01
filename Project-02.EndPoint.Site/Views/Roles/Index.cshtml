@@ -1,14 +1,14 @@
-﻿@model IEnumerable<Project_02.Domain.ViewModels.RoleResultViewModel>
-@{
-    ViewData["Title"] = "Index";
-}
+﻿@model List<Project_02.Domain.ViewModels.RoleResultViewModel>
 
+@{
+    ViewData["Title"] = "لیست نقش‌ها";
+}
 <div class="container-fluid">
     <!-- Page-Title -->
     <div class="row">
         <div class="col-sm-12">
             <div class="page-title-box">
-                <h4 class="page-title">کاربران</h4>
+                <h4 class="page-title">لیست نقش‌ها</h4>
             </div><!--end page-title-box-->
         </div><!--end col-->
     </div>
@@ -21,33 +21,36 @@
                         <div class="search-box float-left col-md-6">
                             <input type="text" id="mySearchText" class="form-control" placeholder="جستجو ...">
                         </div>
-                        <button type="button" class="btn btn-primary waves-effect waves-light col-md-6" data-animation="bounce" data-target=".bs-example-modal-lg">+ افزودن نقش جدید</button>
+                        <a type="button" href="@Url.Action("Create", "Roles")" class="btn btn-primary waves-effect waves-light col-md-6">+ افزودن نقش جدید</a>
                     </div>
                     <input hidden="hidden" id="StatusList" />
                     <div class="card-content">
                         <div class="card-body card-dashboard">
                             <div class="table-responsive" id="orderTable">
-
                                 <table id="dataTableStuff" class="table ">
                                     <thead>
                                         <tr>
-                                            <th>
-                                                @Html.DisplayNameFor(model => model.Row)
-                                            </th>
-                                            <th>
-                                                @Html.DisplayNameFor(model => model.RoleName)
-                                            </th>
-
-                                            <th>
-                                                @Html.DisplayNameFor(model => model.CreateDate)
-                                            </th>
-
-                                            <th>
-                                                @Html.DisplayNameFor(model => model.Operation)
-                                            </th>
+                                            <th>@Html.DisplayNameFor(model => model.First().Row)</th>
+                                            <th>@Html.DisplayNameFor(model => model.First().RoleName)</th>
+                                            <th>@Html.DisplayNameFor(model => model.First().CreateDate)</th>
+                                            <th>@Html.DisplayNameFor(model => model.First().Operation)</th>
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        @for (var i = 0; i < Model.Count; i++)
+                                        {
+                                            <tr>
+                                                <td>@(i + 1)</td>
+                                                <td>@Model[i].RoleName</td>
+                                                <td>@Model[i].CreateDate</td>
+                                                <td>
+                                                    <form method="post" style="display:inline;">
+                                                        <a href="@Url.Action("Edit", "Roles", new { roleId = Model[i].RoleId })" class="tabledit-delete-button btn btn-sm btn-info" style="float: none; margin: 4px;"><span class="ti-pencil"></span></a>
+                                                        <button asp-action="Delete" asp-route-roleId="@Model[i].RoleId" class="tabledit-delete-button btn btn-sm btn-danger" style="float: none; margin: 4px;"><span class="ti-trash"></span></button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        }
                                     </tbody>
                                 </table>
                             </div>
@@ -57,85 +60,56 @@
             </div>
         </div>
     </section>
-
 </div>
 
-<script>
-    $(document).ready(function () {
-        LoadDataTable();
-
-    });
-
-    function LoadDataTable() {
-
-        var table = $('#dataTableStuff').DataTable({
-            order: [[0, 'desc']],
-            'sDom': 'lt<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
-            language: {
-                sEmptyTable: "هیچ داده ای در جدول وجود ندارد",
-                sInfo: "نمایش _START_ تا _END_ از _TOTAL_ رکورد",
-                sInfoEmpty: "نمایش 0 تا 0 از 0 رکورد",
-                sInfoFiltered: "(فیلتر شده از _MAX_ رکورد)",
-                sInfoPostFix: "",
-                sInfoThousands: ",",
-                sLengthMenu: "نمایش _MENU_ رکورد",
-                sLoadingRecords: "در حال بارگزاری...",
-                sProcessing: "در حال پردازش...",
-                sSearch: "جستجو: ",
-                sZeroRecords: "رکوردی با این مشخصات پیدا نشد",
-                oPaginate: {
-                    sFirst: "ابتدا",
-                    sLast: "انتها",
-                    sNext: "بعدی",
-                    sPrevious: "قبلی",
-                },
-                oAria: {
-                    sSortAscending: ": فعال سازی نمایش به صورت صعودی",
-                    sSortDescending: ": فعال سازی نمایش به صورت نزولی",
-                },
-            },
-            pageLength: 100,
-            searching: true,
-            Processing: true,
-            serverSide: true,
-            ajax: {
-                url: "/Roles/GetAllRole",
-                type: "POST",
-                contentType: "application/json",
-                dataType: "json",
-                data: function (d) {
-
-                    let jsonData = {
-                        "OrderStageId": parseInt($('#orderStageId option:selected').val()),
-                        "CustomerId": parseInt($('#customerId option:selected').val()),
-                        "DeliveryDate": $('#deliveryDate').val(),
-                        "CreateDate": $('#createDate').val(),
-                    };
-
-                    d.json = JSON.stringify(jsonData);
-
-                    return JSON.stringify(d);
+@section MyStyles
+{
+    <link href="~/dark-rtl/assets/plugins/sweet-alert2/sweetalert2.min.css" rel="stylesheet" />
+}
+@section MyScripts
+{
+    <script src="~/dark-rtl/assets/plugins/sweet-alert2/sweetalert2.min.js"></script>
+    @* <script>
+        function DeleteRole() {
+            swal.fire({
+                title: 'حذف نقش',
+                text: "کاربر گرامی، از حذف این نقش مطمئن هستید؟",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#7cacbe',
+                confirmButtonText: 'بله',
+                cancelButtonText: 'خیر'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        success: function (response) {
+                            if (response.isSuccess) {
+                                swal.fire(
+                                    'موفق!',
+                                    'نقش با موفقیت حذف شد.',
+                                    'success'
+                                ).then(() => {
+                                    location.reload();
+                                });
+                            } else {
+                                swal.fire(
+                                    'خطا!',
+                                    response.message,
+                                    'error'
+                                );
+                            }
+                        },
+                        error: function () {
+                            swal.fire(
+                                'خطا!',
+                                'مشکلی در انجام عملیات رخ داده است.',
+                                'error'
+                            );
+                        }
+                    });
                 }
-            },
-            // Columns Setups
-            columns: [
-                { data: "row" },
-                { data: "roleName" },
-                { data: "createDate" },
-                { data: "operation" }
-            ],
-            "fnCreatedRow": function (nRow, aData, iDataIndex) {
-
-                $(nRow).attr("id", "Order_" + aData.orderId);
-            }
-
-        });
-
-        $('#mySearchText').keyup(function () {
-            table.search($(this).val()).draw();
-        });
-    }
-
-</script>
-
-
+            });
+        }
+    </script> *@
+}

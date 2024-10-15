@@ -1,1 +1,75 @@
-﻿
+﻿@using Project_02.Domain.Models.Permissions
+@using Project_02.Domain.Models.User
+
+@{
+    ViewData["Title"] = "ویرایش نقش";
+    long roleId = ViewBag.RoleId is null ? 0 : ViewBag.RoleId;
+    string roleName = ViewBag.RoleName; 
+    List<Permission> permissions = ViewBag.Permissions;
+    List<Role> roles = ViewBag.Roles;
+}
+
+<h1>ویرایش نقش</h1>
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Edit" method="post">
+            @if (roleId > 0)
+            {
+                <div class="form-group">
+                    <label class="control-label">نام نقش:</label>
+                    <input type="hidden" asp-for="@roleId" />
+                    <p class="form-control-static">@roleName</p>
+                </div>
+            }
+            else
+            {
+                <div class="form-group">
+                    <label class="control-label"></label>
+                    <select class="form-control">"></select>
+                    <span class="text-danger"></span>
+                </div>
+            }
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    دسترسی‌های نقش
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <ul>
+                        @if (permissions != null)
+                        {
+                            foreach (var permission in permissions.Where(p => p.ParentId == null))
+                            {
+                                <li>
+                                    <input type="checkbox" name="selectedPermissions" value="@permission.PermissionId" /> @permission.PermissionTitle
+
+                                    @if (permissions.Any(p => p.ParentId == permission.PermissionId))
+                                    {
+                                        <ul>
+                                            @foreach (var sub in permissions.Where(p => p.ParentId == permission.PermissionId))
+                                            {
+                                                <li>
+                                                    <input type="checkbox" name="selectedPermissions" value="@sub.PermissionId" /> @sub.PermissionTitle
+                                                </li>
+                                            }
+                                        </ul>
+                                    }
+                                </li>
+                            }
+                        }
+                    </ul>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary waves-effect waves-light">ذخیره اطلاعات</button>
+                    <button asp-action="Index" class="btn btn-danger waves-light">بازگشت به لیست </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+

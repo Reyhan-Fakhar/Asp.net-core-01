@@ -5,6 +5,7 @@ using Project_02.Application.Interfaces;
 using Project_02.Domain.Models.User;
 using Project_02.Domain.ViewModels;
 using System.Data;
+using Newtonsoft.Json;
 
 namespace Project_02.EndPoint.Site.Controllers
 {
@@ -20,23 +21,15 @@ namespace Project_02.EndPoint.Site.Controllers
             _permissionService = permissionService;
         }
 
-        public async Task<ActionResult> Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> GetAllUser([FromBody] DtParameters dtParameters)
-        {
-            var dtResult = await _userService.GetData(dtParameters);
-
-            return Json(dtResult);
+            var users = await _userService.GetAllUsers();
+            return View(users);
         }
 
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            // ارسال اطلاعات دسترسی‌ها به View
             var roles = await _permissionService.GetAllRoles();
             ViewBag.Roles = new SelectList(roles, "RoleId", "RoleName");
             return View();
@@ -49,9 +42,19 @@ namespace Project_02.EndPoint.Site.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Edit()
+        public async Task<IActionResult> Edit(long? userId)
         {
-            // ارسال اطلاعات دسترسی‌ها به View
+            if (userId.HasValue)
+            {
+                var selectedUserId = userId.Value;
+                var user = _userService.GetUserById(selectedUserId);
+                var role = _permissionService.GetRoleById(user.Result.RoleId);
+                ViewBag.UserId = selectedUserId;
+                ViewBag.UserName = user.Result.UserName;
+                ViewBag.UserRole = role.Result.RoleName;
+                ViewBag.PhoneNumber = user.Result.PhoneNumber;
+            }
+
             var roles = await _permissionService.GetAllRoles();
             ViewBag.Roles = new SelectList(roles, "RoleId", "RoleName");
             return View();
@@ -69,7 +72,6 @@ namespace Project_02.EndPoint.Site.Controllers
             await _userService.DeleteUser(userId);
             return RedirectToAction("Index");
         }
-
         [HttpPost]
         public async Task<IActionResult> ChangeStatues(long userId)
         {

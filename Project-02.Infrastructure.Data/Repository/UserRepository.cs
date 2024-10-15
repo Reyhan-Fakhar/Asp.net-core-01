@@ -27,85 +27,103 @@ namespace Project_02.Infrastructure.Data.Repository
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
         }
-        public async Task<IEnumerable<User>> GetAllUsers()
+        public async Task<List<UserResultViewModel>> GetAllUsers()
         {
-            return await _context.Users.ToListAsync();
+            return await _context.Users.Select(user => new UserResultViewModel()
+            {
+                UserId = user.UserId,
+                UserName = user.UserName,
+                UserRole = user.Role.RoleName,
+                PhoneNumber = user.PhoneNumber, 
+                IsActive = user.IsActive,
+                CreateDate = user.InsertTime.ToShamsi(),
+            }).ToListAsync();
         }
         public async Task<User> GetUserById(long userId)
         {
             return await _context.Users.FindAsync(userId);
         }
-        public async Task<DtResult<UserResultViewModel>> GetData(DtParameters dtParameters)
-        {
-            try
-            {
-                var searchBy = dtParameters.Search?.Value;
+        //public async Task<List< UserResultViewModel>> GetData()
+        //{
+        //    return await _context.Users.Select(x=> new UserResultViewModel()
+        //    {
+        //        UserName = x.UserName,
+        //        UserRole = x.Role.RoleName,
+        //        PhoneNumber = x.PhoneNumber,
+        //        CreateDate = x.InsertTime.ToShamsi(),
+        //        IsActive = x.IsActive,
+        //    }).ToListAsync();
 
-                var result = _context.Users
-                    .Include(r => r.Role)
-                    .AsQueryable();
 
-                var column = dtParameters.Columns[dtParameters.Order[0].Column].Data;
-                var sort = dtParameters.Order[0].Dir.ConvertDtOrderDirToSort();
+        //    //try
+        //    //{
+        //    //    var searchBy = dtParameters.Search?.Value;
 
-                switch (column)
-                {
-                    case "userName":
-                        result = sort == Sort.OrderBy ? result.OrderBy(u => u.UserName) : result.OrderByDescending(u => u.UserName);
-                        break;
+        //    //    var result = _context.Users
+        //    //        .Include(r => r.Role)
+        //    //        .AsQueryable();
 
-                    case "roleName":
-                        result = sort == Sort.OrderBy ? result.OrderBy(u => u.Role.RoleName) : result.OrderByDescending(u => u.Role.RoleName);
-                        break;
+        //    //    var column = dtParameters.Columns[dtParameters.Order[0].Column].Data;
+        //    //    var sort = dtParameters.Order[0].Dir.ConvertDtOrderDirToSort();
 
-                    case "phoneNumber":
-                        result = sort == Sort.OrderBy ? result.OrderBy(u => u.PhoneNumber) : result.OrderByDescending(u => u.PhoneNumber);
-                        break;
+        //    //    switch (column)
+        //    //    {
+        //    //        case "userName":
+        //    //            result = sort == Sort.OrderBy ? result.OrderBy(u => u.UserName) : result.OrderByDescending(u => u.UserName);
+        //    //            break;
 
-                    default:
-                        result = sort == Sort.OrderBy ? result.OrderBy(u => u.UserId) : result.OrderByDescending(u => u.UserId);
-                        break;
-                }
+        //    //        case "roleName":
+        //    //            result = sort == Sort.OrderBy ? result.OrderBy(u => u.Role.RoleName) : result.OrderByDescending(u => u.Role.RoleName);
+        //    //            break;
 
-                if (!string.IsNullOrEmpty(searchBy))
-                {
-                    result = result.Where(x =>
-                        x.UserName.Contains(searchBy) ||
-                        x.Role.RoleName.Contains(searchBy) ||
-                        x.PhoneNumber.Contains(searchBy));
-                }
+        //    //        case "phoneNumber":
+        //    //            result = sort == Sort.OrderBy ? result.OrderBy(u => u.PhoneNumber) : result.OrderByDescending(u => u.PhoneNumber);
+        //    //            break;
 
-                var filteredResultsCount = await result.CountAsync();
-                var totalResultsCount = await _context.Users.CountAsync();
+        //    //        default:
+        //    //            result = sort == Sort.OrderBy ? result.OrderBy(u => u.UserId) : result.OrderByDescending(u => u.UserId);
+        //    //            break;
+        //    //    }
 
-                var finalResult = new DtResult<UserResultViewModel>
-                {
-                    Draw = dtParameters.Draw,
-                    RecordsTotal = totalResultsCount,
-                    RecordsFiltered = filteredResultsCount,
-                    Data = await result
-                        .Skip(dtParameters.Start)
-                        .Take(dtParameters.Length)
-                        .Select(x => new UserResultViewModel()
-                        {
-                            UserName = x.UserName,
-                            UserRole = x.Role.RoleName,
-                            PhoneNumber = x.PhoneNumber,
-                            CreateDate = x.InsertTime.ToShamsi(),
-                            IsActive = x.IsActive,
-                        })
+        //    //    if (!string.IsNullOrEmpty(searchBy))
+        //    //    {
+        //    //        result = result.Where(x =>
+        //    //            x.UserName.Contains(searchBy) ||
+        //    //            x.Role.RoleName.Contains(searchBy) ||
+        //    //            x.PhoneNumber.Contains(searchBy));
+        //    //    }
 
-                        .ToListAsync()
-                };
+        //    //    var filteredResultsCount = await result.CountAsync();
+        //    //    var totalResultsCount = await _context.Users.CountAsync();
 
-                return finalResult;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                throw;
-            }
-        }
+        //    //    var finalResult = new DtResult<UserResultViewModel>
+        //    //    {
+        //    //        Draw = dtParameters.Draw,
+        //    //        RecordsTotal = totalResultsCount,
+        //    //        RecordsFiltered = filteredResultsCount,
+        //    //        Data = await result
+        //    //            .Skip(dtParameters.Start)
+        //    //            .Take(dtParameters.Length)
+        //    //            .Select(x => new UserResultViewModel()
+        //    //            {
+        //    //                UserName = x.UserName,
+        //    //                UserRole = x.Role.RoleName,
+        //    //                PhoneNumber = x.PhoneNumber,
+        //    //                CreateDate = x.InsertTime.ToShamsi(),
+        //    //                IsActive = x.IsActive,
+        //    //            })
+
+        //    //            .ToListAsync()
+        //    //    };
+
+        //    //    return finalResult;
+        //    //}
+        //    //catch (Exception e)
+        //    //{
+        //    //    Console.WriteLine(e.Message);
+        //    //    throw;
+        //    //}
+        //}
         #endregion
     }
 }

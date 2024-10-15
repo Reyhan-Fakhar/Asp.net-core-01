@@ -4,7 +4,13 @@ namespace Project_02.Domain.ViewModels
 {
     public class InformationUserViewModel
     {
+        public long UserId { get; set; }
         public string UserName { get; set; }
+
+        public long RoleId { get; set; }
+        public string RoleName { get; set; }
+        public List<string> PermissionName { get; set; }
+
         public string PhoneNumber { get; set; }
     }
 

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Project_02.Application.Interfaces;
+using Project_02.Application.Services;
 using Project_02.Domain.ViewModels;
 
 namespace Project_02.EndPoint.Site.Controllers
@@ -12,12 +13,22 @@ namespace Project_02.EndPoint.Site.Controllers
         {
             _customerService = customerService;
         }
-        //public async Task<IActionResult> Index()
-        //{
-        //    //var customers = await _customerService.GetAllCustomers();
-        //    //return View(customers);
-        //}
+        public async Task<IActionResult> Index()
+        {
+            var customer = await _customerService.GetAllCustomers();
+            return View(customer);
+        }
+        public async Task<IActionResult> GetProvinces()
+        {
+            var provinces = await _customerService.GetAllProvinces(); 
+            return Json(provinces);
+        }
 
+        public async Task<IActionResult> GetTownships(int provinceId)
+        {
+            var townships = await _customerService.GetTownshipsByProvinceId(provinceId); 
+            return Json(townships);
+        }
         public IActionResult Create()
         {
             return View();
@@ -26,36 +37,38 @@ namespace Project_02.EndPoint.Site.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CustomerRequestViewModel model)
         {
-            if (ModelState.IsValid)
-            {
-                await _customerService.CreateCustomer(model);
-                return RedirectToAction("Index");
-            }
-            return View(model);
+            await _customerService.CreateCustomer(model);
+            return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> Edit(long id)
         {
-            
+
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(CustomerRequestViewModel model)
+        public async Task<IActionResult> Edit(CustomerRequestViewModel model, long customerId)
         {
-            if (ModelState.IsValid)
-            {
-                await _customerService.EditCustomer(model);
-                return RedirectToAction("Index");
-            }
-            return View(model);
+
+            await _customerService.EditCustomer(model, customerId);
+            return RedirectToAction("Index");
+
         }
 
         [HttpPost]
-        public async Task<IActionResult> Delete(long id)
+        public async Task<IActionResult> Delete(long customerId)
         {
-            await _customerService.DeleteCustomer(id);
+            await _customerService.DeleteCustomer(customerId);
             return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Detail(long customerId)
+        {
+            var customer = await _customerService.GetCustomerById(customerId);
+
+            return View(customer);
         }
 
     }

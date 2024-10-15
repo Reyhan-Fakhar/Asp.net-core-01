@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace Project_02.Domain.ViewModels
 {
@@ -131,7 +130,7 @@ namespace Project_02.Domain.ViewModels
         public string SortOrder => Columns != null && Order != null && Order.Length > 0
             ? (Columns[Order[0].Column].Data +
                (Order[0].Dir == DtOrderDir.Desc ? " " + Order[0].Dir : string.Empty))
-            :  null ;
+            : null;
 
         /// <summary>
         /// For Posting Additional Parameters to Server

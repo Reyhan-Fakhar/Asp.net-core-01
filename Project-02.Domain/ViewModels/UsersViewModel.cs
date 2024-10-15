@@ -29,6 +29,14 @@ namespace Project_02.Domain.ViewModels
         [Display(Name = "عملیات")]
         public string Operation { get; set; }
     }
+
+    public class UserUpdatingResultViewModel
+    {
+        public long UserId { get; set; }
+
+        [Display(Name = "نام کاربری")]
+        public string UserName { get; set; }
+    }
     public class UserRequestViewModel
     {
         [Display(Name = "نام کاربری")]

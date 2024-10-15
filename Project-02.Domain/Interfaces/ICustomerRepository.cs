@@ -1,4 +1,5 @@
 ﻿using Project_02.Domain.Models.Customer;
+using Project_02.Domain.ViewModels;
 
 namespace Project_02.Domain.Interfaces
 {
@@ -6,7 +7,14 @@ namespace Project_02.Domain.Interfaces
     {
         Task AddCustomer(Customer customer);
         Task UpdateCustomer(Customer customer);
-        Task<IEnumerable<Customer>> GetAllCustomers();
+        Task<List<CustomerResultViewModel>> GetAllCustomers();
         Task<Customer> GetCustomerById(long customerId);
+        Task<bool> IsExistCustomerName(string customerName);
+
+        #region Province-Township
+        Task<List<Province>> GetAllProvinces();
+        Task<List<Township>> GetTownshipsByProvinceId(int provinceId);
+
+        #endregion
     }
 }

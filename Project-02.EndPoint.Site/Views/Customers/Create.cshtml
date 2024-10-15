@@ -1,105 +1,90 @@
-﻿<!-- Page-Title -->
-<div class="row">
-    <div class="col-sm-12">
-        <div class="page-title-box">
-            <h4 class="page-title">افزودن مشتری جدید</h4>
-        </div><!--end page-title-box-->
-    </div><!--end col-->
-</div><!--end-row-->
-<!-- end page title end breadcrumb -->
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Project_02.Domain.ViewModels.CustomerRequestViewModel
 
-<div class="card">
-    <div class="card-body">
-        <h4 class="header-title mt-0 mb-3">Delivery Address</h4>
-        <form class="mb-0">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>First Name <small class="text-danger font-13">*</small></label>
-                        <input type="text" class="form-control" id="firstname" required="">
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Last Name <small class="text-danger font-13">*</small></label>
-                        <input type="email" class="form-control" id="lastname" required="">
-                    </div>
-                </div><!--end col-->
-            </div><!--end row-->
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Delivery Address <small class="text-danger font-13">*</small></label>
-                        <input type="text" class="form-control" required="">
-                    </div>
-                </div><!--end col-->
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Address <small class="text-danger font-13">*</small></label>
-                        <input type="text" class="form-control" required="">
-                    </div>
-                </div><!--end col-->
-            </div><!--end row-->
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label>City <small class="text-danger font-13">*</small></label>
-                        <input type="text" class="form-control" id="city" required="">
-                    </div>
-                </div><!--end col-->
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label class="col-form-label pt-0">State <small class="text-danger font-13">*</small></label>
-                        <select class="form-control">
-                            <option>Select</option>
-                            <option>Gujarat</option>
-                            <option>New york</option>
-                            <option>California</option>
-                        </select>
-                    </div>
-                </div> <!--end col-->
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label class="col-form-label pt-0">Country <small class="text-danger font-13">*</small></label>
-                        <select class="form-control">
-                            <option>Select</option>
-                            <option>India</option>
-                            <option>USA</option>
-                            <option>New Zealand</option>
-                        </select>
-                    </div>
-                </div> <!--end col-->
-            </div><!--end row-->
-            <div class="row">
-                <div class="col-md-3">
-                    <div class="form-group">
-                        <label>Zip code <small class="text-danger font-13">*</small></label>
-                        <input type="text" class="form-control" required="">
-                    </div>
-                </div><!--end col-->
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Email Address <small class="text-danger font-13">*</small></label>
-                        <input type="email" class="form-control" required="">
-                    </div>
-                </div><!--end col-->
-                <div class="col-md-3">
-                    <div class="form-group">
-                        <label>Mobile No <small class="text-danger font-13">*</small></label>
-                        <input type="text" class="form-control" required="">
-                    </div>
-                </div><!--end col-->
-            </div><!--end row-->
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="form-group mb-0">
-                        <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="horizontalCheckbox" data-parsley-multiple="groups" data-parsley-mincheck="2">
-                            <label class="custom-control-label" for="horizontalCheckbox">Confirm Shipping Address</label>
-                        </div>
-                    </div>
-                </div><!--end col-->
-            </div><!--end row-->
-        </form><!--end form-->
-    </div><!--end card-body-->
-</div><!--end card-->
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label asp-for="FullName"></label>
+        <input asp-for="FullName" class="form-control" />
+        <span asp-validation-for="FullName" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ProvinceId"></label>
+        <select asp-for="ProvinceId" class="form-control" id="ProvinceId">
+            <option value="">انتخاب استان</option>
+        </select>
+        <span asp-validation-for="ProvinceId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="TownshipId"></label>
+        <select asp-for="TownshipId" class="form-control" id="TownshipId">
+            <option value="">انتخاب شهرستان</option>
+        </select>
+        <span asp-validation-for="TownshipId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="PhoneNumber"></label>
+        <input asp-for="PhoneNumber" class="form-control" />
+        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Address"></label>
+        <input asp-for="Address" class="form-control" />
+        <span asp-validation-for="Address" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Description"></label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">ثبت</button>
+</form>
+
+@section MyScripts {
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // دریافت لیست استان‌ها
+            $.ajax({
+                url: '@Url.Action("GetProvinces", "Customers")',
+                type: 'GET',
+                success: function (data) {
+                    var provinceDropdown = $('#ProvinceId');
+                    provinceDropdown.empty();
+                    provinceDropdown.append('<option value="">انتخاب استان</option>');
+                    $.each(data, function (index, item) {
+                        provinceDropdown.append('<option value="' + item.provinceId + '">' + item.provinceName + '</option>');
+                    });
+                }
+            });
+
+            // تغییر شهرستان‌ها بر اساس استان انتخابی
+            $('#ProvinceId').change(function () {
+                var provinceId = $(this).val();
+                if (provinceId) {
+                    $.ajax({
+                        url: '@Url.Action("GetTownships", "Customers")',
+                        type: 'GET',
+                        data: { provinceId: provinceId },
+                        success: function (data) {
+                            var townshipDropdown = $('#TownshipId');
+                            townshipDropdown.empty();
+                            townshipDropdown.append('<option value="">انتخاب شهرستان</option>');
+                            $.each(data, function (index, item) {
+                                townshipDropdown.append('<option value="' + item.townshipId + '">' + item.townshipName + '</option>');
+                            });
+                        }
+                    });
+                } else {
+                    $('#TownshipId').empty();
+                    $('#TownshipId').append('<option value="">انتخاب شهرستان</option>');
+                }
+            });
+        });
+    </script>
+}

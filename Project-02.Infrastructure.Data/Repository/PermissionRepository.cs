@@ -30,9 +30,16 @@ namespace Project_02.Infrastructure.Data.Repository
             _context.Roles.Update(role);
             await _context.SaveChangesAsync();
         }
-        public async Task<IEnumerable<Role>> GetAllRoles()
+        public async Task<List<RoleResultViewModel>> GetAllRoles()
         {
-            return await _context.Roles.ToListAsync();
+            return await _context.Roles
+                .Select(role => new RoleResultViewModel
+                {
+                    RoleId = role.RoleId,
+                    RoleName = role.RoleName,
+                    CreateDate = role.InsertTime.ToShamsi(), 
+                })
+                .ToListAsync();
         }
         public async Task<Role> GetRoleById(long roleId)
         {
@@ -95,6 +102,10 @@ namespace Project_02.Infrastructure.Data.Repository
                 throw;
             }
         }
+        public bool IsExistRoleName(string roleName)
+        {
+            return _context.Roles.Any(r => r.RoleName == roleName);
+        }
         #endregion
 
         #region Permission
@@ -106,6 +117,10 @@ namespace Project_02.Infrastructure.Data.Repository
                 RoleId = roleId,
             };
             await _context.RolePermission.AddAsync(rolePermission);
+
+            var role = await GetRoleById(roleId);
+            role.UpdateTime = DateTime.Now;
+
             await _context.SaveChangesAsync();
         }
 
@@ -113,6 +128,7 @@ namespace Project_02.Infrastructure.Data.Repository
         {
             var rolePermission = await _context.RolePermission.Where(r => r.RoleId == roleId).ToListAsync();
             _context.RolePermission.RemoveRange(rolePermission);
+
             await _context.SaveChangesAsync();
         }
 

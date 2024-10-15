@@ -51,41 +51,51 @@ namespace Project_02.Application.Services
             
             await _userRepository.UpdateUser(newUser);
         }
-        public async Task<DtResult<UserResultViewModel>> GetData(DtParameters dtParameters)
+
+        public async Task<User> GetUserById(long userId)
         {
-            var result = await _userRepository.GetData(dtParameters);
-
-            var row = dtParameters.Start + 1;
-
-            foreach (var model in result.Data)
-            {
-                model.Row = row;
-                row++;
-
-                model.Operation =
-                    $"<div class=\"dropdown d-inline-block\">" +
-                    "<a class=\"nav-link dropdown-toggle arrow-none\" id=\"dLabel6\" data-toggle=\"dropdown\" href=\"#\" role=\"button\" aria-haspopup=\"false\" aria-expanded=\"false\">" +
-                    "<i class=\"fas fa-ellipsis-v font-20 text-muted\"></i>" +
-                    "</a>" +
-                    "<div class=\"dropdown-menu\" aria-labelledby=\"dLabel6\">";
-
-                model.Operation +=
-                    $"<a class=\"dropdown-item\" href=\"/User/Edit/{model.UserId}\">" +
-                    "<i class=\"dripicons-pencil\"></i> ویرایش" +
-                    "</a>";
-
-                model.Operation += $"<a class=\"dropdown-item\" onclick=\"ChangeStatuesUser({model.UserId})\">" +
-                                   "<i class=\"dripicons-swap\"></i> تغییر وضعیت" +
-                                   "</a>";
-
-                model.Operation += $"<a class=\"dropdown-item\" onclick=\"DeleteUser({model.UserId})\">" +
-                                   "<i class=\"dripicons-trash\"></i> حذف" +
-                                   "</a>";
-
-                model.Operation += " </div> </div>";
-            }
-            return result;
+            return await _userRepository.GetUserById(userId);
         }
+        public async Task<List<UserResultViewModel>> GetAllUsers()
+        {
+            return await _userRepository.GetAllUsers();
+        }
+        //public async Task<List<UserResultViewModel>> GetData()
+        //{
+        //   return await _userRepository.GetData();
+
+        //    //var row = dtParameters.Start + 1;
+
+        //    //foreach (var model in result.Data)
+        //    //{
+        //    //    model.Row = row;
+        //    //    row++;
+
+        //    //    model.Operation =
+        //    //        $"<div class=\"dropdown d-inline-block\">" +
+        //    //        "<a class=\"nav-link dropdown-toggle arrow-none\" id=\"dLabel6\" data-toggle=\"dropdown\" href=\"#\" role=\"button\" aria-haspopup=\"false\" aria-expanded=\"false\">" +
+        //    //        "<i class=\"fas fa-ellipsis-v font-20 text-muted\"></i>" +
+        //    //        "</a>" +
+        //    //        "<div class=\"dropdown-menu\" aria-labelledby=\"dLabel6\">";
+
+        //    //    model.Operation +=
+        //    //        $"<a class=\"dropdown-item\" href=\"/User/Edit/{model.UserId}\">" +
+        //    //        "<i class=\"dripicons-pencil\"></i> ویرایش" +
+        //    //        "</a>";
+
+        //    //    model.Operation += $"<a class=\"dropdown-item\" onclick=\"ChangeStatuesUser({model.UserId})\">" +
+        //    //                       "<i class=\"dripicons-swap\"></i> تغییر وضعیت" +
+        //    //                       "</a>";
+
+        //    //    model.Operation += $"<a class=\"dropdown-item\" onclick=\"DeleteUser({model.UserId})\">" +
+        //    //                       "<i class=\"dripicons-trash\"></i> حذف" +
+        //    //                       "</a>";
+
+        //    //    model.Operation += " </div> </div>";
+        //    //}
+        //    //return result;
+        //}
+
         #endregion
 
     }

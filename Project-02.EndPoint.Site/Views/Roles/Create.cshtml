@@ -1,6 +1,11 @@
 ﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
 @using Project_02.Domain.Models.Permissions
 @model Project_02.Domain.ViewModels.RoleRequestViewModel
+
+@section MyStyles
+{
+    <link href="~/dark-rtl/assets/plugins/treeview/themes/default/style.css" rel="stylesheet">
+}
 @{
     ViewData["Title"] = "افزودن نقش";
     var permissions = ViewBag.Permissions as List<Permission>;
@@ -10,7 +15,6 @@
     <div class="col-lg-12">
         <h1 class="page-header">افزودن نقش جدید</h1>
     </div>
-    <!-- /.col-lg-12 -->
 </div>
 
 <div class="row">
@@ -33,38 +37,44 @@
                             دسترسی‌های نقش
                         </div>
                         <!-- /.panel-heading -->
-                        <div class="panel-body">
-                        <ul>
-                            @if (permissions != null)
-                            {
-                                foreach (var permission in permissions.Where(p => p.ParentId == null))
+                        <div id="jstree-checkbox" class="panel-body">
+                            <ul>
+                                @if (permissions != null)
                                 {
-                                    <li>
+                                    foreach (var permission in permissions.Where(p => p.ParentId == null))
+                                    {
+                                        <li>
                                             <input type="checkbox" name="selectedPermissions" value="@permission.PermissionId" /> @permission.PermissionTitle
 
-                                        @if (permissions.Any(p => p.ParentId == permission.PermissionId))
-                                        {
-                                            <ul>
-                                                @foreach (var sub in permissions.Where(p => p.ParentId == permission.PermissionId))
-                                                {
-                                                    <li>
+                                            @if (permissions.Any(p => p.ParentId == permission.PermissionId))
+                                            {
+                                                <ul>
+                                                    @foreach (var sub in permissions.Where(p => p.ParentId == permission.PermissionId))
+                                                    {
+                                                        <li>
                                                             <input type="checkbox" name="selectedPermissions" value="@sub.PermissionId" /> @sub.PermissionTitle
-                                                    </li>
-                                                }
-                                            </ul>
-                                        }
-                                    </li>
+                                                        </li>
+                                                    }
+                                                </ul>
+                                            }
+                                        </li>
+                                    }
                                 }
-                            }
-                        </ul>
+                            </ul>
+                        </div>
                     </div>
-                        <!-- /.panel-body -->
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary waves-effect waves-light">ذخیره اطلاعات</button>
+                        <button asp-action="Index" class="btn btn-danger waves-light">بازگشت به لیست </button>
                     </div>
-                    <input type="submit" value="ذخیره اطلاعات" class="btn btn-success" />
                 </div>
-                <!-- /.panel-body -->
             </div>
         </div>
     </form>
 </div>
 
+@section MyScripts
+{
+    <script src="~/dark-rtl/assets/plugins/treeview/jstree.min.js"></script>
+    <script src="~/dark-rtl/assets/pages/jquery.treeview.init.js"></script>
+}

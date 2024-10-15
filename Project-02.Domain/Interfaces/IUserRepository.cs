@@ -8,9 +8,9 @@ namespace Project_02.Domain.Interfaces
         #region User
         Task AddUser(User user);
         Task UpdateUser(User user);
-        Task<IEnumerable<User>> GetAllUsers();
+        Task<List<UserResultViewModel>> GetAllUsers();
         Task<User> GetUserById(long userId);
-        Task<DtResult<UserResultViewModel>> GetData(DtParameters dtParameters);
+        //Task<List<UserResultViewModel>> GetData();
         #endregion
     }
 }

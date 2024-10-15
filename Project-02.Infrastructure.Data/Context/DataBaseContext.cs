@@ -2,6 +2,7 @@
 using Project_02.Domain.Models.Customer;
 using Project_02.Domain.Models.Permissions;
 using Project_02.Domain.Models.User;
+using Project_02.Infrastructure.Data.Seeder;
 
 namespace Project_02.Infrastructure.Data.Context
 {
@@ -21,6 +22,8 @@ namespace Project_02.Infrastructure.Data.Context
 
         #region Customer
         public DbSet<Customer> Customers { get; set; }
+        public DbSet<Province> Provinces { get; set; }
+        public DbSet<Township> Townships { get; set; }
         #endregion
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -39,6 +42,9 @@ namespace Project_02.Infrastructure.Data.Context
             modelBuilder.Entity<Customer>().HasQueryFilter(r => !r.IsRemoved);
 
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.ApplyConfiguration(new ProvinceSeeder());
+            modelBuilder.ApplyConfiguration(new TownshipSeeder());
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Project_02.Domain.ViewModels.UserResultViewModel>
+﻿@model List<Project_02.Domain.ViewModels.UserResultViewModel>
 
 @{
     ViewData["Title"] = "کاربران";
@@ -21,54 +21,67 @@
                         <div class="search-box float-left col-md-6">
                             <input type="text" id="mySearchText" class="form-control" placeholder="جستجو ...">
                         </div>
-                        
-                        <button type="button" class="btn btn-primary waves-effect waves-light col-md-6" data-toggle="modal" data-animation="bounce" data-target=".bs-example-modal-lg">+ افزودن کاربر جدید</button>
-                        
-                        <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" style="display: none;" aria-hidden="true">
-                            <div class="modal-dialog modal-lg">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title mt-0" id="myLargeModalLabel">Add New Opportunities</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                                    </div>
-                                    <div class="modal-body">
-                                    </div>
-                                </div><!-- /.modal-content -->
-                            </div><!-- /.modal-dialog -->
-                        </div>
+                        <a type="button" href="@Url.Action("Create", "Users")" class="btn btn-primary waves-effect waves-light col-md-6">+ افزودن نقش جدید</a>
                     </div>
                     <input hidden="hidden" id="StatusList" />
                     <div class="card-content">
                         <div class="card-body card-dashboard">
                             <div class="table-responsive" id="orderTable">
 
-                                <table id="dataTableStuff" class="table ">
+                                <table class="table ">
                                     <thead>
-                                    <tr>
-                                        <th>
-                                            @Html.DisplayNameFor(model => model.Row)
-                                        </th>
-                                        <th>
-                                            @Html.DisplayNameFor(model => model.UserName)
-                                        </th>
-                                        <th>
-                                            @Html.DisplayNameFor(model => model.UserRole)
-                                        </th>
-                                        <th>
-                                            @Html.DisplayNameFor(model => model.CreateDate)
-                                        </th>
-                                        <th>
-                                            @Html.DisplayNameFor(model => model.PhoneNumber)
-                                        </th>
-                                        <th>
-                                            @Html.DisplayNameFor(model => model.IsActive)
-                                        </th>
-                                        <th>
-                                            @Html.DisplayNameFor(model => model.Operation)
-                                        </th>
-                                    </tr>
+                                        <tr>
+                                            <th>
+                                                @Html.DisplayNameFor(model => model.First().Row)
+                                            </th>
+                                            <th>
+                                                @Html.DisplayNameFor(model => model.First().UserName)
+                                            </th>
+                                            <th>
+                                                @Html.DisplayNameFor(model => model.First().UserRole)
+                                            </th>
+                                            <th>
+                                                @Html.DisplayNameFor(model => model.First().CreateDate)
+                                            </th>
+                                            <th>
+                                                @Html.DisplayNameFor(model => model.First().PhoneNumber)
+                                            </th>
+                                            <th>
+                                                @Html.DisplayNameFor(model => model.First().IsActive)
+                                            </th>
+                                            <th>
+                                                @Html.DisplayNameFor(model => model.First().Operation)
+                                            </th>
+                                        </tr>
                                     </thead>
                                     <tbody>
+                                        @for (var i = 0; i < Model.Count; i++)
+                                        {
+                                            <tr>
+                                                <td>@(i + 1)</td>
+                                                <td>@Model[i].UserName</td>
+                                                <td>@Model[i].UserRole</td>
+                                                <td>@Model[i].CreateDate</td>
+                                                <td>@Model[i].PhoneNumber</td>
+                                                <td>
+                                                    @if (Model[i].IsActive)
+                                                    {
+                                                        <span class="badge badge-soft-success">فعال</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="badge badge-soft-danger">غیر فعال</span>
+                                                    }
+                                                </td>
+                                                <td>
+                                                    <form method="post" style="display:inline;">
+                                                        <button asp-action="ChangeStatues" asp-route-userId="@Model[i].UserId" class="btn btn-sm btn-primary" style="float: none; margin: 4px;"><span class="ti-exchange-vertical"></span></button>
+                                                        <a href="@Url.Action("Edit", "Users", new { userId = Model[i].UserId })" class="tabledit-delete-button btn btn-sm btn-info" style="float: none; margin: 4px;"><span class="ti-pencil"></span></a>
+                                                        <button asp-action="Delete" asp-route-userId="@Model[i].UserId" class="tabledit-delete-button btn btn-sm btn-danger" style="float: none; margin: 4px;"><span class="ti-trash"></span></button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        }
                                     </tbody>
                                 </table>
                             </div>
@@ -81,97 +94,3 @@
 
 </div>
 
-@section MyStyles
-{
-    <link rel="stylesheet" type="text/css" href="/dark-rtl/assets/plugins/datatables/buttons.bootstrap4.min.css"/>
-
-}
-
-@section MyScripts
-{
-    <script src="/dark-rtl/assets/plugins/datatables/buttons.bootstrap4.min.js"></script>
-    <script src="/dark-rtl/assets/plugins/datatables/jquery.dataTables.min.js"></script>
-    <script src="/dark-rtl/assets/plugins/datatables/jquery.dataTables.min.js"></script>
-    <script src="/dark-rtl/assets/js/Scripts/datatables/datatable.js"></script>
-    <script>
-        $(document).ready(function () {
-            LoadDataTable();
-
-        });
-
-        function LoadDataTable() {
-
-            var table = $('#dataTableStuff').DataTable({
-                order: [[0, 'desc']],
-                'sDom': 'lt<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
-                language: {
-                    sEmptyTable: "هیچ داده ای در جدول وجود ندارد",
-                    sInfo: "نمایش _START_ تا _END_ از _TOTAL_ رکورد",
-                    sInfoEmpty: "نمایش 0 تا 0 از 0 رکورد",
-                    sInfoFiltered: "(فیلتر شده از _MAX_ رکورد)",
-                    sInfoPostFix: "",
-                    sInfoThousands: ",",
-                    sLengthMenu: "نمایش _MENU_ رکورد",
-                    sLoadingRecords: "در حال بارگزاری...",
-                    sProcessing: "در حال پردازش...",
-                    sSearch: "جستجو: ",
-                    sZeroRecords: "رکوردی با این مشخصات پیدا نشد",
-                    oPaginate: {
-                        sFirst: "ابتدا",
-                        sLast: "انتها",
-                        sNext: "بعدی",
-                        sPrevious: "قبلی",
-                    },
-                    oAria: {
-                        sSortAscending: ": فعال سازی نمایش به صورت صعودی",
-                        sSortDescending: ": فعال سازی نمایش به صورت نزولی",
-                    },
-                },
-                pageLength: 100,
-                searching: true,
-                Processing: true,
-                serverSide: true,
-                ajax: {
-                    url: "/Users/GetAllUser",
-                    type: "POST",
-                    contentType: "application/json",
-                    dataType: "json",
-                    data: function (d) {
-
-                    let jsonData = {
-                        "UserName": $('#userName').val(),
-                        "UserRole": parseInt($('#userRoleId option:selected').val()),
-                        "CreateDate": $('#createDate').val(),
-                        "PhoneNumber": $('#phoneNumber').val(),
-                        "IsActive": $('#IsActive').val(),
-                    };
-
-                    d.json = JSON.stringify(jsonData);
-
-                    return JSON.stringify(d);
-                }
-                },
-                // Columns Setups
-                columns: [
-                    { data: "row" },
-                    { data: "userName" },
-                    { data: "userRole" },
-                    { data: "phoneNumber" },
-                    { data: "createDate" },
-                    { data: "isActive" },
-                    { data: "operation" }
-                ],
-                "fnCreatedRow": function (nRow, aData, iDataIndex) {
-
-                    $(nRow).attr("id", "User" + aData.orderId);
-                }
-
-            });
-
-            $('#mySearchText').keyup(function () {
-                table.search($(this).val()).draw();
-            });
-        }
-
-    </script>
-}

@@ -17,7 +17,7 @@ namespace Project_02.Domain.ViewModels
         public string Province { get; set; }
 
         [Display(Name = "شهر")]
-        public string City { get; set; }
+        public string Township { get; set; }
 
         [Display(Name = "شماره تلفن")]
         public string PhoneNumber { get; set; }
@@ -43,11 +43,11 @@ namespace Project_02.Domain.ViewModels
 
         [Display(Name = "استان")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید")]
-        public string Province { get; set; }
+        public int ProvinceId { get; set; }
 
         [Display(Name = "شهر")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید")]
-        public string City { get; set; }
+        public int TownshipId { get; set; }
 
         [Display(Name = "شماره تلفن")]
         [RegularExpression(@"^((98|\+98|0098|0)*(9)[0-9]{9})+$", ErrorMessage = "شماره تلفن وارد شده معتبر نیست.")]
@@ -58,7 +58,7 @@ namespace Project_02.Domain.ViewModels
         public string Address { get; set; }
 
         [Display(Name = "توضیحات")]
-        [Required(ErrorMessage = "لطفا {0} را وارد کنید")]
         public string Description { get; set; }
     }
+
 }

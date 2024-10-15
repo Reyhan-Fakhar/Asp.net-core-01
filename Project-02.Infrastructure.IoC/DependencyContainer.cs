@@ -19,11 +19,13 @@ namespace Project_02.Infrastructure.IoC
             service.AddScoped<IUserService, UserService>();
             service.AddScoped<IPermissionService, PermissionService>();
             service.AddScoped<ICustomerService, CustomerService>();
+            service.AddScoped<ILoginService, LoginService>();
 
             //Infrastructure.Data Layer
             service.AddScoped<IUserRepository, UserRepository>();
             service.AddScoped<IPermissionRepository, PermissionRepository>();
             service.AddScoped<ICustomerRepository, CustomerRepository>();
+            service.AddScoped<ILoginRepository, LoginRepository>();
         }
     }
 }
