@@ -1,21 +1,30 @@
-﻿@model Project_02.Domain.Models.Customer.Customer
+﻿@model Project_02.Domain.ViewModels.CustomerDetailsResultViewModel
 
 @{
     ViewData["Title"] = "Detail";
 }
 
-<h1>Detail</h1>
+<h1>جزئیات مشتری</h1>
 
 <div>
-    <h4>Customer</h4>
-    <hr />
     <dl class="row">
-       
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.FullName)
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.FullName)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Province)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Province)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Township)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Township)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.PhoneNumber)
@@ -36,27 +45,14 @@
             @Html.DisplayFor(model => model.Description)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Province.ProvinceName)
+            @Html.DisplayNameFor(model => model.CreateDate)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Province.ProvinceName)
+            @Html.DisplayFor(model => model.CreateDate)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TownshipId)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TownshipId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.InsertTime)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.InsertTime)
-        </dd>
-        
     </dl>
 </div>
+
 <div>
-    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
-    <a asp-action="Index">Back to List</a>
+    <button asp-action="Index" class="btn btn-danger waves-light">بازگشت به لیست </button>
 </div>

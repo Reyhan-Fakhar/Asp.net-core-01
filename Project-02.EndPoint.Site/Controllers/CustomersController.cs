@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Project_02.Application.Interfaces;
-using Project_02.Application.Services;
+using Project_02.Application.Security;
 using Project_02.Domain.ViewModels;
 
 namespace Project_02.EndPoint.Site.Controllers
@@ -13,6 +13,7 @@ namespace Project_02.EndPoint.Site.Controllers
         {
             _customerService = customerService;
         }
+        [PermissionChecker(12)]
         public async Task<IActionResult> Index()
         {
             var customer = await _customerService.GetAllCustomers();
@@ -35,28 +36,30 @@ namespace Project_02.EndPoint.Site.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(CustomerRequestViewModel model)
+        [PermissionChecker(13)]
+        public async Task<IActionResult> Create(CustomerCreateRequestViewModel model)
         {
             await _customerService.CreateCustomer(model);
             return RedirectToAction("Index");
         }
 
-        public async Task<IActionResult> Edit(long id)
+        [HttpGet]
+        [PermissionChecker(14)]
+        public async Task<IActionResult> Edit(long customerId)
         {
-
+            ViewBag.CustomerId = customerId;
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(CustomerRequestViewModel model, long customerId)
+        public async Task<IActionResult> Edit(CustomerEditRequestViewModel model, long customerId)
         {
-
             await _customerService.EditCustomer(model, customerId);
             return RedirectToAction("Index");
-
         }
 
         [HttpPost]
+        [PermissionChecker(15)]
         public async Task<IActionResult> Delete(long customerId)
         {
             await _customerService.DeleteCustomer(customerId);
@@ -66,10 +69,9 @@ namespace Project_02.EndPoint.Site.Controllers
         [HttpGet]
         public async Task<IActionResult> Detail(long customerId)
         {
-            var customer = await _customerService.GetCustomerById(customerId);
+            var customer = await _customerService.GetCustomerDetails(customerId);
 
             return View(customer);
         }
-
     }
 }

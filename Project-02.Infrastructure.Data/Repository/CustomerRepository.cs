@@ -26,7 +26,10 @@ namespace Project_02.Infrastructure.Data.Repository
         }
         public async Task<List<CustomerResultViewModel>> GetAllCustomers()
         {
-            return await _context.Customers.Select(customer => new CustomerResultViewModel()
+            var result = await _context.Customers
+                .Include(x=> x.Province)
+                .Include(x=> x.Township)
+                .Select(customer => new CustomerResultViewModel()
             {
                 CustomerId = customer.CustomerId,
                 FullName = customer.FullName,
@@ -37,14 +40,28 @@ namespace Project_02.Infrastructure.Data.Repository
                 Address = customer.Address,
                 Description = customer.Description
             }).ToListAsync();
+            return result;
+
         }
         public async Task<Customer> GetCustomerById(long customerId)
         {
             return await _context.Customers.FindAsync(customerId);
         }
-        public async Task<bool> IsExistCustomerName(string customerName)
+        public async Task<CustomerDetailsResultViewModel> GetCustomerDetails(long customerId)
         {
-            return await _context.Customers.AnyAsync(c => c.FullName == customerName);
+            var customer = await GetCustomerById(customerId);
+            var customerDetails = new CustomerDetailsResultViewModel()
+            {
+                FullName = customer.FullName,
+                CreateDate = customer.InsertTime.ToShamsi(),
+                Province = customer.ProvinceId.ToString(),
+                Township = customer.TownshipId.ToString(),
+                PhoneNumber = customer.PhoneNumber,
+                Address = customer.Address,
+                Description = customer.Description,
+                //CustomerRequests = customer.Requests,
+            };
+            return customerDetails;
         }
 
         #region Province-Township

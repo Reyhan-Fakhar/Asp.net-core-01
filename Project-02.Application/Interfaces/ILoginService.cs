@@ -10,6 +10,6 @@ namespace Project_02.Application.Interfaces
 {
     public interface ILoginService
     {
-        Task<User> AuthenticateUserAsync(LoginViewModel model);
+        Task<User> AuthenticateUserAsync(UserLoginViewModel model);
     }
 }

@@ -8,11 +8,11 @@ namespace Project_02.Application.Interfaces
     public interface IPermissionService
     {
         #region Roles
-        Task<long> CreateRole(RoleRequestViewModel request);
+        Task<long> CreateRole(RoleCreateRequestViewModel createRequest);
         Task DeleteRole(long roleId);
         Task<Role> GetRoleById(long roleId);
         Task<List<RoleResultViewModel>> GetAllRoles();
-        Task<DtResult<RoleResultViewModel>> GetData(DtParameters dtParameters);
+        Task<RoleDetailsResultViewModel> GetRoleDetails(long roleId);
         #endregion
 
         #region Permission

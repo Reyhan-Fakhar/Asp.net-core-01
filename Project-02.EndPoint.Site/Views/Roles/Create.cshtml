@@ -1,6 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
 @using Project_02.Domain.Models.Permissions
-@model Project_02.Domain.ViewModels.RoleRequestViewModel
+@model Project_02.Domain.ViewModels.RoleCreateRequestViewModel
 
 @section MyStyles
 {
@@ -18,63 +18,78 @@
 </div>
 
 <div class="row">
-    <form asp-action="Create" method="post" enctype="multipart/form-data">
-        <div class="col-md-8">
-            <div class="panel panel-primary">
+    <div class="col-md-4">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label>عنوان نقش</label>
+                <input type="text" asp-for="RoleName" class="form-control" />
+                <span asp-validation-for="RoleName" class="text-danger"></span>
+            </div>
+
+            <div class="panel panel-default">
                 <div class="panel-heading">
-                    نقش
+                    دسترسی‌های نقش
                 </div>
-                <!-- /.panel-heading -->
                 <div class="panel-body">
-                    <div class="form-group">
-                        <label>عنوان نقش</label>
-                        <input type="text" asp-for="RoleName" class="form-control" />
-                        <span asp-validation-for="RoleName" class="text-danger"></span>
-                    </div>
-
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            دسترسی‌های نقش
-                        </div>
-                        <!-- /.panel-heading -->
-                        <div id="jstree-checkbox" class="panel-body">
-                            <ul>
-                                @if (permissions != null)
+                    <div id="jstree-checkbox" class="panel-body">
+                        <ul>
+                            @if (permissions != null)
+                            {
+                                foreach (var permission in permissions.Where(p => p.ParentId == null))
                                 {
-                                    foreach (var permission in permissions.Where(p => p.ParentId == null))
-                                    {
-                                        <li>
-                                            <input type="checkbox" name="selectedPermissions" value="@permission.PermissionId" /> @permission.PermissionTitle
+                                    <li>
+                                        <input type="checkbox" name="selectedPermissions" value="@permission.PermissionId" /> @permission.PermissionTitle
 
-                                            @if (permissions.Any(p => p.ParentId == permission.PermissionId))
-                                            {
-                                                <ul>
-                                                    @foreach (var sub in permissions.Where(p => p.ParentId == permission.PermissionId))
-                                                    {
-                                                        <li>
-                                                            <input type="checkbox" name="selectedPermissions" value="@sub.PermissionId" /> @sub.PermissionTitle
-                                                        </li>
-                                                    }
-                                                </ul>
-                                            }
-                                        </li>
-                                    }
+                                        @if (permissions.Any(p => p.ParentId == permission.PermissionId))
+                                        {
+                                            <ul>
+                                                @foreach (var sub in permissions.Where(p => p.ParentId == permission.PermissionId))
+                                                {
+                                                    <li>
+                                                        <input type="checkbox" name="selectedPermissions" value="@sub.PermissionId" /> @sub.PermissionTitle
+                                                    </li>
+                                                }
+                                            </ul>
+                                        }
+                                    </li>
                                 }
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <button type="submit" class="btn btn-primary waves-effect waves-light">ذخیره اطلاعات</button>
-                        <button asp-action="Index" class="btn btn-danger waves-light">بازگشت به لیست </button>
+                            }
+                        </ul>
                     </div>
                 </div>
             </div>
-        </div>
-    </form>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary waves-effect waves-light">ذخیره اطلاعات</button>
+                <button asp-action="Index" class="btn btn-danger waves-light">بازگشت به لیست </button>
+            </div>
+        </form>
+    </div>
 </div>
 
 @section MyScripts
 {
     <script src="~/dark-rtl/assets/plugins/treeview/jstree.min.js"></script>
-    <script src="~/dark-rtl/assets/pages/jquery.treeview.init.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#permissionTree').jstree({
+                "checkbox": {
+                    "keep_selected_style": false,
+                    "three_state": false,  // disables cascading selection
+                    "cascade": ""
+                },
+                "plugins": ["checkbox"]
+            });
+
+            // در صورت نیاز به جمع‌آوری داده‌ها برای ارسال به سرور
+            $('#saveButton').on('click', function () {
+                var selectedPermissions = $('#permissionTree').jstree("get_selected", true).map(function   (node) {
+                    return node.id;
+                });
+                console.log(selectedPermissions); // ارسال به سرور یا استفاده از داده‌ها
+            });
+        });
+    </script>
+
 }

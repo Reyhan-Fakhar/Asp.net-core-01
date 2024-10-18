@@ -22,8 +22,8 @@ namespace Project_02.Infrastructure.Data.Repository
         public async Task<long> AddRole(Role role)
         {
             await _context.Roles.AddAsync(role);
-            await _context.SaveChangesAsync(); 
-            return role.RoleId; 
+            await _context.SaveChangesAsync();
+            return role.RoleId;
         }
         public async Task UpdateRole(Role role)
         {
@@ -37,7 +37,7 @@ namespace Project_02.Infrastructure.Data.Repository
                 {
                     RoleId = role.RoleId,
                     RoleName = role.RoleName,
-                    CreateDate = role.InsertTime.ToShamsi(), 
+                    CreateDate = role.InsertTime.ToShamsi(),
                 })
                 .ToListAsync();
         }
@@ -45,66 +45,32 @@ namespace Project_02.Infrastructure.Data.Repository
         {
             return await _context.Roles.FindAsync(roleId);
         }
-        public async Task<DtResult<RoleResultViewModel>> GetData(DtParameters dtParameters)
-        {
-            try
-            {
-                var searchBy = dtParameters.Search?.Value;
-
-                var result = _context.Roles
-                    .Include(r => r.Permissions)
-                    .AsQueryable();
-
-                var column = dtParameters.Columns[dtParameters.Order[0].Column].Data;
-                var sort = dtParameters.Order[0].Dir.ConvertDtOrderDirToSort();
-
-                switch (column)
-                {
-                    case "roleName":
-                        result = sort == Sort.OrderBy ? result.OrderBy(r => r.RoleName) : result.OrderByDescending(r => r.RoleName);
-                        break;
-
-                    default:
-                        result = sort == Sort.OrderBy ? result.OrderBy(r => r.RoleId) : result.OrderByDescending(r => r.RoleId);
-                        break;
-                }
-
-                if (!string.IsNullOrEmpty(searchBy))
-                {
-                    result = result.Where(x =>
-                        x.RoleName.Contains(searchBy));
-                }
-
-                var filteredResultsCount = await result.CountAsync();
-                var totalResultsCount = await _context.Roles.CountAsync();
-
-                var finalResult = new DtResult<RoleResultViewModel>
-                {
-                    Draw = dtParameters.Draw,
-                    RecordsTotal = totalResultsCount,
-                    RecordsFiltered = filteredResultsCount,
-                    Data = await result
-                        .Skip(dtParameters.Start)
-                        .Take(dtParameters.Length)
-                        .Select(x => new RoleResultViewModel()
-                        {
-                            RoleName = x.RoleName,
-                            CreateDate = x.InsertTime.ToShamsi()
-                        }).ToListAsync()
-                };
-
-                return finalResult;
-
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                throw;
-            }
-        }
         public bool IsExistRoleName(string roleName)
         {
             return _context.Roles.Any(r => r.RoleName == roleName);
+        }
+        public async Task<RoleDetailsResultViewModel> GetRoleDetails(long roleId)
+        {
+            var role = await GetRoleById(roleId);
+            var permissions = await GetAllRolePermissions(roleId);
+
+
+            var roleDetails = new RoleDetailsResultViewModel()
+            {
+                RoleId = role.RoleId,
+                RoleName = role.RoleName,
+                CreateDate = role.InsertTime.ToShamsi(),
+
+                PermissionsId = permissions.Select(p => p.PermissionId).ToList(),
+                PermissionsName = permissions.Select(p => p.PermissionTitle).ToList()
+            };
+            return roleDetails;
+        }
+
+        public async Task<long> GetUserRole(string userName)
+        { 
+            return _context.Users.Single(u => u.UserName == userName).RoleId;
+            
         }
         #endregion
 
@@ -123,7 +89,6 @@ namespace Project_02.Infrastructure.Data.Repository
 
             await _context.SaveChangesAsync();
         }
-
         public async Task DeletePermissionFromRole(long roleId)
         {
             var rolePermission = await _context.RolePermission.Where(r => r.RoleId == roleId).ToListAsync();
@@ -131,17 +96,19 @@ namespace Project_02.Infrastructure.Data.Repository
 
             await _context.SaveChangesAsync();
         }
-
         public async Task<IEnumerable<Permission>> GetAllPermission()
         {
             return await _context.Permission.ToListAsync();
         }
-
-        public async Task<List<long>> GetAllRolePermissions(long roleId)
+        public async Task<List<Permission>> GetAllRolePermissions(long roleId)
         {
-            return await _context.RolePermission
-                .Where(r => r.RoleId == roleId)
-                .Select(p => p.PermissionId)
+            var permissionIds = await _context.RolePermission
+                .Where(rp => rp.RoleId == roleId)
+                .Select(rp => rp.PermissionId)
+                .ToListAsync();
+
+            return await _context.Permission
+                .Where(p => permissionIds.Contains(p.PermissionId))
                 .ToListAsync();
         }
         #endregion

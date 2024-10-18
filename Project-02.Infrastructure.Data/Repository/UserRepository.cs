@@ -34,7 +34,7 @@ namespace Project_02.Infrastructure.Data.Repository
                 UserId = user.UserId,
                 UserName = user.UserName,
                 UserRole = user.Role.RoleName,
-                PhoneNumber = user.PhoneNumber, 
+                PhoneNumber = user.PhoneNumber,
                 IsActive = user.IsActive,
                 CreateDate = user.InsertTime.ToShamsi(),
             }).ToListAsync();
@@ -43,87 +43,21 @@ namespace Project_02.Infrastructure.Data.Repository
         {
             return await _context.Users.FindAsync(userId);
         }
-        //public async Task<List< UserResultViewModel>> GetData()
-        //{
-        //    return await _context.Users.Select(x=> new UserResultViewModel()
-        //    {
-        //        UserName = x.UserName,
-        //        UserRole = x.Role.RoleName,
-        //        PhoneNumber = x.PhoneNumber,
-        //        CreateDate = x.InsertTime.ToShamsi(),
-        //        IsActive = x.IsActive,
-        //    }).ToListAsync();
+        public async Task<UserDetailsResultViewModel> GetUserDetails(long userId)
+        {
+            var user = await GetUserById(userId);
 
-
-        //    //try
-        //    //{
-        //    //    var searchBy = dtParameters.Search?.Value;
-
-        //    //    var result = _context.Users
-        //    //        .Include(r => r.Role)
-        //    //        .AsQueryable();
-
-        //    //    var column = dtParameters.Columns[dtParameters.Order[0].Column].Data;
-        //    //    var sort = dtParameters.Order[0].Dir.ConvertDtOrderDirToSort();
-
-        //    //    switch (column)
-        //    //    {
-        //    //        case "userName":
-        //    //            result = sort == Sort.OrderBy ? result.OrderBy(u => u.UserName) : result.OrderByDescending(u => u.UserName);
-        //    //            break;
-
-        //    //        case "roleName":
-        //    //            result = sort == Sort.OrderBy ? result.OrderBy(u => u.Role.RoleName) : result.OrderByDescending(u => u.Role.RoleName);
-        //    //            break;
-
-        //    //        case "phoneNumber":
-        //    //            result = sort == Sort.OrderBy ? result.OrderBy(u => u.PhoneNumber) : result.OrderByDescending(u => u.PhoneNumber);
-        //    //            break;
-
-        //    //        default:
-        //    //            result = sort == Sort.OrderBy ? result.OrderBy(u => u.UserId) : result.OrderByDescending(u => u.UserId);
-        //    //            break;
-        //    //    }
-
-        //    //    if (!string.IsNullOrEmpty(searchBy))
-        //    //    {
-        //    //        result = result.Where(x =>
-        //    //            x.UserName.Contains(searchBy) ||
-        //    //            x.Role.RoleName.Contains(searchBy) ||
-        //    //            x.PhoneNumber.Contains(searchBy));
-        //    //    }
-
-        //    //    var filteredResultsCount = await result.CountAsync();
-        //    //    var totalResultsCount = await _context.Users.CountAsync();
-
-        //    //    var finalResult = new DtResult<UserResultViewModel>
-        //    //    {
-        //    //        Draw = dtParameters.Draw,
-        //    //        RecordsTotal = totalResultsCount,
-        //    //        RecordsFiltered = filteredResultsCount,
-        //    //        Data = await result
-        //    //            .Skip(dtParameters.Start)
-        //    //            .Take(dtParameters.Length)
-        //    //            .Select(x => new UserResultViewModel()
-        //    //            {
-        //    //                UserName = x.UserName,
-        //    //                UserRole = x.Role.RoleName,
-        //    //                PhoneNumber = x.PhoneNumber,
-        //    //                CreateDate = x.InsertTime.ToShamsi(),
-        //    //                IsActive = x.IsActive,
-        //    //            })
-
-        //    //            .ToListAsync()
-        //    //    };
-
-        //    //    return finalResult;
-        //    //}
-        //    //catch (Exception e)
-        //    //{
-        //    //    Console.WriteLine(e.Message);
-        //    //    throw;
-        //    //}
-        //}
+            var userDetails = new UserDetailsResultViewModel()
+            {
+                UserId = user.UserId,
+                UserName = user.UserName,
+                RoleId = user.RoleId,
+                PhoneNumber = user.PhoneNumber,
+                IsActive = user.IsActive ? "فعال" : "غیرفعال",
+                CreateDate = user.InsertTime.ToShamsi()
+            };
+            return userDetails;
+        }
         #endregion
     }
 }

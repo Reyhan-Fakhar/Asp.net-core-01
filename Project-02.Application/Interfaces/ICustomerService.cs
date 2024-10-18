@@ -5,12 +5,12 @@ namespace Project_02.Application.Interfaces
 {
     public interface ICustomerService
     {
-        Task CreateCustomer(CustomerRequestViewModel request);
-        Task EditCustomer(CustomerRequestViewModel request, long customerId);
+        Task CreateCustomer(CustomerCreateRequestViewModel createRequest);
+        Task EditCustomer(CustomerEditRequestViewModel editRequest, long customerId);
         Task DeleteCustomer(long customerId);
         Task<Customer> GetCustomerById(long customerId);
         Task<List<CustomerResultViewModel>> GetAllCustomers();
-        //Task<IEnumerable<CustomerResultViewModel>> GetAllCustomers();
+        Task<CustomerDetailsResultViewModel> GetCustomerDetails(long customerId);
 
         #region Province-Township
         Task<List<Province>> GetAllProvinces();

@@ -31,8 +31,11 @@ namespace Project_02.Domain.Models.Customer
         public Province Province { get; set; }
 
         public int TownshipId { get; set; }
-        [ForeignKey("ProvinceId")]
+
+        [ForeignKey("TownshipId")]
         public Township Township { get; set; }
+
+        public List<Request.Request> Requests { get; set; }
         #endregion
 
     }

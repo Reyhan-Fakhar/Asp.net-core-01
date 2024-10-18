@@ -11,8 +11,9 @@ namespace Project_02.Domain.Interfaces
         Task UpdateRole(Role role);
         Task<List<RoleResultViewModel>> GetAllRoles();
         Task<Role> GetRoleById(long roleId);
-        Task<DtResult<RoleResultViewModel>> GetData(DtParameters dtParameters);
         public bool IsExistRoleName(string roleName);
+        Task<RoleDetailsResultViewModel> GetRoleDetails(long roleId);
+        Task<long> GetUserRole(string userName);
         #endregion
 
         #region Permission
@@ -20,7 +21,7 @@ namespace Project_02.Domain.Interfaces
         Task DeletePermissionFromRole(long roleId);
         //bool CheckPermission(long permissionId, string userName);
         Task<IEnumerable<Permission>> GetAllPermission();
-        Task<List<long>> GetAllRolePermissions(long roleId);
+        Task<List<Permission>> GetAllRolePermissions(long roleId);
         #endregion
     }
 }

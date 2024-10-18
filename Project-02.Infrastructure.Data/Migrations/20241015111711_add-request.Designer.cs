@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Project_02.Infrastructure.Data.Context;
 
@@ -11,9 +12,11 @@ using Project_02.Infrastructure.Data.Context;
 namespace Project_02.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(DataBaseContext))]
-    partial class DataBaseContextModelSnapshot : ModelSnapshot
+    [Migration("20241015111711_add-request")]
+    partial class addrequest
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -68,8 +71,6 @@ namespace Project_02.Infrastructure.Data.Migrations
                     b.HasKey("CustomerId");
 
                     b.HasIndex("ProvinceId");
-
-                    b.HasIndex("TownshipId");
 
                     b.ToTable("Customers");
                 });
@@ -3043,8 +3044,9 @@ namespace Project_02.Infrastructure.Data.Migrations
                     b.Property<long>("CustomerId")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("Date")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -3155,7 +3157,7 @@ namespace Project_02.Infrastructure.Data.Migrations
 
                     b.HasOne("Project_02.Domain.Models.Customer.Township", "Township")
                         .WithMany("Customers")
-                        .HasForeignKey("TownshipId")
+                        .HasForeignKey("ProvinceId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 

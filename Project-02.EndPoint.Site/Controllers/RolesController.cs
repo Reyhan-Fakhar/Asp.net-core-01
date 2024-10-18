@@ -1,10 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using Project_02.Application.Interfaces;
-using Project_02.Application.Services;
-using Project_02.Domain.Models.Permissions;
-using Project_02.Domain.Models.User;
 using Project_02.Domain.ViewModels;
 
 namespace Project_02.EndPoint.Site.Controllers
@@ -33,9 +28,17 @@ namespace Project_02.EndPoint.Site.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(RoleRequestViewModel model, List<long> selectedPermissions)
+        public async Task<IActionResult> Create(RoleCreateRequestViewModel model, List<long> selectedPermissions)
         {
             var roleId = await _permissionService.CreateRole(model);
+            if (roleId == 0)
+            {
+                ModelState.AddModelError("RoleName", "نام نقش وارد شده تکراری است و قبلاً ثبت شده است.");
+                ViewBag.ErrorMessage = "نام نقش وارد شده تکراری است و نمی‌توان آن را دوباره ثبت کرد.";
+
+                return View(model);
+            }
+
             await _permissionService.AddPermissionsToRole(selectedPermissions, roleId);
             return RedirectToAction("Create");
         }
@@ -43,29 +46,32 @@ namespace Project_02.EndPoint.Site.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(long? roleId)
         {
-            
             if (roleId.HasValue)
             {
-                var selectedRoleId = roleId.Value;
-                var role = _permissionService.GetRoleById(selectedRoleId);
-                ViewBag.RoleId = selectedRoleId;
-                ViewBag.RoleName = role.Result.RoleName;
+                var roleDetails = await _permissionService.GetRoleDetails(roleId.Value);
+                var roleEditViewModel = new RoleEditRequestViewModel
+                {
+                    RoleId = roleDetails.RoleId,
+                    RoleName = roleDetails.RoleName,
+                    PermissionsName = roleDetails.PermissionsName
+                };
+
+                ViewBag.RoleId = roleId;
+                ViewBag.Permissions = await _permissionService.GetAllPermissions();
+                return View(roleEditViewModel);
             }
 
-            var permissions = await _permissionService.GetAllPermissions();
-            ViewBag.Permissions = permissions;
+            ViewBag.Roles = await _permissionService.GetAllRoles();
 
-            var roles = await _permissionService.GetAllRoles();
-            ViewBag.Roles = roles;
-            
-            return View();
+            return View(new RoleEditRequestViewModel());
         }
-        
+
         [HttpPost]
         public async Task<IActionResult> Edit(long roleId, List<long> selectedPermissions)
         {
             await _permissionService.EditPermissionsRole(selectedPermissions, roleId);
             return RedirectToAction("Index");
+
         }
 
         [HttpPost]
@@ -73,6 +79,19 @@ namespace Project_02.EndPoint.Site.Controllers
         {
             await _permissionService.DeleteRole(roleId);
             return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetRoleDetails(long roleId)
+        {
+            var roleDetails = await _permissionService.GetRoleDetails(roleId);
+
+            return Json(new
+            {
+                roleName = roleDetails.RoleName,
+                createDate = roleDetails.CreateDate,
+                permissionsName = roleDetails.PermissionsName
+            });
         }
     }
 }

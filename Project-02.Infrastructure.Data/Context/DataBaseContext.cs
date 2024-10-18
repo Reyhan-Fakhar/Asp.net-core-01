@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Project_02.Domain.Models.Customer;
 using Project_02.Domain.Models.Permissions;
+using Project_02.Domain.Models.Request;
 using Project_02.Domain.Models.User;
 using Project_02.Infrastructure.Data.Seeder;
 
@@ -26,6 +27,10 @@ namespace Project_02.Infrastructure.Data.Context
         public DbSet<Township> Townships { get; set; }
         #endregion
 
+        #region Request
+        public DbSet<Request> Requests { get; set; }
+        #endregion
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             var cascadeFKs = modelBuilder.Model.GetEntityTypes()
@@ -40,6 +45,8 @@ namespace Project_02.Infrastructure.Data.Context
             modelBuilder.Entity<Role>().HasQueryFilter(r => !r.IsRemoved);
 
             modelBuilder.Entity<Customer>().HasQueryFilter(r => !r.IsRemoved);
+
+            modelBuilder.Entity<Request>().HasQueryFilter(r => !r.IsRemoved);
 
             base.OnModelCreating(modelBuilder);
 

@@ -17,13 +17,17 @@ namespace Project_02.Application.Services
         }
 
         #region Role
-        public async Task<long> CreateRole(RoleRequestViewModel request)
+        public async Task<long> CreateRole(RoleCreateRequestViewModel createRequest)
         {
             var newRole = new Role()
             {
-                RoleName = request.RoleName,
+                RoleId = createRequest.RoleId,
+                RoleName = createRequest.RoleName,
             };
-            return await _permissionRepository.AddRole(newRole); 
+
+            return _permissionRepository.IsExistRoleName(newRole.RoleName)
+                ? 0
+                : await _permissionRepository.AddRole(newRole);
         }
         public async Task DeleteRole(long roleId)
         {
@@ -40,37 +44,9 @@ namespace Project_02.Application.Services
         {
             return await _permissionRepository.GetAllRoles();
         }
-
-        public async Task<DtResult<RoleResultViewModel>> GetData(DtParameters dtParameters)
+        public async Task<RoleDetailsResultViewModel> GetRoleDetails(long roleId)
         {
-            var result = await _permissionRepository.GetData(dtParameters);
-
-            var row = dtParameters.Start + 1;
-
-            foreach (var model in result.Data)
-            {
-                model.Row = row;
-                row++;
-
-                model.Operation =
-                    $"<div class=\"dropdown d-inline-block\">" +
-                    "<a class=\"nav-link dropdown-toggle arrow-none\" id=\"dLabel6\" data-toggle=\"dropdown\" href=\"#\" role=\"button\" aria-haspopup=\"false\" aria-expanded=\"false\">" +
-                    "<i class=\"fas fa-ellipsis-v font-20 text-muted\"></i>" +
-                    "</a>" +
-                    "<div class=\"dropdown-menu\" aria-labelledby=\"dLabel6\">";
-
-                model.Operation +=
-                    $"<a class=\"dropdown-item\" href=\"/User/Edit/{model.RoleId}\">" +
-                    "<i class=\"dripicons-pencil\"></i> ویرایش" +
-                    "</a>";
-
-                model.Operation += $"<a class=\"dropdown-item\" onclick=\"DeleteRole({model.RoleId})\">" +
-                                   "<i class=\"dripicons-trash\"></i> حذف" +
-                                   "</a>";
-
-                model.Operation += " </div> </div>";
-            }
-            return result;
+            return await _permissionRepository.GetRoleDetails(roleId);
         }
         #endregion
 
@@ -87,10 +63,15 @@ namespace Project_02.Application.Services
             await _permissionRepository.DeletePermissionFromRole(roleId);
             await AddPermissionsToRole(permissionIds, roleId);
         }
-
         public bool CheckPermission(long permissionId, string userName)
         {
-            throw new NotImplementedException();
+            var userRoleId =  _permissionRepository.GetUserRole(userName).Result;
+            var rolePermissions =  _permissionRepository
+                .GetAllRolePermissions(userRoleId)
+                .Result
+                .Select(x => x.PermissionId)
+                .ToList();
+            return rolePermissions.Any(_ => rolePermissions.Contains(permissionId));
         }
         public async Task<IEnumerable<Permission>> GetAllPermissions()
         {

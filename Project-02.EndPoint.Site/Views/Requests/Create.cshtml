@@ -1,0 +1,105 @@
+﻿@model Project_02.Domain.ViewModels.RequestCreateRequestViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>ایجاد درخواست جدید</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" id="createRequestForm">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label>انتخاب مشتری:</label>
+                <select id="CustomerId" name="CustomerId" class="form-control" onclick="getCustomerDetails(this.value)">
+                    <option value="">-- لطفاً یک مشتری انتخاب کنید --</option>
+                    @foreach (var customer in ViewBag.Customers)
+                    {
+                        <option value="@customer.CustomerId">@customer.CustomerId </option>
+                    }
+                </select>
+                <span class="text-danger"></span>
+            </div>
+
+            <div id="customerDetails" style="display:none; margin-bottom: 20px;">
+                <h5>جزئیات مشتری:</h5>
+                <p><strong>نام مشتری:</strong> <span id="customerName"></span></p>
+                <p><strong>تلفن:</strong> <span id="customerPhone"></span></p>
+                <p><strong>استان:</strong> <span id="customerProvince"></span></p>
+                <p><strong>شهر:</strong> <span id="customerTownship"></span></p>
+                <p><strong>آدرس:</strong> <span id="customerAddress"></span></p>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Date" class="control-label"></label>
+                <input id="persianDate" data-jdp asp-for="Date" class="form-control" />
+                <span asp-validation-for="Date" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary waves-effect waves-light">ذخیره اطلاعات</button>
+                <button asp-action="Index" class="btn btn-danger waves-light">بازگشت به لیست </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section MyStyles
+{
+    <link href="~/dark-rtl/assets/vendors/css/pickers/datepicker-jalali/bootstrap-datepicker.min.css" rel="stylesheet" />
+    <link href="~/dark-rtl/assets/vendors/css/pickers/daterange/daterangepicker.css" rel="stylesheet" />
+    <link href="~/dark-rtl/assets/vendors/css/pickers/pickadate/pickadate.css" rel="stylesheet" />
+}
+
+@section MyScripts {
+    <script src="~/dark-rtl/assets/js/jquery.min.js"></script>
+    <script src="~/dark-rtl/assets/vendors/js/pickers/datepicker-jalali/bootstrap-datepicker.fa.min.js"></script>
+    <script src="~/dark-rtl/assets/vendors/js/pickers/datepicker-jalali/bootstrap-datepicker.min.js"></script>
+
+    <script>
+
+        async function getCustomerDetails(customerId) {
+            if (!customerId) {
+                $('#customerDetails').hide();
+                return;
+            }
+
+            try {
+                const response = await fetch('@Url.Action("GetCustomerDetails", "Requests")?customerId=' + customerId);
+                if (response.ok) {
+                    const customerDetails = await response.json();
+                    $('#customerName').text(customerDetails.customerName);
+                    $('#customerPhone').text(customerDetails.phoneNumber);
+                    $('#customerProvince').text(customerDetails.province);
+                    $('#customerTownship').text(customerDetails.township);
+                    $('#customerAddress').text(customerDetails.address);
+                    $('#customerDetails').show();
+                }
+            } catch (error) {
+                console.error('Error fetching customer details:', error);
+            }
+        }
+
+       $(document).ready(function () {
+        $('#persianDate').persianDatepicker({
+            format: 'YYYY/MM/DD',  
+            autoClose: true,     
+            initialValueType: 'gregorian', 
+            calendar: {
+                persian: {
+                    locale: 'fa',    
+                }
+            }
+        });
+    });
+    </script>
+}

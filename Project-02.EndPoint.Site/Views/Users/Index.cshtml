@@ -21,7 +21,7 @@
                         <div class="search-box float-left col-md-6">
                             <input type="text" id="mySearchText" class="form-control" placeholder="جستجو ...">
                         </div>
-                        <a type="button" href="@Url.Action("Create", "Users")" class="btn btn-primary waves-effect waves-light col-md-6">+ افزودن نقش جدید</a>
+                        <a type="button" href="@Url.Action("Create", "Users")" class="btn btn-primary waves-effect waves-light col-md-6">+ افزودن کاربر جدید</a>
                     </div>
                     <input hidden="hidden" id="StatusList" />
                     <div class="card-content">
@@ -57,30 +57,32 @@
                                     <tbody>
                                         @for (var i = 0; i < Model.Count; i++)
                                         {
-                                            <tr>
-                                                <td>@(i + 1)</td>
-                                                <td>@Model[i].UserName</td>
-                                                <td>@Model[i].UserRole</td>
-                                                <td>@Model[i].CreateDate</td>
-                                                <td>@Model[i].PhoneNumber</td>
-                                                <td>
+                                                <tr>
+                                                    <td>@(i + 1)</td>
+                                                    <td>@Model[i].UserName</td>
+                                                    <td>@Model[i].UserRole</td>
+                                                    <td>@Model[i].CreateDate</td>
+                                                    <td>@Model[i].PhoneNumber</td>
+                                                    <td>
                                                     @if (Model[i].IsActive)
                                                     {
-                                                        <span class="badge badge-soft-success">فعال</span>
+                                                                <span class="badge badge-soft-success">فعال</span>
                                                     }
                                                     else
                                                     {
-                                                        <span class="badge badge-soft-danger">غیر فعال</span>
+                                                                <span class="badge badge-soft-danger">غیر فعال</span>
                                                     }
-                                                </td>
-                                                <td>
-                                                    <form method="post" style="display:inline;">
-                                                        <button asp-action="ChangeStatues" asp-route-userId="@Model[i].UserId" class="btn btn-sm btn-primary" style="float: none; margin: 4px;"><span class="ti-exchange-vertical"></span></button>
-                                                        <a href="@Url.Action("Edit", "Users", new { userId = Model[i].UserId })" class="tabledit-delete-button btn btn-sm btn-info" style="float: none; margin: 4px;"><span class="ti-pencil"></span></a>
-                                                        <button asp-action="Delete" asp-route-userId="@Model[i].UserId" class="tabledit-delete-button btn btn-sm btn-danger" style="float: none; margin: 4px;"><span class="ti-trash"></span></button>
-                                                    </form>
-                                                </td>
-                                            </tr>
+                                                    </td>
+                                                    <td>
+                                                        <form method="post" style="display:inline;">
+                                                            <button asp-action="ChangeStatues" asp-route-userId="@Model[i].UserId" class="btn btn-sm btn-primary" style="float: none; margin: 4px;"><span class="ti-exchange-vertical"></span></button>
+                                                            <a href="@Url.Action("Edit", "Users", new { userId = Model[i].UserId })" class="tabledit-delete-button btn btn-sm btn-info" style="float: none; margin: 4px;"><span class="ti-pencil"></span></a>
+                                                            <button asp-action="Delete" asp-route-userId="@Model[i].UserId" class="tabledit-delete-button btn btn-sm btn-danger" style="float: none; margin: 4px;"><span class="ti-trash"></span></button>                                                        
+                                                            <button type="button" onclick="getUserDetails(@Model[i].UserId)" class="tabledit-delete-button btn btn-sm btn-primary" style="float: none; margin: 4px;"><span class="ti-id-badge"></span></button>
+
+                                                        </form>
+                                                    </td>
+                                                </tr>
                                         }
                                     </tbody>
                                 </table>
@@ -93,4 +95,48 @@
     </section>
 
 </div>
+@section MyStyles
+{
+        <link href="~/dark-rtl/assets/plugins/sweet-alert2/sweetalert2.min.css" rel="stylesheet" />
+}
+@section MyScripts 
+{
+        <script src="~/dark-rtl/assets/plugins/sweet-alert2/sweetalert2.min.js"></script>
 
+        <script>
+    async function getUserDetails(userId) {
+        try {
+            const response = await fetch('@Url.Action("GetUserDetails", "Users")?userId=' + userId);
+            if (response.ok) {
+                const userDetails = await response.json();
+
+                Swal.fire({
+                    title: userDetails.userName,
+                    html: `<p><strong>نقش کاربر:</strong> ${userDetails.roleName}</p>
+                           <p><strong>شماره تلفن:</strong> ${userDetails.phoneNumber}</p>
+                           <p><strong>وضعیت:</strong> ${userDetails.isActive}</p>
+                           <p><strong>تاریخ ایجاد:</strong> ${userDetails.createDate}</p>
+                           <p><strong>سطح دسترسی:</strong> ${userDetails.permissionsName.join(', ')}</p>`,
+                    icon: 'info',
+                    confirmButtonText: 'بستن'
+                });
+            } else {
+                Swal.fire({
+                    title: 'خطا',
+                    text: 'نتیجه‌ای برای نمایش پیدا نشد.',
+                    icon: 'error',
+                    confirmButtonText: 'بستن'
+                });
+            }
+        } catch (error) {
+            Swal.fire({
+                title: 'خطا',
+                text: 'مشکلی در بارگذاری اطلاعات پیش آمد.',
+                icon: 'error',
+                confirmButtonText: 'بستن'
+            });
+        }
+    }
+</script>
+
+}

@@ -1,5 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
-@model Project_02.Domain.ViewModels.CustomerRequestViewModel
+@model Project_02.Domain.ViewModels.CustomerCreateRequestViewModel
 
 <form asp-action="Create" method="post">
     <div class="form-group">
@@ -42,14 +42,16 @@
         <span asp-validation-for="Description" class="text-danger"></span>
     </div>
 
-    <button type="submit" class="btn btn-primary">ثبت</button>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary waves-effect waves-light">ذخیره اطلاعات</button>
+        <button asp-action="Index" class="btn btn-danger waves-light">بازگشت به لیست </button>
+    </div>
 </form>
 
 @section MyScripts {
 
     <script type="text/javascript">
         $(document).ready(function () {
-            // دریافت لیست استان‌ها
             $.ajax({
                 url: '@Url.Action("GetProvinces", "Customers")',
                 type: 'GET',
@@ -63,7 +65,6 @@
                 }
             });
 
-            // تغییر شهرستان‌ها بر اساس استان انتخابی
             $('#ProvinceId').change(function () {
                 var provinceId = $(this).val();
                 if (provinceId) {

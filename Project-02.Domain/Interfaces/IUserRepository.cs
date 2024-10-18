@@ -10,7 +10,7 @@ namespace Project_02.Domain.Interfaces
         Task UpdateUser(User user);
         Task<List<UserResultViewModel>> GetAllUsers();
         Task<User> GetUserById(long userId);
-        //Task<List<UserResultViewModel>> GetData();
+        Task<UserDetailsResultViewModel> GetUserDetails(long userId);
         #endregion
     }
 }

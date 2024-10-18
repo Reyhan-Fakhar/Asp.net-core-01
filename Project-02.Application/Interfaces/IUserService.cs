@@ -6,13 +6,14 @@ namespace Project_02.Application.Interfaces
     public interface IUserService
     {
         #region User
-        Task CreateUser(UserRequestViewModel request);
-        Task EditUser(UserRequestViewModel request, long userId);
+        Task CreateUser(UserCreateRequestViewModel createRequest);
+        Task EditUserFromAdmin(UserEditRequestViewModel createRequest, long userId);
+        Task EditUserFromOwn(UserEditRequestViewModelForUserPanel createRequest, long userId);
         Task DeleteUser(long userId);
         Task ChangeStatuesUser(long userId);
         Task<User> GetUserById(long userId);
         Task<List<UserResultViewModel>> GetAllUsers();
-        //Task<List<UserResultViewModel>> GetData(DtParameters dtParameters);
+        Task<UserDetailsResultViewModel> GetUserDetails(long userId);
 
         #endregion
     }

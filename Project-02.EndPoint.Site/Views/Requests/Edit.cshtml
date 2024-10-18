@@ -1,0 +1,88 @@
+﻿@model Project_02.Domain.ViewModels.RequestEditRequestViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+    long requestId = ViewBag.RequestId;
+}
+
+<h1>ویرایش</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit" method="post" asp-route-requestId="@requestId">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label>انتخاب مشتری:</label>
+                <select id="CustomerId" name="CustomerId" class="form-control" onclick="getCustomerDetails(this.value)">
+                    <option value="">-- لطفاً یک مشتری انتخاب کنید --</option>
+                    @foreach (var customer in ViewBag.Customers)
+                    {
+                        <option value="@customer.CustomerId">@customer.CustomerId </option>
+                    }
+                </select>
+                <span class="text-danger"></span>
+            </div>
+
+            <div id="customerDetails" style="display:none; margin-bottom: 20px;">
+                <h5>جزئیات مشتری:</h5>
+                <p><strong>نام مشتری:</strong> <span id="customerName"></span></p>
+                <p><strong>تلفن:</strong> <span id="customerPhone"></span></p>
+                <p><strong>آدرس:</strong> <span id="customerAddress"></span></p>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Date" class="control-label"></label>
+                <input asp-for="Date" class="form-control" />
+                <span asp-validation-for="Date" class="text-danger"></span>
+            </div>
+            
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary waves-effect waves-light">ذخیره اطلاعات</button>
+                <button asp-action="Index" class="btn btn-danger waves-light">بازگشت به لیست </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section MyScripts {
+    <script src="c:\users\reyha\source\repos\project-02\project-02.endpoint.site\wwwroot\dark-rtl\assets\js\jquery.min.js"></script>
+    <script src="~/dark-rtl/assets/vendors/js/pickers/datepicker-jalali/bootstrap-datepicker.fa.min.js"></script>
+    <script src="~/dark-rtl/assets/vendors/js/pickers/datepicker-jalali/bootstrap-datepicker.min.js"></script>
+
+    <script>
+
+        async function getCustomerDetails(customerId) {
+            if (!customerId) {
+                $('#customerDetails').hide();
+                return;
+            }
+
+            try {
+                const response = await fetch('@Url.Action("GetCustomerDetails", "Requests")?customerId=' + customerId);
+                if (response.ok) {
+                    const customerDetails = await response.json();
+                    $('#customerName').text(customerDetails.customerName);
+                    $('#customerPhone').text(customerDetails.phoneNumber);
+                    $('#customerAddress').text(customerDetails.address);
+                    $('#customerDetails').show();
+                }
+            } catch (error) {
+                console.error('Error fetching customer details:', error);
+            }
+        }
+
+        jalaliDatepicker.startWatch()
+        {
+            jalaliDatepicker.startWatch(options);
+            jalaliDatepicker.show(input);
+            jalaliDatepicker.hide();
+            jalaliDatepicker.updateOptions(options);
+        };
+    </script>
+}

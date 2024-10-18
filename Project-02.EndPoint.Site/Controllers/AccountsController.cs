@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System.Collections.Generic;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +12,7 @@ namespace Project_02.EndPoint.Site.Controllers
     {
         private readonly ILoginService _loginService;
         private readonly IUserService _userService;
+        private readonly IPermissionService _permissionService;
 
         public AccountsController(ILoginService loginService)
         {
@@ -25,7 +27,7 @@ namespace Project_02.EndPoint.Site.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginViewModel model)
+        public async Task<IActionResult> Login(UserLoginViewModel model)
         {
             var user = await _loginService.AuthenticateUserAsync(model);
 
@@ -37,8 +39,8 @@ namespace Project_02.EndPoint.Site.Controllers
 
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, user.UserName),
-                new Claim("UserId", user.UserId.ToString())
+                new(ClaimTypes.Name, user.UserName),
+                new("UserId", user.UserId.ToString())
             };
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -64,7 +66,14 @@ namespace Project_02.EndPoint.Site.Controllers
             return RedirectToAction("Login");
         }
 
-        public async Task<IActionResult> Show()
+        [HttpGet]
+        public async Task<IActionResult> Show(long userId)
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit()
         {
             return View();
         }

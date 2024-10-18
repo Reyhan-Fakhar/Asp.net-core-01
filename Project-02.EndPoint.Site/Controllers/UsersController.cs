@@ -1,11 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Project_02.Application.Interfaces;
-using Project_02.Domain.Models.User;
 using Project_02.Domain.ViewModels;
-using System.Data;
-using Newtonsoft.Json;
 
 namespace Project_02.EndPoint.Site.Controllers
 {
@@ -35,7 +31,7 @@ namespace Project_02.EndPoint.Site.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> Create(UserRequestViewModel model)
+        public async Task<IActionResult> Create(UserCreateRequestViewModel model)
         {
             await _userService.CreateUser(model);
             return RedirectToAction("Index");
@@ -60,9 +56,9 @@ namespace Project_02.EndPoint.Site.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> Edit(UserRequestViewModel model, long userId)
+        public async Task<IActionResult> Edit(UserEditRequestViewModel model, long userId)
         {
-            await _userService.EditUser(model, userId);
+            await _userService.EditUserFromAdmin(model, userId);
             return RedirectToAction("Index");
         }
 
@@ -77,6 +73,25 @@ namespace Project_02.EndPoint.Site.Controllers
         {
             await _userService.ChangeStatuesUser(userId);
             return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetUserDetails(long userId)
+        {
+            var userDetails = await _userService.GetUserDetails(userId);
+
+            var userRole = await _permissionService.GetRoleById(userDetails.RoleId);
+            var userPermissions = await _permissionService.GetRoleDetails(userDetails.RoleId);
+
+            return Json(new
+            {
+                userName = userDetails.UserName,
+                roleName = userRole.RoleName,
+                phoneNumber = userDetails.PhoneNumber,
+                isActive = userDetails.IsActive,
+                createDate = userDetails.CreateDate,
+                permissionsName = userPermissions.PermissionsName,
+            });
         }
     }
 }

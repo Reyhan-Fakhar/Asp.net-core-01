@@ -1,12 +1,11 @@
-﻿@model Project_02.Domain.ViewModels.UserRequestViewModel
+﻿@model Project_02.Domain.ViewModels.UserCreateRequestViewModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "ایجاد کاربر";
 }
 
-<h1>Create</h1>
+<h1>ایجاد کاربر</h1>
 
-<h4>UserRequestViewModel</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -33,8 +32,8 @@
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-                <input type="button" value="Index" class="btn btn-danger" />
+                <button type="submit" class="btn btn-primary waves-effect waves-light">ذخیره اطلاعات</button>
+                <button asp-action="Index" class="btn btn-danger waves-light">بازگشت به لیست </button>
             </div>
         </form>
     </div>

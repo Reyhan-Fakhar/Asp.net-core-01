@@ -18,7 +18,7 @@ namespace Project_02.Application.Services
             _loginRepository = loginRepository;
         }
 
-        public async Task<User> AuthenticateUserAsync(LoginViewModel model)
+        public async Task<User> AuthenticateUserAsync(UserLoginViewModel model)
         {
             return await _loginRepository.AuthenticateAsync(model.UserName, model.Password);
         }

@@ -21,14 +21,14 @@ namespace Project_02.Application.Services
             user.IsActive = !user.IsActive;
             await _userRepository.UpdateUser(user);
         }
-        public async Task CreateUser(UserRequestViewModel request)
+        public async Task CreateUser(UserCreateRequestViewModel createRequest)
         {
             var newUser = new User
             {
-                UserName = request.UserName,
-                Password = request.Password,
-                PhoneNumber = request.PhoneNumber,
-                RoleId = request.RoleId,
+                UserName = createRequest.UserName,
+                Password = createRequest.Password,
+                PhoneNumber = createRequest.PhoneNumber,
+                RoleId = createRequest.RoleId,
                 IsActive = true,
             };
             await _userRepository.AddUser(newUser);
@@ -40,18 +40,29 @@ namespace Project_02.Application.Services
             user.RemoveTime = DateTime.Now;
             await _userRepository.UpdateUser(user);
         }
-        public async Task EditUser(UserRequestViewModel request, long userId)
+        public async Task EditUserFromAdmin(UserEditRequestViewModel createRequest, long userId)
         {
             var newUser = await _userRepository.GetUserById(userId);
-            newUser.UserName = request.UserName;
-            newUser.Password = request.Password;
-            newUser.PhoneNumber = request.PhoneNumber;
-            newUser.RoleId = request.RoleId;
+            newUser.UserId = userId;
+            newUser.UserName = createRequest.UserName;
+            newUser.Password = createRequest.Password;
+            newUser.PhoneNumber = createRequest.PhoneNumber;
+            newUser.RoleId = createRequest.RoleId;
             newUser.UpdateTime = DateTime.Now;
             
             await _userRepository.UpdateUser(newUser);
         }
+        public async Task EditUserFromOwn(UserEditRequestViewModelForUserPanel createRequest, long userId)
+        {
+            var newUser = await _userRepository.GetUserById(userId);
+            newUser.UserId = userId;
+            newUser.UserName = createRequest.UserName;
+            newUser.Password = createRequest.Password;
+            newUser.PhoneNumber = createRequest.PhoneNumber;
+            newUser.UpdateTime = DateTime.Now;
 
+            await _userRepository.UpdateUser(newUser);
+        }
         public async Task<User> GetUserById(long userId)
         {
             return await _userRepository.GetUserById(userId);
@@ -60,42 +71,10 @@ namespace Project_02.Application.Services
         {
             return await _userRepository.GetAllUsers();
         }
-        //public async Task<List<UserResultViewModel>> GetData()
-        //{
-        //   return await _userRepository.GetData();
-
-        //    //var row = dtParameters.Start + 1;
-
-        //    //foreach (var model in result.Data)
-        //    //{
-        //    //    model.Row = row;
-        //    //    row++;
-
-        //    //    model.Operation =
-        //    //        $"<div class=\"dropdown d-inline-block\">" +
-        //    //        "<a class=\"nav-link dropdown-toggle arrow-none\" id=\"dLabel6\" data-toggle=\"dropdown\" href=\"#\" role=\"button\" aria-haspopup=\"false\" aria-expanded=\"false\">" +
-        //    //        "<i class=\"fas fa-ellipsis-v font-20 text-muted\"></i>" +
-        //    //        "</a>" +
-        //    //        "<div class=\"dropdown-menu\" aria-labelledby=\"dLabel6\">";
-
-        //    //    model.Operation +=
-        //    //        $"<a class=\"dropdown-item\" href=\"/User/Edit/{model.UserId}\">" +
-        //    //        "<i class=\"dripicons-pencil\"></i> ویرایش" +
-        //    //        "</a>";
-
-        //    //    model.Operation += $"<a class=\"dropdown-item\" onclick=\"ChangeStatuesUser({model.UserId})\">" +
-        //    //                       "<i class=\"dripicons-swap\"></i> تغییر وضعیت" +
-        //    //                       "</a>";
-
-        //    //    model.Operation += $"<a class=\"dropdown-item\" onclick=\"DeleteUser({model.UserId})\">" +
-        //    //                       "<i class=\"dripicons-trash\"></i> حذف" +
-        //    //                       "</a>";
-
-        //    //    model.Operation += " </div> </div>";
-        //    //}
-        //    //return result;
-        //}
-
+        public async Task<UserDetailsResultViewModel> GetUserDetails(long userId)
+        {
+            return await _userRepository.GetUserDetails(userId);
+        }
         #endregion
 
     }

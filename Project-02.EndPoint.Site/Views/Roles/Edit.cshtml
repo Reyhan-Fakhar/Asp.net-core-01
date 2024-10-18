@@ -1,75 +1,122 @@
-﻿@using Project_02.Domain.Models.Permissions
-@using Project_02.Domain.Models.User
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Project_02.Domain.Models.Permissions
+@model Project_02.Domain.ViewModels.RoleEditRequestViewModel
 
 @{
     ViewData["Title"] = "ویرایش نقش";
-    long roleId = ViewBag.RoleId is null ? 0 : ViewBag.RoleId;
-    string roleName = ViewBag.RoleName; 
-    List<Permission> permissions = ViewBag.Permissions;
-    List<Role> roles = ViewBag.Roles;
+    var permissions = ViewBag.Permissions as List<Permission>;
 }
 
 <h1>ویرایش نقش</h1>
-<hr />
-<div class="row">
-    <div class="col-md-6">
-        <form asp-action="Edit" method="post">
-            @if (roleId > 0)
-            {
-                <div class="form-group">
-                    <label class="control-label">نام نقش:</label>
-                    <input type="hidden" asp-for="@roleId" />
-                    <p class="form-control-static">@roleName</p>
-                </div>
-            }
-            else
-            {
-                <div class="form-group">
-                    <label class="control-label"></label>
-                    <select class="form-control">"></select>
-                    <span class="text-danger"></span>
-                </div>
-            }
 
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    دسترسی‌های نقش
-                </div>
-                <!-- /.panel-heading -->
-                <div class="panel-body">
-                    <ul>
-                        @if (permissions != null)
-                        {
-                            foreach (var permission in permissions.Where(p => p.ParentId == null))
-                            {
-                                <li>
-                                    <input type="checkbox" name="selectedPermissions" value="@permission.PermissionId" /> @permission.PermissionTitle
-
-                                    @if (permissions.Any(p => p.ParentId == permission.PermissionId))
-                                    {
-                                        <ul>
-                                            @foreach (var sub in permissions.Where(p => p.ParentId == permission.PermissionId))
-                                            {
-                                                <li>
-                                                    <input type="checkbox" name="selectedPermissions" value="@sub.PermissionId" /> @sub.PermissionTitle
-                                                </li>
-                                            }
-                                        </ul>
-                                    }
-                                </li>
-                            }
-                        }
-                    </ul>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <div class="form-group">
-                    <button type="submit" class="btn btn-primary waves-effect waves-light">ذخیره اطلاعات</button>
-                    <button asp-action="Index" class="btn btn-danger waves-light">بازگشت به لیست </button>
-                </div>
-            </div>
-        </form>
+@if (ViewBag.RoleId == null)
+{
+    <h4>انتخاب نقش</h4>
+    <hr />
+    <div class="form-group">
+        <label>لطفاً یک نقش انتخاب کنید:</label>
+        <select id="roleSelect" asp-for="RoleId" class="form-control" asp-items="@(new SelectList(ViewBag.Roles, "RoleId", "RoleName"))" onchange="loadRoleDetails()">
+            <option value="">-- لطفاً یک نقش انتخاب کنید --</option>
+        </select>
     </div>
-</div>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="Edit" method="post" enctype="multipart/form-data" asp-route-roleId="@ViewBag.RoleId">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
+                <div class="form-group">
+                    <label asp-for="RoleName" class="control-label"></label>
+                    <span class="form-control" style="border: none; background: none;">@Model.RoleName</span>
+                </div>
+
+                <h5>سطح دسترسی کاربر:</h5>
+                <ul id="permissionsList">
+                    @foreach (var permission in Model.PermissionsName)
+                    {
+                        <li>@permission</li>
+                    }
+                </ul>
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        دسترسی‌های نقش
+                    </div>
+                    <div class="panel-body">
+                        <div id="jstree-checkbox" class="panel-body">
+                            <ul>
+                                @if (permissions != null)
+                                {
+                                    foreach (var permission in permissions.Where(p => p.ParentId == null))
+                                    {
+                                        <li>
+                                            <input type="checkbox" name="selectedPermissions" value="@permission.PermissionId" /> @permission.PermissionTitle
+
+                                            @if (permissions.Any(p => p.ParentId == permission.PermissionId))
+                                            {
+                                                <ul>
+                                                    @foreach (var sub in permissions.Where(p => p.ParentId == permission.PermissionId))
+                                                    {
+                                                        <li>
+                                                            <input type="checkbox" name="selectedPermissions" value="@sub.PermissionId" /> @sub.PermissionTitle
+                                                        </li>
+                                                    }
+                                                </ul>
+                                            }
+                                        </li>
+                                    }
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary waves-effect waves-light">ذخیره اطلاعات</button>
+                        <button asp-action="Index" class="btn btn-danger waves-light">بازگشت به لیست </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+}
+
+
+
+@section MyScripts {
+    <script>
+        async function loadRoleDetails() {
+            const roleId = document.getElementById('roleSelect').value;
+            if (roleId) {
+                const response = await fetch('@Url.Action("GetRoleDetails", "Roles")?roleId=' + roleId);
+                if (response.ok) {
+                    const roleDetails = await response.json();
+                    document.querySelector('input[name="RoleName"]').value = roleDetails.roleName;
+
+                    // بروزرسانی سطح دسترسی کاربر
+                    const permissionsList = document.getElementById('permissionsList');
+                    permissionsList.innerHTML = ''; // پاک کردن لیست قبلی
+                    roleDetails.permissionsName.forEach(permission => {
+                        const li = document.createElement('li');
+                        li.textContent = permission;
+                        permissionsList.appendChild(li);
+                    });
+                } else {
+                    console.error('خطا در بارگذاری جزئیات نقش');
+                }
+            }
+        }
+
+        function loadRoleDetails() {
+            var roleId = document.getElementById("roleSelect").value;
+            if (roleId) {
+                window.location.href = '@Url.Action("Edit", "Roles", new { roleId = "__roleId__" })'.replace('__roleId__', roleId);
+            }
+        }
+    </script>
+}

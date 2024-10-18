@@ -20,12 +20,14 @@ namespace Project_02.Infrastructure.IoC
             service.AddScoped<IPermissionService, PermissionService>();
             service.AddScoped<ICustomerService, CustomerService>();
             service.AddScoped<ILoginService, LoginService>();
+            service.AddScoped<IRequestService, RequestService>();
 
             //Infrastructure.Data Layer
             service.AddScoped<IUserRepository, UserRepository>();
             service.AddScoped<IPermissionRepository, PermissionRepository>();
             service.AddScoped<ICustomerRepository, CustomerRepository>();
             service.AddScoped<ILoginRepository, LoginRepository>();
+            service.AddScoped<IRequestRepository, RequestRepository>();
         }
     }
 }

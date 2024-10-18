@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Project_02.Domain.Interfaces;
 using Project_02.Domain.Models.User;
 using Project_02.Infrastructure.Data.Context;
