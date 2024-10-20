@@ -1,4 +1,9 @@
-﻿
+﻿@using Project_02.Application.Interfaces
+@inject IPermissionService PermissionService
+
+@{
+    var userName = User.Identity.Name;
+}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -90,36 +95,77 @@
                                     <li class="nav-item"><a class="nav-link" href="~/accounts/show"><i class="mdi mdi-account-card-details"></i>پنل کاربری</a></li>
                                 </ul>
                             </li><!--end nav-item-->
-                            <li class="nav-item">
-                                <a class="nav-link" href="#" aria-expanded="false"><i class="mdi mdi-account-key"></i><span class="w-100">مدیریت نقش ها</span><span class="menu-arrow"><i class="mdi mdi-chevron-right"></i></span></a>
-                                <ul class="nav mm-collapse" aria-expanded="false">
+                            @if (PermissionService.CheckPermission(2, @userName) || PermissionService.CheckPermission(3, @userName) || PermissionService.CheckPermission(4, @userName) || PermissionService.CheckPermission(5, @userName))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#" aria-expanded="false"><i class="mdi mdi-account-key"></i><span class="w-100">مدیریت نقش ها</span><span class="menu-arrow"><i class="mdi mdi-chevron-right"></i></span></a>
+                                    <ul class="nav mm-collapse" aria-expanded="false">
+                                        @if (PermissionService.CheckPermission(2, @userName))
+                                        {
+                                            <li class="nav-item"><a class="nav-link" href="~/roles/index"><i class="mdi mdi-account-multiple-outline"></i>لیست نقش ها</a></li>
+                                        }
+                                        @if (PermissionService.CheckPermission(3, @userName))
+                                        {
+                                            <li class="nav-item"><a class="nav-link" href="~/roles/create"><i class="mdi mdi-account-multiple-plus-outline"></i>افزودن نقش جدید</a></li>
+                                        }
+                                        @if (PermissionService.CheckPermission(4, @userName))
+                                        {
+                                            <li class="nav-item"><a class="nav-link" href="~/roles/edit"><i class="mdi mdi-account-switch"></i>ویرایش نقش</a></li>
+                                        }
+                                    </ul>
+                                </li>
+                                <!--end nav-item-->
+                            }
+                            @if (PermissionService.CheckPermission(7, @userName) || PermissionService.CheckPermission(8, @userName) || PermissionService.CheckPermission(9, @userName) || PermissionService.CheckPermission(10, @userName))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#" aria-expanded="false"><i class="mdi mdi-account-group"></i><span class="w-100">مدیریت کاربران</span><span class="menu-arrow"><i class="mdi mdi-chevron-right"></i></span></a>
+                                    <ul class="nav mm-collapse" aria-expanded="false">
+                                        @if (PermissionService.CheckPermission(7, @userName))
+                                        {
+                                            <li class="nav-item"><a class="nav-link" href="~/users/index"><i class="mdi mdi-account-details"></i>لیست کاربران</a></li>
+                                        }
+                                        @if (PermissionService.CheckPermission(8, @userName))
+                                        {
+                                            <li class="nav-item"><a class="nav-link" href="~/users/create"><i class="mdi mdi-account-plus"></i>افزودن کاربر جدید</a></li>
+                                        }
+                                    </ul>
+                                </li>
+                                <!--end nav-item-->
+                            }
+                            @if (PermissionService.CheckPermission(12, @userName) || PermissionService.CheckPermission(13, @userName) || PermissionService.CheckPermission(14, @userName) || PermissionService.CheckPermission(15, @userName))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#" aria-expanded="false"><i class="dripicons-document"></i><span class="w-100">مدیریت مشتریان</span><span class="menu-arrow"><i class="mdi mdi-chevron-right"></i></span></a>
+                                    <ul class="nav mm-collapse" aria-expanded="false">
+                                        @if (PermissionService.CheckPermission(12, @userName))
+                                        {
+                                            <li class="nav-item"><a class="nav-link" href="~/customers/index"><i class="dripicons-view-thumb"></i>لیست مشتریان</a></li>
 
-                                    <li class="nav-item"><a class="nav-link" href="~/roles/index"><i class="mdi mdi-account-multiple-outline"></i>لیست نقش ها</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="~/roles/create"><i class="mdi mdi-account-multiple-plus-outline"></i>افزودن نقش جدید</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="~/roles/edit"><i class="mdi mdi-account-switch"></i>ویرایش نقش</a></li>
-                                </ul>
-                            </li><!--end nav-item-->
-                            <li class="nav-item">
-                                <a class="nav-link" href="#" aria-expanded="false"><i class="mdi mdi-account-group"></i><span class="w-100">مدیریت کاربران</span><span class="menu-arrow"><i class="mdi mdi-chevron-right"></i></span></a>
-                                <ul class="nav mm-collapse" aria-expanded="false">
-                                    <li class="nav-item"><a class="nav-link" href="~/users/index"><i class="mdi mdi-account-details"></i>لیست کاربران</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="~/users/create"><i class="mdi mdi-account-plus"></i>افزودن کاربر جدید</a></li>
-                                </ul>
-                            </li><!--end nav-item-->
-                            <li class="nav-item">
-                                <a class="nav-link" href="#" aria-expanded="false"><i class="dripicons-document"></i><span class="w-100">مدیریت مشتریان</span><span class="menu-arrow"><i class="mdi mdi-chevron-right"></i></span></a>
-                                <ul class="nav mm-collapse" aria-expanded="false">
-                                    <li class="nav-item"><a class="nav-link" href="~/customers/index"><i class="dripicons-view-thumb"></i>لیست مشتریان</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="~/customers/create"><i class="dripicons-view-thumb"></i>افزودن مشتری جدید</a></li>
-                                </ul>
-                            </li><!--end nav-item-->
-                            <li class="nav-item">
-                                <a class="nav-link" href="#" aria-expanded="false"><i class="mdi mdi-clipboard-text"></i><span class="w-100">مدیریت درخواست ها</span><span class="menu-arrow"><i class="mdi mdi-chevron-right"></i></span></a>
-                                <ul class="nav mm-collapse" aria-expanded="false">
-                                    <li class="nav-item"><a class="nav-link" href="~/requests/index"><i class="dripicons-view-thumb"></i>لیست درخواست ها</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="~/requests/create"><i class="mdi mdi-playlist-plus"></i>افزودن درخواست جدید</a></li>
-                                </ul>
-                            </li><!--end nav-item-->
+                                        }
+                                        @if (PermissionService.CheckPermission(13, @userName))
+                                        {
+                                            <li class="nav-item"><a class="nav-link" href="~/customers/create"><i class="dripicons-view-thumb"></i>افزودن مشتری جدید</a></li>
+                                        }
+                                    </ul>
+                                </li><!--end nav-item-->
+                            }
+                            @if (PermissionService.CheckPermission(17, @userName) || PermissionService.CheckPermission(18, @userName) || PermissionService.CheckPermission(19, @userName) || PermissionService.CheckPermission(20, @userName))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#" aria-expanded="false"><i class="mdi mdi-clipboard-text"></i><span class="w-100">مدیریت درخواست ها</span><span class="menu-arrow"><i class="mdi mdi-chevron-right"></i></span></a>
+                                    <ul class="nav mm-collapse" aria-expanded="false">
+                                        @if (PermissionService.CheckPermission(20, @userName))
+                                        {
+                                            <li class="nav-item"><a class="nav-link" href="~/requests/index"><i class="dripicons-view-thumb"></i>لیست درخواست ها</a></li>
+                                        }
+                                        @if (PermissionService.CheckPermission(17, @userName))
+                                        {
+                                            <li class="nav-item"><a class="nav-link" href="~/requests/create"><i class="mdi mdi-playlist-plus"></i>افزودن درخواست جدید</a></li>
+                                        }
+                                    </ul>
+                                </li><!--end nav-item-->
+                            }
                         </ul>
                     </div><!-- end  Project-->
                 </div><!--end menu-body-->

@@ -43,7 +43,9 @@ namespace Project_02.Infrastructure.Data.Repository
         }
         public async Task<Role> GetRoleById(long roleId)
         {
-            return await _context.Roles.FindAsync(roleId);
+            return await _context.Roles
+                .Include(x=> x.Users)
+                .FirstOrDefaultAsync(x=> x.RoleId == roleId);
         }
         public bool IsExistRoleName(string roleName)
         {
@@ -66,7 +68,6 @@ namespace Project_02.Infrastructure.Data.Repository
             };
             return roleDetails;
         }
-
         public async Task<long> GetUserRole(string userName)
         { 
             return _context.Users.Single(u => u.UserName == userName).RoleId;

@@ -4,16 +4,10 @@ namespace Project_02.Domain.ViewModels
 {
     public class RoleCreateRequestViewModel
     {
-        public long RoleId { get; set; }
-
         [Display(Name = "نقش کاربر")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید")]
         [MaxLength(200, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string RoleName { get; set; }
-
-        public List<long> PermissionsId { get; set; }
-        [Display(Name = "سطح دسترسی کاربر")]
-        public List<string> PermissionsName { get; set; }
     }
     public class RoleResultViewModel
     {

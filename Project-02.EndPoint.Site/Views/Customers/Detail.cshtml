@@ -1,4 +1,5 @@
-﻿@model Project_02.Domain.ViewModels.CustomerDetailsResultViewModel
+﻿@using Project_02.Application.Convertor
+@model Project_02.Domain.ViewModels.CustomerDetailsResultViewModel
 
 @{
     ViewData["Title"] = "Detail";
@@ -50,9 +51,34 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.CreateDate)
         </dd>
+        <div class="card-content">
+            <div class="card-body card-dashboard">
+                <div class="table-responsive" id="orderTable">
+                    <table id="dataTableStuff" class="table ">
+                        <thead>
+                            <tr>
+                                <th>ردیف</th>
+                                <th>تاریخ ایجاد درخواست</th>
+                                <th>توضیحات درخواست</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (var i = 0; i < Model.CustomerRequests.Count; i++)
+                            {
+                                <tr>
+                                    <td>@(i + 1)</td>
+                                    <td>@Model.CustomerRequests[i].Date.ToShamsi()</td>
+                                    <td>@Model.CustomerRequests[i].Description</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </dl>
 </div>
 
 <div>
-    <button asp-action="Index" class="btn btn-danger waves-light">بازگشت به لیست </button>
+    <a href="~/customers/index" class="btn btn-danger waves-light">بازگشت به لیست </a>
 </div>

@@ -21,13 +21,13 @@ namespace Project_02.EndPoint.Site.Controllers
         }
         public async Task<IActionResult> GetProvinces()
         {
-            var provinces = await _customerService.GetAllProvinces(); 
+            var provinces = await _customerService.GetAllProvinces();
             return Json(provinces);
         }
 
         public async Task<IActionResult> GetTownships(int provinceId)
         {
-            var townships = await _customerService.GetTownshipsByProvinceId(provinceId); 
+            var townships = await _customerService.GetTownshipsByProvinceId(provinceId);
             return Json(townships);
         }
         public IActionResult Create()
@@ -39,6 +39,11 @@ namespace Project_02.EndPoint.Site.Controllers
         [PermissionChecker(13)]
         public async Task<IActionResult> Create(CustomerCreateRequestViewModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
             await _customerService.CreateCustomer(model);
             return RedirectToAction("Index");
         }
@@ -54,6 +59,11 @@ namespace Project_02.EndPoint.Site.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(CustomerEditRequestViewModel model, long customerId)
         {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.CustomerId = customerId;
+                return View(model);
+            }
             await _customerService.EditCustomer(model, customerId);
             return RedirectToAction("Index");
         }

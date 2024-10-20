@@ -31,7 +31,7 @@ namespace Project_02.EndPoint.Site.Controllers
         {
             var user = await _loginService.AuthenticateUserAsync(model);
 
-            if (user == null)
+            if (user == null || !ModelState.IsValid)
             {
                 ModelState.AddModelError("", "نام کاربری یا کلمه عبور اشتباه است.");
                 return View(model);

@@ -1,6 +1,5 @@
 ﻿using ClosedXML.Excel;
 using Microsoft.AspNetCore.Mvc;
-using OfficeOpenXml;
 using Project_02.Application.Interfaces;
 using Project_02.Application.Security;
 using Project_02.Domain.ViewModels;
@@ -18,14 +17,30 @@ namespace Project_02.EndPoint.Site.Controllers
             _customerService = customerService;
         }
 
+        [PermissionChecker(20)]
         public async Task<IActionResult> Index()
         {
             var requests = await _requestService.GetAllRequests();
             return View(requests);
         }
 
+        public async Task<IActionResult> Index2()
+        {
+            
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetAllOrder([FromBody] DtParameters dtParameters)
+        {
+
+            var dtResult = await _requestService.GetData(dtParameters);
+
+            return Json(dtResult);
+        }
 
         [HttpGet]
+        [PermissionChecker(17)]
         public async Task<IActionResult> Create()
         {
             var customers = await _customerService.GetAllCustomers();
@@ -35,11 +50,18 @@ namespace Project_02.EndPoint.Site.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(RequestCreateRequestViewModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                var customers = await _customerService.GetAllCustomers();
+                ViewBag.Customers = customers;
+                return View(model);
+            }
             await _requestService.CreateRequest(model);
             return RedirectToAction("Index");
         }
 
         [HttpGet]
+        [PermissionChecker(18)]
         public async Task<IActionResult> Edit(long requestId)
         {
             var customers = await _customerService.GetAllCustomers();
@@ -51,6 +73,13 @@ namespace Project_02.EndPoint.Site.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(RequestEditRequestViewModel model, long requestId)
         {
+            if (!ModelState.IsValid)
+            {
+                var customers = await _customerService.GetAllCustomers();
+                ViewBag.Customers = customers;
+                ViewBag.RequestId = requestId;
+                return View(model);
+            }
             await _requestService.EditRequest(model, requestId);
             return RedirectToAction("Index");
         }
@@ -63,6 +92,7 @@ namespace Project_02.EndPoint.Site.Controllers
         }
 
         [HttpPost]
+        [PermissionChecker(19)]
         public async Task<IActionResult> Delete(long requestId)
         {
             await _requestService.DeleteRequest(requestId);
@@ -91,7 +121,7 @@ namespace Project_02.EndPoint.Site.Controllers
         {
             var requests = await _requestService.GetAllRequests();
 
-            using var package = new XLWorkbook() {RightToLeft = true};
+            using var package = new XLWorkbook() { RightToLeft = true };
             var worksheet = package.Worksheets.Add("Requests");
 
             worksheet.Cell(1, 1).Value = "ردیف";
@@ -105,7 +135,7 @@ namespace Project_02.EndPoint.Site.Controllers
             {
                 worksheet.Cell(i + 2, 1).Value = i + 1;
                 worksheet.Cell(i + 2, 2).Value = requests[i].CustomerName;
-                worksheet.Cell(i + 2, 3).Value = requests[i].Date; 
+                worksheet.Cell(i + 2, 3).Value = requests[i].Date;
                 worksheet.Cell(i + 2, 4).Value = requests[i].Province;
                 worksheet.Cell(i + 2, 5).Value = requests[i].Township;
                 worksheet.Cell(i + 2, 6).Value = requests[i].Description;

@@ -20,7 +20,6 @@ namespace Project_02.Domain.ViewModels
         public DateTime Date { get; set; }
 
         [Display(Name = "توضیحات")]
-        [Required(ErrorMessage = "لطفا {0} را وارد کنید")]
         [MinLength(3, ErrorMessage = "{0} نمی تواند کمتر از {1} کاراکتر باشد .")]
         public string Description { get; set; }
 
@@ -59,18 +58,17 @@ namespace Project_02.Domain.ViewModels
         public long RequestId { get; set; }
 
         [Display(Name = "تاریخ")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید")]
         public DateTime Date { get; set; }
 
-        public long CustomerId { get; set; }
         [Display(Name = "نام مشتری")]
-        public string CustomerName { get; set; }
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید")]
+        public long CustomerId { get; set; }
 
         [Display(Name = "توضیحات")]
         [MinLength(3, ErrorMessage = "{0} نمی تواند کمتر از {1} کاراکتر باشد .")]
         public string Description { get; set; }
 
-        [Display(Name = "خلاصه اطلاعات مشتری")]
-        public List<CustomerDetailsResultViewModel> CustomerDetails { get; set; }
     }
     public class RequestDetailsResultViewModel
     {

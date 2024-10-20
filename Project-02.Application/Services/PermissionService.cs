@@ -21,7 +21,6 @@ namespace Project_02.Application.Services
         {
             var newRole = new Role()
             {
-                RoleId = createRequest.RoleId,
                 RoleName = createRequest.RoleName,
             };
 

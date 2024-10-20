@@ -53,5 +53,43 @@ namespace Project_02.Application.Services
         {
             return await _requestRepository.GetRequestDetails(requestId);
         }
+        public async Task<DtResult<RequestResultViewModel>> GetData(DtParameters dtParameters)
+        {
+
+            var result = await _requestRepository.GetData(dtParameters);
+
+            var row = dtParameters.Start + 1;
+
+            foreach (var model in result.Data)
+            {
+                model.Row = row;
+                row++;
+
+
+                model.Operation =
+                    $"<div class=\"dropdown d-inline-block\">" +
+                    "<a class=\"nav-link dropdown-toggle arrow-none\" id=\"dLabel6\" data-toggle=\"dropdown\" href=\"#\" role=\"button\" aria-haspopup=\"false\" aria-expanded=\"false\">" +
+                    "<i class=\"fas fa-ellipsis-v font-20 text-muted\"></i>" +
+                    "</a>" +
+                    "<div class=\"dropdown-menu\" aria-labelledby=\"dLabel6\">";
+
+
+
+                model.Operation +=
+                    $"<a class=\"dropdown-item\" href=\"/Requests/Edit/{model.RequestId}\">" +
+                    "<i class=\"dripicons-pencil\"></i> ویرایش" +
+                    "</a>";
+
+
+                model.Operation += $"<a class=\"dropdown-item\" onclick=\"Delete({model.RequestId})\">" +
+                                   "<i class=\"dripicons-trash\"></i> حذف" +
+                                   "</a>";
+
+
+                model.Operation += " </div> </div>";
+            }
+
+            return result;
+        }
     }
 }

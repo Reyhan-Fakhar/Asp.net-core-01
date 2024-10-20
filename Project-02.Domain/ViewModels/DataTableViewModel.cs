@@ -94,7 +94,7 @@ namespace Project_02.Domain.ViewModels
         /// </summary>
         public int Draw { get; set; }
 
-        public string OrderBy { get; set; }
+        //public string OrderBy { get; set; }
 
         /// <summary>
         /// An array defining all columns in the table.

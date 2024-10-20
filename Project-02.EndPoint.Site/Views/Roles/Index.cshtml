@@ -1,7 +1,10 @@
-﻿@model List<Project_02.Domain.ViewModels.RoleResultViewModel>
+﻿@using Project_02.Application.Interfaces
+@model List<Project_02.Domain.ViewModels.RoleResultViewModel>
+@inject IPermissionService PermissionService
 
 @{
     ViewData["Title"] = "لیست نقش‌ها";
+    var userName = User.Identity.Name;
 }
 <div class="container-fluid">
     <!-- Page-Title -->
@@ -21,7 +24,10 @@
                         <div class="search-box float-left col-md-6">
                             <input type="text" id="mySearchText" class="form-control" placeholder="جستجو ...">
                         </div>
-                        <a type="button" href="@Url.Action("Create", "Roles")" class="btn btn-primary waves-effect waves-light col-md-6">+ افزودن نقش جدید</a>
+                        @if (PermissionService.CheckPermission(3, @userName))
+                        {
+                            <a type="button" href="@Url.Action("Create", "Roles")" class="btn btn-primary waves-effect waves-light col-md-6">+ افزودن نقش جدید</a>
+                        }
                     </div>
                     <input hidden="hidden" id="StatusList" />
                     <div class="card-content">
@@ -45,8 +51,14 @@
                                                 <td>@Model[i].CreateDate</td>
                                                 <td>
                                                     <form method="post" style="display:inline;">
-                                                        <a href="@Url.Action("Edit", "Roles", new { roleId = Model[i].RoleId })" class="tabledit-delete-button btn btn-sm btn-info" style="float: none; margin: 4px;"><span class="ti-pencil"></span></a>
-                                                        <button type="button" onclick="DeleteRole(@Model[i].RoleId)" class="tabledit-delete-button btn btn-sm btn-danger" style="float: none; margin: 4px;"><span class="ti-trash"></span></button>
+                                                        @if (PermissionService.CheckPermission(4, @userName))
+                                                        {
+                                                            <a href="@Url.Action("Edit", "Roles", new { roleId = Model[i].RoleId })" class="tabledit-delete-button btn btn-sm btn-info" style="float: none; margin: 4px;"><span class="ti-pencil"></span></a>
+                                                        }
+                                                        @if (PermissionService.CheckPermission(5, @userName))
+                                                        {
+                                                            <button type="button" onclick="DeleteRole(@Model[i].RoleId)" class="tabledit-delete-button btn btn-sm btn-danger" style="float: none; margin: 4px;"><span class="ti-trash"></span></button>
+                                                        }
                                                         <button type="button" onclick="GetRoleDetails(@Model[i].RoleId)" class="tabledit-delete-button btn btn-sm btn-primary" style="float: none; margin: 4px;"><span class="ti-id-badge"></span></button>
                                                     </form>
                                                 </td>

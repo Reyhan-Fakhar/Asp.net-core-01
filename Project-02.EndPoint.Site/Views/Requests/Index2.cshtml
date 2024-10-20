@@ -1,0 +1,187 @@
+﻿@model IEnumerable<Project_02.Domain.ViewModels.RequestResultViewModel>
+
+@{
+    ViewData["Title"] = "Index2";
+}
+
+<div class="container-fluid">
+    <!-- Page-Title -->
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="page-title-box">
+                <h4 class="page-title">درخواست ها</h4>
+            </div><!--end page-title-box-->
+        </div><!--end col-->
+    </div>
+    <!-- end page title end breadcrumb -->
+
+
+
+    <section id="basic-datatable">
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-white search-box">
+                        <input type="text" id="mySearchText" class="form-control" placeholder="جستجو ...">
+                    </div>
+
+                    <div class="card-content">
+                        <div class="card-body card-dashboard">
+                            <div class="d-flex justify-content-between">
+                                <div class="ml-1">
+                                    <a asp-controller="Requests" asp-action="Create" type="button" class="btn btn-primary  mr-1 mb-1" style="width:80px;">افزودن</a>
+                                </div>
+                               
+                            </div>
+                            <div class="table-responsive displayTable">
+                                <table id="dataTableStuff" class="table ">
+                                    <thead>
+
+                                    <tr>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Row)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.CustomerName)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Province)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Township)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Date)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Description)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Operation)
+                                        </th>
+                                    </tr>
+
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>
+@section MyStyles
+{
+    <!-- DataTables -->
+    <link href="~/dark-rtl/assets/plugins/datatables/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+
+}
+@section MyScripts
+{
+    <!-- Required datatable js -->
+    <script src="~/dark-rtl/assets/vendors/js/extensions/moment.min.js"></script>
+    <script src="~/dark-rtl/assets/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/dark-rtl/assets/plugins/datatables/dataTables.bootstrap4.min.js"></script>
+    <!-- Buttons examples -->
+    <script src="~/dark-rtl/assets/plugins/datatables/dataTables.buttons.min.js"></script>
+
+    <!-- Responsive examples -->
+    <script src="~/dark-rtl/assets/plugins/datatables/dataTables.responsive.min.js"></script>
+    <script src="~/dark-rtl/assets/pages/jquery.datatable.init.js"></script>
+
+
+    <!-- App js -->
+    <script src="~/dark-rtl/assets/js/app.js"></script>
+
+
+
+    <script>
+        $(document).ready(function () {
+            LoadDataTable();
+
+        });
+
+
+        function LoadDataTable() {
+
+
+            var table = $('#dataTableStuff').DataTable({
+                order: [[0, 'desc']],
+                'sDom': 'lt<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+                language: {
+                    sEmptyTable: "هیچ داده ای در جدول وجود ندارد",
+                    sInfo: "نمایش _START_ تا _END_ از _TOTAL_ رکورد",
+                    sInfoEmpty: "نمایش 0 تا 0 از 0 رکورد",
+                    sInfoFiltered: "(فیلتر شده از _MAX_ رکورد)",
+                    sInfoPostFix: "",
+                    sInfoThousands: ",",
+                    sLengthMenu: "نمایش _MENU_ رکورد",
+                    sLoadingRecords: "در حال بارگزاری...",
+                    sProcessing: "در حال پردازش...",
+                    sSearch: "جستجو: ",
+                    sZeroRecords: "رکوردی با این مشخصات پیدا نشد",
+                    oPaginate: {
+                        sFirst: "ابتدا",
+                        sLast: "انتها",
+                        sNext: "بعدی",
+                        sPrevious: "قبلی",
+                    },
+                    oAria: {
+                        sSortAscending: ": فعال سازی نمایش به صورت صعودی",
+                        sSortDescending: ": فعال سازی نمایش به صورت نزولی",
+                    },
+                },
+                pageLength: 100,
+                searching: true,
+                Processing: true,
+                serverSide: true,
+
+                ajax: {
+                    url: "/Requests/GetAllOrder",
+                    type: "POST",
+                    contentType: "application/json",
+                    dataType: "json",
+                    data: function (d) {
+
+                        // let jsonData = {
+                        //     "RequestId": parseInt($('#RequestId option:selected').val()),
+                        //     "CustomerId": parseInt($('#customerId option:selected').val()),
+
+                        // };
+
+                        // d.json = JSON.stringify(jsonData);
+
+                        return JSON.stringify(d);
+                    }
+                },
+                // Columns Setups
+                columns: [
+                    { data: "row" },
+                    { data: "customerName" },
+                    { data: "province" },
+                    { data: "township" },
+                    { data: "date" },
+                    { data: "description" },
+                    { data: "operation" }
+                ],
+
+                // "fnCreatedRow": function (nRow, aData, iDataIndex) {
+
+                //     $(nRow).attr("id", "Request_" + aData.RequestId);
+                // }
+
+            });
+
+            $('#mySearchText').keyup(function () {
+                table.search($(this).val()).draw();
+            });
+        }
+
+    </script>
+}

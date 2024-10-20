@@ -1,4 +1,5 @@
-﻿@model Project_02.Domain.ViewModels.RequestCreateRequestViewModel
+﻿@using Project_02.Domain.Models.Customer
+@model Project_02.Domain.ViewModels.RequestCreateRequestViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -18,7 +19,7 @@
                     <option value="">-- لطفاً یک مشتری انتخاب کنید --</option>
                     @foreach (var customer in ViewBag.Customers)
                     {
-                        <option value="@customer.CustomerId">@customer.CustomerId </option>
+                        <option value="@customer.CustomerId">@customer.FullName</option>
                     }
                 </select>
                 <span class="text-danger"></span>
@@ -35,14 +36,13 @@
 
             <div class="form-group">
                 <label asp-for="Date" class="control-label"></label>
-                <input id="persianDate" data-jdp asp-for="Date" class="form-control" />
+                <input type="text" autocomplete="off" value="@DateTime.Now" asp-for="Date" class="persian-dateTimePicker form-control" style="height: 28px" />
                 <span asp-validation-for="Date" class="text-danger"></span>
             </div>
 
             <div class="form-group">
                 <label asp-for="Description" class="control-label"></label>
                 <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
             </div>
 
             <div class="form-group">
@@ -55,15 +55,14 @@
 
 @section MyStyles
 {
-    <link href="~/dark-rtl/assets/vendors/css/pickers/datepicker-jalali/bootstrap-datepicker.min.css" rel="stylesheet" />
-    <link href="~/dark-rtl/assets/vendors/css/pickers/daterange/daterangepicker.css" rel="stylesheet" />
-    <link href="~/dark-rtl/assets/vendors/css/pickers/pickadate/pickadate.css" rel="stylesheet" />
+    <link href="~/dark-rtl/assets/vendors/css/calendars/persian-datepicker.css" rel="stylesheet" />
 }
 
 @section MyScripts {
     <script src="~/dark-rtl/assets/js/jquery.min.js"></script>
-    <script src="~/dark-rtl/assets/vendors/js/pickers/datepicker-jalali/bootstrap-datepicker.fa.min.js"></script>
-    <script src="~/dark-rtl/assets/vendors/js/pickers/datepicker-jalali/bootstrap-datepicker.min.js"></script>
+    <script src="~/dark-rtl/assets/vendors/js/calendar/persian-date.js"></script>
+    <script src="~/dark-rtl/assets/vendors/js/calendar/persian-datepicker.js"></script>
+    <script src="~/dark-rtl/assets/vendors/js/calendar/persian-datepicker-config.js"></script>
 
     <script>
 
@@ -88,18 +87,5 @@
                 console.error('Error fetching customer details:', error);
             }
         }
-
-       $(document).ready(function () {
-        $('#persianDate').persianDatepicker({
-            format: 'YYYY/MM/DD',  
-            autoClose: true,     
-            initialValueType: 'gregorian', 
-            calendar: {
-                persian: {
-                    locale: 'fa',    
-                }
-            }
-        });
-    });
     </script>
 }

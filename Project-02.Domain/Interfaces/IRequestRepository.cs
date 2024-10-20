@@ -16,5 +16,6 @@ namespace Project_02.Domain.Interfaces
         Task<Request> GetRequestById(long requestId);
         Task<RequestDetailsResultViewModel> GetRequestDetails(long requestId);
         Task<List<Request>> GetAllCustomerRequests(long customerId);
+        Task<DtResult<RequestResultViewModel>> GetData(DtParameters dtParameters);
     }
 }

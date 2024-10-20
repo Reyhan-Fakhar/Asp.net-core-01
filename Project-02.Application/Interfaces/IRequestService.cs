@@ -14,5 +14,6 @@ namespace Project_02.Application.Interfaces
         Task DeleteRequest(long requestId);
         Task<List<RequestResultViewModel>> GetAllRequests();
         Task<RequestDetailsResultViewModel> GetRequestDetail(long requestId);
+        Task<DtResult<RequestResultViewModel>> GetData(DtParameters dtParameters);
     }
 }

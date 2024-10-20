@@ -58,13 +58,14 @@ namespace Project_02.Domain.ViewModels
         public string UserName { get; set; }
 
         [Display(Name = "شماره تلفن")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید")]
         [RegularExpression(@"^((98|\+98|0098|0)*(9)[0-9]{9})+$", ErrorMessage = "شماره تلفن وارد شده معتبر نیست.")]
         public string PhoneNumber { get; set; }
 
-        public long RoleId { get; set; }
         [Display(Name = "نقش کاربر")]
         [Required(ErrorMessage = "لطفا {0} را انتخاب کنید")]
-        public string RoleName { get; set; }
+        public long RoleId { get; set; }
+        //public string RoleName { get; set; }
 
         [Display(Name = "کلمه عبور")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید")]

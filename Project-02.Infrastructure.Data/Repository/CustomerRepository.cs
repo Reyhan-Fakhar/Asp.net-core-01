@@ -45,7 +45,11 @@ namespace Project_02.Infrastructure.Data.Repository
         }
         public async Task<Customer> GetCustomerById(long customerId)
         {
-            return await _context.Customers.FindAsync(customerId);
+            return await _context.Customers
+                .Include(x=>x.Province)
+                .Include(x=> x.Township)
+                .Include(x => x.Requests)
+                .FirstOrDefaultAsync(x=> x.CustomerId == customerId );
         }
         public async Task<CustomerDetailsResultViewModel> GetCustomerDetails(long customerId)
         {
@@ -54,12 +58,12 @@ namespace Project_02.Infrastructure.Data.Repository
             {
                 FullName = customer.FullName,
                 CreateDate = customer.InsertTime.ToShamsi(),
-                Province = customer.ProvinceId.ToString(),
-                Township = customer.TownshipId.ToString(),
+                Province = customer.Province.ProvinceName,
+                Township = customer.Township.TownshipName,
                 PhoneNumber = customer.PhoneNumber,
                 Address = customer.Address,
                 Description = customer.Description,
-                //CustomerRequests = customer.Requests,
+                CustomerRequests = customer.Requests,
             };
             return customerDetails;
         }

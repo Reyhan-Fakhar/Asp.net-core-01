@@ -30,23 +30,23 @@
                 <div class="panel-heading">
                     دسترسی‌های نقش
                 </div>
+                <input type="checkbox" id="ckbCheckAll" onchange="selectAllChecked()" />انتخاب همه
                 <div class="panel-body">
-                    <div id="jstree-checkbox" class="panel-body">
-                        <ul>
+                    <div class="panel-body">
+                        <ul style="margin-right: 35px;">
                             @if (permissions != null)
                             {
                                 foreach (var permission in permissions.Where(p => p.ParentId == null))
                                 {
                                     <li>
-                                        <input type="checkbox" name="selectedPermissions" value="@permission.PermissionId" /> @permission.PermissionTitle
-
+                                        <input type="checkbox" class="parent-checkbox" name="selectedPermissions" value="@permission.PermissionId" />  @permission.PermissionTitle
                                         @if (permissions.Any(p => p.ParentId == permission.PermissionId))
                                         {
-                                            <ul>
+                                            <ul style="margin-right: 35px;">
                                                 @foreach (var sub in permissions.Where(p => p.ParentId == permission.PermissionId))
                                                 {
                                                     <li>
-                                                        <input type="checkbox" name="selectedPermissions" value="@sub.PermissionId" /> @sub.PermissionTitle
+                                                        <input type="checkbox" class="child-checkbox" data-parent-id="@permission.PermissionId" name="selectedPermissions" value="@sub.PermissionId" />  @sub.PermissionTitle
                                                     </li>
                                                 }
                                             </ul>
@@ -73,23 +73,46 @@
 
     <script>
         $(document).ready(function () {
+            $('.parent-checkbox').on('change', function () {
+                var parentId = $(this).val();
+                var isChecked = $(this).prop('checked');
+
+                $('input[data-parent-id="' + parentId + '"]').prop('checked', isChecked);
+            });
+
+            $('.child-checkbox').on('change', function () {
+                var parentId = $(this).data('parent-id');
+                if (!$(this).prop('checked')) {
+                    $('input[value="' + parentId + '"]').prop('checked', false);
+                }
+            });
+        });
+        $(document).ready(function () {
             $('#permissionTree').jstree({
                 "checkbox": {
                     "keep_selected_style": false,
-                    "three_state": false,  // disables cascading selection
+                    "three_state": false, 
                     "cascade": ""
                 },
                 "plugins": ["checkbox"]
             });
 
-            // در صورت نیاز به جمع‌آوری داده‌ها برای ارسال به سرور
             $('#saveButton').on('click', function () {
                 var selectedPermissions = $('#permissionTree').jstree("get_selected", true).map(function   (node) {
                     return node.id;
                 });
-                console.log(selectedPermissions); // ارسال به سرور یا استفاده از داده‌ها
+                console.log(selectedPermissions);
             });
         });
+        $("#ckbCheckAll").prop('checked', false);
+
+        function selectAllChecked() {
+            if ($('#ckbCheckAll').is(":checked")) {
+                $('input:checkbox').prop('checked', true);
+            } else {
+                $('input:checkbox').prop('checked', false);
+            }
+        }
     </script>
 
 }

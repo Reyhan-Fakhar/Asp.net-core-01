@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Project_02.Application.Interfaces;
+using Project_02.Application.Security;
 using Project_02.Domain.ViewModels;
 
 namespace Project_02.EndPoint.Site.Controllers
@@ -12,6 +13,8 @@ namespace Project_02.EndPoint.Site.Controllers
         {
             _permissionService = permissionService;
         }
+
+        [PermissionChecker(2)]
         public async Task<IActionResult> Index()
         {
             var roles = await _permissionService.GetAllRoles();
@@ -19,6 +22,7 @@ namespace Project_02.EndPoint.Site.Controllers
         }
 
         [HttpGet]
+        [PermissionChecker(3)]
         public async Task<IActionResult> Create()
         {
             var permissions = await _permissionService.GetAllPermissions();
@@ -30,6 +34,12 @@ namespace Project_02.EndPoint.Site.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(RoleCreateRequestViewModel model, List<long> selectedPermissions)
         {
+            if (!ModelState.IsValid)
+            {
+                var permissions = await _permissionService.GetAllPermissions();
+                ViewBag.Permissions = permissions;
+                return View(model);
+            }
             var roleId = await _permissionService.CreateRole(model);
             if (roleId == 0)
             {
@@ -40,10 +50,11 @@ namespace Project_02.EndPoint.Site.Controllers
             }
 
             await _permissionService.AddPermissionsToRole(selectedPermissions, roleId);
-            return RedirectToAction("Create");
+            return RedirectToAction("Index");
         }
 
         [HttpGet]
+        [PermissionChecker(4)]
         public async Task<IActionResult> Edit(long? roleId)
         {
             if (roleId.HasValue)
@@ -63,11 +74,11 @@ namespace Project_02.EndPoint.Site.Controllers
 
             ViewBag.Roles = await _permissionService.GetAllRoles();
 
-            return View(new RoleEditRequestViewModel());
+            return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(long roleId, List<long> selectedPermissions)
+        public async Task<IActionResult> Edit(RoleEditRequestViewModel model, long roleId, List<long> selectedPermissions)
         {
             await _permissionService.EditPermissionsRole(selectedPermissions, roleId);
             return RedirectToAction("Index");
@@ -75,6 +86,7 @@ namespace Project_02.EndPoint.Site.Controllers
         }
 
         [HttpPost]
+        [PermissionChecker(5)]
         public async Task<IActionResult> Delete(long roleId)
         {
             await _permissionService.DeleteRole(roleId);

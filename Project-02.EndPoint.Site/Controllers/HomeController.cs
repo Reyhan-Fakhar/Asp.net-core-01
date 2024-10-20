@@ -18,7 +18,7 @@ namespace Project_02.EndPoint.Site.Controllers
 
         public IActionResult Index()
         {
-            return RedirectToAction("Show","Accounts");
+            return View();
         }
 
         public IActionResult Privacy()

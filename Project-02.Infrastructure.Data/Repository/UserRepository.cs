@@ -41,7 +41,9 @@ namespace Project_02.Infrastructure.Data.Repository
         }
         public async Task<User> GetUserById(long userId)
         {
-            return await _context.Users.FindAsync(userId);
+            return await _context.Users
+                .Include(x=>x.Role)
+                .FirstOrDefaultAsync(x => x.UserId == userId);
         }
         public async Task<UserDetailsResultViewModel> GetUserDetails(long userId)
         {
