@@ -21,17 +21,31 @@ namespace Project_02.Application.Services
             user.IsActive = !user.IsActive;
             await _userRepository.UpdateUser(user);
         }
-        public async Task CreateUser(UserCreateRequestViewModel createRequest)
+        public async Task<ResultsViewModel> CreateUser(UserCreateRequestViewModel createRequest)
         {
+            if (_userRepository.IsExistUserName(createRequest.UserName))
+                return new ResultsViewModel()
+                {
+                    IsSuccess = false,
+                    Message = "نام کاربری وارد شده در سیستم وجود دارد"
+                };
             var newUser = new User
             {
                 UserName = createRequest.UserName,
+                FullName = createRequest.FullName,
                 Password = createRequest.Password,
                 PhoneNumber = createRequest.PhoneNumber,
                 RoleId = createRequest.RoleId,
                 IsActive = true,
             };
+
             await _userRepository.AddUser(newUser);
+            return new ResultsViewModel()
+            {
+                IsSuccess = true,
+                Message = ""
+            };
+
         }
         public async Task DeleteUser(long userId)
         {
@@ -40,16 +54,20 @@ namespace Project_02.Application.Services
             user.RemoveTime = DateTime.Now;
             await _userRepository.UpdateUser(user);
         }
-        public async Task EditUserFromAdmin(UserEditRequestViewModel createRequest, long userId)
+        public async Task UpdateUser(UserEditRequestViewModel createRequest, long userId)
         {
             var newUser = await _userRepository.GetUserById(userId);
             newUser.UserId = userId;
             newUser.UserName = createRequest.UserName;
-            newUser.Password = createRequest.Password;
+            newUser.FullName = createRequest.FullName;
+            if (!string.IsNullOrWhiteSpace(createRequest.Password))
+                newUser.Password = createRequest.Password;
+
+
             newUser.PhoneNumber = createRequest.PhoneNumber;
             newUser.RoleId = createRequest.RoleId;
             newUser.UpdateTime = DateTime.Now;
-            
+
             await _userRepository.UpdateUser(newUser);
         }
         public async Task EditUserFromOwn(UserEditRequestViewModelForUserPanel createRequest, long userId)
@@ -66,6 +84,23 @@ namespace Project_02.Application.Services
         public async Task<User> GetUserById(long userId)
         {
             return await _userRepository.GetUserById(userId);
+        }
+
+        public async Task<List<User>> GetUsersByRoleId(long roleId)
+        {
+            return await _userRepository.GetUsersByRoleId(roleId);
+        }
+        public async Task<UserEditRequestViewModel> GetUserByIdViewModel(long userId)
+        {
+            var user = await _userRepository.GetUserById(userId);
+            return new UserEditRequestViewModel()
+            {
+                UserName = user.UserName,
+                FullName = user.FullName,
+                PhoneNumber = user.PhoneNumber,
+                Password = user.Password,
+                RoleId = user.RoleId,
+            };
         }
         public async Task<List<UserResultViewModel>> GetAllUsers()
         {

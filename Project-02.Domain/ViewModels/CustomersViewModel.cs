@@ -20,6 +20,7 @@ namespace Project_02.Domain.ViewModels
         public int TownshipId { get; set; }
 
         [Display(Name = "شماره تلفن")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید")]
         [RegularExpression(@"^((98|\+98|0098|0)*(9)[0-9]{9})+$", ErrorMessage = "شماره تلفن وارد شده معتبر نیست.")]
         public string PhoneNumber { get; set; }
 
@@ -28,7 +29,7 @@ namespace Project_02.Domain.ViewModels
         public string Address { get; set; }
 
         [Display(Name = "توضیحات")]
-        public string Description { get; set; }
+        public string? Description { get; set; }
     }
     public class CustomerResultViewModel
     {

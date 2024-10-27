@@ -50,6 +50,8 @@ namespace Project_02.Infrastructure.Data.Context
 
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.ApplyConfiguration(new PermissionSeeder());
+            //modelBuilder.ApplyConfiguration(new UserSeeder());
             modelBuilder.ApplyConfiguration(new ProvinceSeeder());
             modelBuilder.ApplyConfiguration(new TownshipSeeder());
         }

@@ -6,9 +6,11 @@ namespace Project_02.Application.Interfaces
     public interface ICustomerService
     {
         Task CreateCustomer(CustomerCreateRequestViewModel createRequest);
+        Task CreateCustomers(List<CustomerCreateRequestViewModel> createRequest);
         Task EditCustomer(CustomerEditRequestViewModel editRequest, long customerId);
         Task DeleteCustomer(long customerId);
         Task<Customer> GetCustomerById(long customerId);
+        Task<CustomerEditRequestViewModel> GetCustomerByIdViewModel(long customerId);
         Task<List<CustomerResultViewModel>> GetAllCustomers();
         Task<CustomerDetailsResultViewModel> GetCustomerDetails(long customerId);
 

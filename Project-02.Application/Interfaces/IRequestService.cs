@@ -12,6 +12,7 @@ namespace Project_02.Application.Interfaces
         Task CreateRequest(RequestCreateRequestViewModel requestCreateRequestViewModel);
         Task EditRequest(RequestEditRequestViewModel editRequest, long requestId);
         Task DeleteRequest(long requestId);
+        Task<RequestEditRequestViewModel> GetRequestByIdViewModel(long requestId);
         Task<List<RequestResultViewModel>> GetAllRequests();
         Task<RequestDetailsResultViewModel> GetRequestDetail(long requestId);
         Task<DtResult<RequestResultViewModel>> GetData(DtParameters dtParameters);

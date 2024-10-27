@@ -23,7 +23,7 @@ namespace Project_02.Domain.Models.Customer
         public string Address { get; set; }
 
         [Display(Name = "توضیحات")]
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         #region Relation
         public int ProvinceId { get; set; }

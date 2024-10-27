@@ -7,7 +7,7 @@
     <link href="~/dark-rtl/assets/plugins/treeview/themes/default/style.css" rel="stylesheet">
 }
 @{
-    ViewData["Title"] = "افزودن نقش";
+    ViewBag.Title = "افزودن نقش";
     var permissions = ViewBag.Permissions as List<Permission>;
 }
 
@@ -22,7 +22,7 @@
         <form asp-action="Create" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label>عنوان نقش</label>
-                <input type="text" asp-for="RoleName" class="form-control" />
+                <input type="text" asp-for="RoleName" class="form-control" autocomplete="off" />
                 <span asp-validation-for="RoleName" class="text-danger"></span>
             </div>
 
@@ -61,7 +61,7 @@
 
             <div class="form-group">
                 <button type="submit" class="btn btn-primary waves-effect waves-light">ذخیره اطلاعات</button>
-                <button asp-action="Index" class="btn btn-danger waves-light">بازگشت به لیست </button>
+                <a href="~/roles/index" class="btn btn-danger waves-light">بازگشت به لیست </a>
             </div>
         </form>
     </div>

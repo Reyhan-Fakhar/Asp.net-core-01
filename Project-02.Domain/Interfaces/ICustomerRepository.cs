@@ -7,6 +7,7 @@ namespace Project_02.Domain.Interfaces
     public interface ICustomerRepository
     {
         Task AddCustomer(Customer customer);
+        Task AddCustomers(List<Customer> customer);
         Task UpdateCustomer(Customer customer);
         Task<List<CustomerResultViewModel>> GetAllCustomers();
         Task<Customer> GetCustomerById(long customerId);

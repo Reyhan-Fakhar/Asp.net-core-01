@@ -1,10 +1,12 @@
 ﻿@using Project_02.Application.Interfaces
-@model List<Project_02.Domain.ViewModels.RequestResultViewModel>
+@model IEnumerable<Project_02.Domain.ViewModels.RequestResultViewModel>
 @inject IPermissionService PermissionService
 
 @{
-    ViewData["Title"] = "لیست درخواست ها";
+    ViewBag.Title = "لیست درخواست ها";
     var userName = User.Identity.Name;
+    var row = 1;
+
 }
 
 <div class="container-fluid">
@@ -22,8 +24,8 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header bg-black">
-                        <div class="search-box float-left col-md-6">
-                            <input type="text" id="mySearchText" class="form-control no-print" placeholder="جستجو ...">
+                        <div id="datatable_filter" class="dataTables_filter float-left col-md-6">
+                            <input type="text" id="mySearchText" class="form-control no-print" placeholder="جستجو ..." aria-controls="datatable">
                         </div>
                         @if (PermissionService.CheckPermission(19, @userName))
                         {
@@ -37,40 +39,40 @@
                     <input hidden="hidden" id="StatusList" />
                     <div class="card-content">
                         <div class="card-body card-dashboard">
-                            <div class="table-responsive" id="orderTable">
-                                <table id="dataTableStuff" class="table ">
+                            <div class="table-responsive">
+                                <table id="datatable" class="table dt-responsive nowrap dataTable no-footer" role="grid" aria-describedby="datatable_info">
                                     <thead>
                                         <tr>
-                                            <th>@Html.DisplayNameFor(model => model.First().Row)</th>
-                                            <th>@Html.DisplayNameFor(model => model.First().CustomerName)</th>
-                                            <th>@Html.DisplayNameFor(model => model.First().Date)</th>
-                                            <th>@Html.DisplayNameFor(model => model.First().Province)</th>
-                                            <th>@Html.DisplayNameFor(model => model.First().Township)</th>
-                                            <th>@Html.DisplayNameFor(model => model.First().Description)</th>
-                                            <th class="no-print">@Html.DisplayNameFor(model => model.First().Operation)</th>
+                                            <th>@Html.DisplayNameFor(model => model.Row)</th>
+                                            <th>@Html.DisplayNameFor(model => model.CustomerName)</th>
+                                            <th>@Html.DisplayNameFor(model => model.Date)</th>
+                                            <th>@Html.DisplayNameFor(model => model.Province)</th>
+                                            <th>@Html.DisplayNameFor(model => model.Township)</th>
+                                            <th>@Html.DisplayNameFor(model => model.Description)</th>
+                                            <th class="no-print">@Html.DisplayNameFor(model => model.Operation)</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @for (var i = 0; i < Model.Count; i++)
+                                        @foreach (var request in Model.Reverse())
                                         {
-                                            <tr>
-                                                <td>@(i + 1)</td>
-                                                <td>@Model[i].CustomerName</td>
-                                                <td>@Model[i].Date</td>
-                                                <td>@Model[i].Province</td>
-                                                <td>@Model[i].Township</td>
-                                                <td>@Model[i].Description</td>
+                                            <tr >
+                                                <td>@(row++)</td>
+                                                <td>@request.CustomerName</td>
+                                                <td>@request.Date</td>
+                                                <td>@request.Province</td>
+                                                <td>@request.Township</td>
+                                                <td>@request.Description</td>
                                                 <td class="no-print">
                                                     <form method="post" style="display:inline;">
                                                         @if (PermissionService.CheckPermission(18, @userName))
                                                         {
-                                                            <a href="@Url.Action("Edit", "Requests", new { requestId = Model[i].RequestId })" class="tabledit-delete-button btn btn-sm btn-info" style="float: none; margin: 4px;"><span class="ti-pencil"></span></a>
+                                                            <a href="@Url.Action("Edit", "Requests", new { requestId = request.RequestId })" class="tabledit-delete-button btn btn-sm btn-info" style="float: none; margin: 4px;"><span class="ti-pencil"></span></a>
                                                         }
                                                         @if (PermissionService.CheckPermission(19, @userName))
                                                         {
-                                                            <button asp-action="Delete" asp-route-requestId="@Model[i].RequestId" class="tabledit-delete-button btn btn-sm btn-danger" style="float: none; margin: 4px;"><span class="ti-trash"></span></button>
+                                                            <button type="button" onclick="DeleteRequest(@request.RequestId)" class="tabledit-delete-button btn btn-sm btn-danger" style="float: none; margin: 4px;"><span class="ti-trash"></span></button>
                                                         }
-                                                        <a href="@Url.Action("Detail", "Requests", new { requestId = Model[i].RequestId })" class="tabledit-delete-button btn btn-sm btn-primary" style="float: none; margin: 4px;"><span class="ti-id-badge"></span></a>
+                                                        <a href="@Url.Action("Detail", "Requests", new { requestId = request.RequestId })" class="tabledit-delete-button btn btn-sm btn-primary" style="float: none; margin: 4px;"><span class="ti-id-badge"></span></a>
                                                     </form>
                                                 </td>
                                             </tr>
@@ -92,24 +94,62 @@
 
 }
 @section MyScripts
-    {
-        <script src="~/dark-rtl/assets/plugins/sweet-alert2/sweetalert2.min.js"></script>
-        <script>
+{
+    <script src="~/dark-rtl/assets/plugins/sweet-alert2/sweetalert2.min.js"></script>
+    <script>
         function Print() {
 
             var elements = document.querySelectorAll('.no-print');
             elements.forEach(function (element) {
-                element.style.display = 'none'; 
+                element.style.display = 'none';
             });
 
-            
+
             window.print();
 
-  
+
             elements.forEach(function (element) {
-                element.style.display = ''; 
+                element.style.display = '';
             });
         }
-       
-        </script>
+
+        function DeleteRequest(requestId) {
+            swal.fire({
+                title: 'حذف درخواست',
+                text: "کاربر گرامی از حذف درخواست مطمئن هستید؟",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#7cacbe',
+                confirmButtonText: 'بله ، درخواست حذف شود',
+                cancelButtonText: 'خیر'
+            }).then((result) => {
+                if (result.value) {
+                    var postData = {
+                        'requestId': requestId,
+                    };
+
+                    $.ajax({
+                        contentType: 'application/x-www-form-urlencoded',
+                        dataType: 'json',
+                        type: "POST",
+                        url: "Delete",
+                        data: postData,
+                        success: function (response) {
+                            location.reload();
+                        },
+                        error: function (xhr, status, error) {
+                            swal.fire({
+                                title: 'خطا',
+                                text: 'مشکلی در حذف درخواست رخ داد!',
+                                icon: 'error',
+                                confirmButtonText: 'باشه'
+                            });
+                        }
+                    });
+                }
+            })
+        }
+
+    </script>
 }

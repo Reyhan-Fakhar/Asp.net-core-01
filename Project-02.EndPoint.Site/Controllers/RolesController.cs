@@ -8,10 +8,12 @@ namespace Project_02.EndPoint.Site.Controllers
     public class RolesController : Controller
     {
         private readonly IPermissionService _permissionService;
+        private readonly IUserService _userService;
 
-        public RolesController(IPermissionService permissionService)
+        public RolesController(IPermissionService permissionService, IUserService userService)
         {
             _permissionService = permissionService;
+            _userService = userService;
         }
 
         [PermissionChecker(2)]
@@ -89,8 +91,15 @@ namespace Project_02.EndPoint.Site.Controllers
         [PermissionChecker(5)]
         public async Task<IActionResult> Delete(long roleId)
         {
+            var user = await _userService.GetUsersByRoleId(roleId);
+
+            if (user.Count > 0)
+            {
+                return Json(new { success = false, message = "این نقش به کاربران دیگری اختصاص داده شده است و نمی‌توان آن را حذف کرد." });
+            }
+            
             await _permissionService.DeleteRole(roleId);
-            return RedirectToAction("Index");
+            return Json(new { success = true });
         }
 
         [HttpGet]

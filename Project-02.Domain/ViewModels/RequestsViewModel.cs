@@ -1,30 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Project_02.Domain.Models.Customer;
 
 namespace Project_02.Domain.ViewModels
 {
     public class RequestCreateRequestViewModel
     {
-        public long CustomerId { get; set; }
         [Display(Name = "نام مشتری")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید")]
-        public string CustomerName { get; set; }
-
+        public long CustomerId { get; set; }
+        
         [Display(Name = "تاریخ")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید")]
-        public DateTime Date { get; set; }
+        public string Date { get; set; }
 
         [Display(Name = "توضیحات")]
         [MinLength(3, ErrorMessage = "{0} نمی تواند کمتر از {1} کاراکتر باشد .")]
         public string Description { get; set; }
 
-        [Display(Name = "خلاصه اطلاعات مشتری")]
-        public List<CustomerDetailsResultViewModel> CustomerDetails { get; set; }
     }
     public class RequestResultViewModel
     {
@@ -36,7 +30,6 @@ namespace Project_02.Domain.ViewModels
         [Display(Name = "تاریخ")]
         public string Date { get; set; }
 
-        public long CustomerId { get; set; }
         [Display(Name = "نام مشتری")]
         public string CustomerName { get; set; }
 
@@ -45,7 +38,6 @@ namespace Project_02.Domain.ViewModels
 
         [Display(Name = "شهر")]
         public string Township { get; set; }
-        public int TownshipId { get; set; }
 
         [Display(Name = "توضیحات")]
         public string Description { get; set; }
@@ -59,7 +51,7 @@ namespace Project_02.Domain.ViewModels
 
         [Display(Name = "تاریخ")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید")]
-        public DateTime Date { get; set; }
+        public string Date { get; set; }
 
         [Display(Name = "نام مشتری")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید")]
@@ -67,7 +59,7 @@ namespace Project_02.Domain.ViewModels
 
         [Display(Name = "توضیحات")]
         [MinLength(3, ErrorMessage = "{0} نمی تواند کمتر از {1} کاراکتر باشد .")]
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
     }
     public class RequestDetailsResultViewModel

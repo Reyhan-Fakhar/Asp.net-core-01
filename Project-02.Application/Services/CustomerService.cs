@@ -29,7 +29,24 @@ namespace Project_02.Application.Services
             };
 
             await _customerRepository.AddCustomer(newCustomer);
+        } 
+        
+        public async Task CreateCustomers(List<CustomerCreateRequestViewModel> createRequest)
+        {
+            var customers = createRequest.Select(x=> new Customer()
+            {
+                FullName = x.FullName,
+                ProvinceId = x.ProvinceId,
+                TownshipId = x.TownshipId,
+                PhoneNumber = x.PhoneNumber,
+                Address = x.Address,
+                Description = x.Description,
+            }).ToList();
+            await _customerRepository.AddCustomers(customers);
         }
+
+        
+
         public async Task DeleteCustomer(long customerId)
         {
             var customer = await _customerRepository.GetCustomerById(customerId);
@@ -53,6 +70,20 @@ namespace Project_02.Application.Services
         public async Task<Customer> GetCustomerById(long customerId)
         {
             return await _customerRepository.GetCustomerById(customerId);
+        }
+        public async Task<CustomerEditRequestViewModel> GetCustomerByIdViewModel(long customerId)
+        {
+            var customer = await _customerRepository.GetCustomerById(customerId);
+            return new CustomerEditRequestViewModel()
+            {
+                CustomerId = customerId,
+                FullName = customer.FullName,
+                ProvinceId = customer.ProvinceId,
+                TownshipId = customer.TownshipId,
+                Address = customer.Address,
+                Description = customer.Description,
+                PhoneNumber = customer.PhoneNumber,
+            };
         }
         public async Task<List<CustomerResultViewModel>> GetAllCustomers()
         {

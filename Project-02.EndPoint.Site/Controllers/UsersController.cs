@@ -29,8 +29,6 @@ namespace Project_02.EndPoint.Site.Controllers
         [PermissionChecker(8)]
         public async Task<IActionResult> Create()
         {
-            var roles = await _permissionService.GetAllRoles();
-            ViewBag.Roles = new SelectList(roles, "RoleId", "RoleName");
             return View();
         }
         [HttpPost]
@@ -38,45 +36,29 @@ namespace Project_02.EndPoint.Site.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var roles = await _permissionService.GetAllRoles();
-                ViewBag.Roles = new SelectList(roles, "RoleId", "RoleName");
                 return View(model);
             }
-            await _userService.CreateUser(model);
-            return RedirectToAction("Index");
+            var result = await _userService.CreateUser(model);
+            if (result.IsSuccess) return RedirectToAction("Index");
+            ModelState.AddModelError("", result.Message);
+            return View(model); 
         }
 
         [HttpGet]
         [PermissionChecker(9)]
         public async Task<IActionResult> Edit(long userId)
         {
-            var user = _userService.GetUserById(userId);
-            var role = _permissionService.GetRoleById(user.Result.RoleId);
-            ViewBag.UserId = userId;
-            ViewBag.UserName = user.Result.UserName;
-            ViewBag.UserRole = role.Result.RoleName;
-            ViewBag.PhoneNumber = user.Result.PhoneNumber;
-
-            var roles = await _permissionService.GetAllRoles();
-            ViewBag.Roles = new SelectList(roles, "RoleId", "RoleName");
-            return View();
+            var user = await _userService.GetUserByIdViewModel(userId);
+            return View(user);
         }
         [HttpPost]
-        public async Task<IActionResult> Edit(UserEditRequestViewModel model, long userId)
+        public async Task<IActionResult> Edit(UserEditRequestViewModel model)
         {
             if (!ModelState.IsValid)
             {
-                var user = _userService.GetUserById(userId);
-                var role = _permissionService.GetRoleById(user.Result.RoleId);
-                ViewBag.UserId = userId;
-                ViewBag.UserName = user.Result.UserName;
-                ViewBag.UserRole = role.Result.RoleName;
-                ViewBag.PhoneNumber = user.Result.PhoneNumber;
-                var roles = await _permissionService.GetAllRoles();
-                ViewBag.Roles = new SelectList(roles, "RoleId", "RoleName");
                 return View(model);
             }
-            await _userService.EditUserFromAdmin(model, userId);
+            await _userService.UpdateUser(model, model.UserId);
             return RedirectToAction("Index");
         }
 
@@ -85,8 +67,9 @@ namespace Project_02.EndPoint.Site.Controllers
         public async Task<IActionResult> Delete(long userId)
         {
             await _userService.DeleteUser(userId);
-            return RedirectToAction("Index");
+            return Json(new { isSuccess = true});
         }
+
         [HttpPost]
         public async Task<IActionResult> ChangeStatues(long userId)
         {

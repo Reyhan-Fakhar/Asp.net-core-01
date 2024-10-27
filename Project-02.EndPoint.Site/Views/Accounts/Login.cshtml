@@ -1,119 +1,132 @@
-﻿ @using Microsoft.AspNetCore.Mvc.TagHelpers
- @model Project_02.Domain.ViewModels.UserLoginViewModel
- @{
-     Layout = null;
- }
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Project_02.Domain.ViewModels.UserLoginViewModel
 
- <html lang="en">
- <head>
-     <meta charset="utf-8">
-     <title>Metrica - Responsive Bootstrap 4 Admin Dashboard</title>
-     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <meta content="A premium admin dashboard template by Mannatthemes" name="description">
-     <meta content="Mannatthemes" name="author">
+@{
+    ViewBag.Title = "ورود به سایت";
+    Layout = null;
+}
 
-     <!-- App favicon -->
-     <link rel="shortcut icon" href="~/dark-rtl/assets/images/favicon.ico">
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>@ViewBag.Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="A premium admin dashboard template by Mannatthemes" name="description">
+    <meta content="Mannatthemes" name="author">
 
-     <!-- App css -->
-     <link href="~/dark-rtl/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css">
-     <link href="~/dark-rtl/assets/css/icons.css" rel="stylesheet" type="text/css">
-     <link href="~/dark-rtl/assets/css/metisMenu.min.css" rel="stylesheet" type="text/css">
-     <link href="~/dark-rtl/assets/css/style.css" rel="stylesheet" type="text/css">
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="~/dark-rtl/assets/images/favicon.ico">
 
- </head>
+    <!-- App css -->
+    <link href="~/dark-rtl/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="~/dark-rtl/assets/css/icons.css" rel="stylesheet" type="text/css">
+    <link href="~/dark-rtl/assets/css/metisMenu.min.css" rel="stylesheet" type="text/css">
+    <link href="~/dark-rtl/assets/css/style.css" rel="stylesheet" type="text/css">
 
- <body class="account-body ">
-     <!-- Log In page -->
-     <div class="row vh-100 ">
-         <div class="col-12 align-self-center">
-             <div class="auth-page">
-                 <div class="card auth-card shadow-lg">
-                     <div class="card-body">
-                         <div class="px-3">
-                             <div class="auth-logo-box">
-                                 <a href="~/dark-rtl/analytics/analytics-index.html" class="logo logo-admin"><img src="~/dark-rtl/assets/images/logo-sm.png" height="55" alt="logo" class="auth-logo"></a>
-                             </div><!--end auth-logo-box-->
+</head>
 
-                             <div class="text-center auth-logo-text">
-                                 <h4 class="mt-0 mb-3 mt-5">ورود</h4>
-                             </div> <!--end auth-logo-text-->
+<body class="account-body ">
+    <!-- Log In page -->
+    <div class="row vh-100 ">
+        <div class="col-12 align-self-center">
+            <div class="auth-page">
+                <div class="card auth-card shadow-lg">
+                    <div class="card-body">
+                        <div class="px-3">
+                            <div class="auth-logo-box">
+                                <a href="~/dark-rtl/analytics/analytics-index.html" class="logo logo-admin"><img src="~/dark-rtl/assets/images/logo-sm.png" height="55" alt="logo" class="auth-logo"></a>
+                            </div><!--end auth-logo-box-->
 
-
-                             <form class="form-horizontal auth-form my-4" asp-action="Login" method="post">
-
-                                 <div class="form-group">
-                                     <label asp-for="UserName"></label>
-                                     <div class="input-group mb-3">
-                                         <input asp-for="UserName" class="form-control" />
-                                         <span asp-validation-for="UserName" class="text-danger"></span>
-                                     </div>
-                                 </div><!--end form-group-->
-
-                                 <div class="form-group">
-                                     <label asp-for="Password"></label>
-                                     <div class="input-group mb-3">
-                                         <input asp-for="Password" type="password" class="form-control" />
-                                         <span asp-validation-for="Password" class="text-danger"></span>
-                                     </div>
-                                 </div><!--end form-group-->
-
-                                 <div class="form-group row mt-4">
-                                     <div class="col-sm-6">
-                                         <div class="custom-control custom-switch switch-success">
-                                             <input asp-for="RememberMe" class="custom-control-input" id="customSwitchSuccess"/>
-                                             <label asp-for="RememberMe" class="custom-control-label text-muted" for="customSwitchSuccess">مرا به خاطر بسپار</label>
-                                         </div>
-                                     </div><!--end col-->
-                                     <div class="col-sm-6 text-right">
-                                         <a href="auth-recover-pw.html" class="text-muted font-13"><i class="dripicons-lock"></i> رمز خود را فراموش کردید؟</a>
-                                     </div><!--end col-->
-                                 </div><!--end form-group-->
-
-                                 <div class="form-group mb-0 row">
-                                     <div class="col-12 mt-2">
-                                         <button class="btn btn-primary btn-round btn-block waves-effect waves-light" type="submit">ورود <i class="fas fa-sign-in-alt ml-1"></i></button>
-                                     </div><!--end col-->
-                                 </div> <!--end form-group-->
-                             </form><!--end form-->
-                         </div><!--end /div-->
-
-                     </div><!--end card-body-->
-                 </div><!--end card-->
-                 <div class="account-social text-center mt-4">
-                     <h6 class="my-4">Or Login With</h6>
-                     <ul class="list-inline mb-4">
-                         <li class="list-inline-item">
-                             <a href="" class="">
-                                 <i class="fab fa-facebook-f facebook"></i>
-                             </a>
-                         </li>
-                         <li class="list-inline-item">
-                             <a href="" class="">
-                                 <i class="fab fa-twitter twitter"></i>
-                             </a>
-                         </li>
-                         <li class="list-inline-item">
-                             <a href="" class="">
-                                 <i class="fab fa-google google"></i>
-                             </a>
-                         </li>
-                     </ul>
-                 </div><!--end account-social-->
-             </div><!--end auth-page-->
-         </div><!--end col-->
-     </div><!--end row-->
-     <!-- End Log In page -->
-     <!-- jQuery  -->
-     <script src="~/dark-rtl/assets/js/jquery.min.js"></script>
-     <script src="~/dark-rtl/assets/js/bootstrap.bundle.min.js"></script>
-     <script src="~/dark-rtl/assets/js/metisMenu.min.js"></script>
-     <script src="~/dark-rtl/assets/js/waves.min.js"></script>
-     <script src="~/dark-rtl/assets/js/jquery.slimscroll.min.js"></script>
-
-     <!-- App js -->
-     <script src="~/dark-rtl/assets/js/app.js"></script>
+                            <div class="text-center auth-logo-text">
+                                <h4 class="mt-0 mb-3 mt-5">ورود</h4>
+                            </div> <!--end auth-logo-text-->
 
 
- </body>
- </html>
+                            <form class="form-horizontal auth-form my-4" asp-action="Login" method="post">
+
+                                <div class="form-group">
+                                    <label asp-for="UserName"></label>
+                                    <div class="input-group mb-3">
+                                        <input asp-for="UserName" class="form-control" autocomplete="off" />
+                                        <span asp-validation-for="UserName" class="text-danger"></span>
+                                    </div>
+                                </div><!--end form-group-->
+
+                                <div class="form-group">
+                                    <label asp-for="Password"></label>
+                                    <div class="input-group mb-3">
+                                        <input asp-for="Password" type="password" class="form-control" autocomplete="off" />
+                                        <span asp-validation-for="Password" class="text-danger"></span>
+                                    </div>
+                                </div><!--end form-group-->
+
+                                <div class="form-group row mt-4">
+                                    <div class="col-sm-6">
+                                        <div class="custom-control custom-switch switch-success">
+                                            <input asp-for="RememberMe" class="custom-control-input" id="customSwitchSuccess" />
+                                            <label asp-for="RememberMe" class="custom-control-label text-muted" for="customSwitchSuccess">مرا به خاطر بسپار</label>
+                                        </div>
+                                    </div><!--end col-->
+                                    <div class="col-sm-6 text-right">
+                                        <a href="auth-recover-pw.html" class="text-muted font-13"><i class="dripicons-lock"></i> رمز خود را فراموش کردید؟</a>
+                                    </div><!--end col-->
+                                </div><!--end form-group-->
+
+                                <div class="form-group mb-0 row">
+                                    <div class="col-12 mt-2">
+                                        <button class="btn btn-primary btn-round btn-block waves-effect waves-light" type="submit">ورود <i class="fas fa-sign-in-alt ml-1"></i></button>
+                                    </div><!--end col-->
+                                </div> <!--end form-group-->
+                                
+                                <div class="form-group mb-0 row">
+                                    <div class="col-12 mt-2">
+                                        @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+                                        {
+                                            <div class="alert alert-danger text-center" style="border-radius: 30px;">@ViewBag.ErrorMessage</div>
+                                        }
+                                    </div><!--end col-->
+                                </div> <!--end form-group-->
+                                
+                            </form><!--end form-->
+                        </div><!--end /div-->
+
+                    </div><!--end card-body-->
+                </div><!--end card-->
+                <div class="account-social text-center mt-4">
+                    <h6 class="my-4">Or Login With</h6>
+                    <ul class="list-inline mb-4">
+                        <li class="list-inline-item">
+                            <a href="" class="">
+                                <i class="fab fa-facebook-f facebook"></i>
+                            </a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="" class="">
+                                <i class="fab fa-twitter twitter"></i>
+                            </a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="" class="">
+                                <i class="fab fa-google google"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div><!--end account-social-->
+            </div><!--end auth-page-->
+        </div><!--end col-->
+    </div><!--end row-->
+    <!-- End Log In page -->
+    <!-- jQuery  -->
+    <script src="~/dark-rtl/assets/js/jquery.min.js"></script>
+    <script src="~/dark-rtl/assets/js/bootstrap.bundle.min.js"></script>
+    <script src="~/dark-rtl/assets/js/metisMenu.min.js"></script>
+    <script src="~/dark-rtl/assets/js/waves.min.js"></script>
+    <script src="~/dark-rtl/assets/js/jquery.slimscroll.min.js"></script>
+
+    <!-- App js -->
+    <script src="~/dark-rtl/assets/js/app.js"></script>
+
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+</body>
+</html>

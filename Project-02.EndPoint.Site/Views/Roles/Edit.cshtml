@@ -1,9 +1,13 @@
 ﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Project_02.Application.Interfaces
 @using Project_02.Domain.Models.Permissions
 @model Project_02.Domain.ViewModels.RoleEditRequestViewModel
+@inject IPermissionService PermissionService
 
 @{
-    ViewData["Title"] = "ویرایش نقش";
+    ViewBag.Title = "ویرایش نقش";
+    var roles = PermissionService.GetAllRoles().Result;
+    var selectRole = new SelectList(roles, "RoleId", "RoleName");
     var permissions = ViewBag.Permissions as List<Permission>;
 }
 
@@ -15,7 +19,7 @@
     <hr />
     <div class="form-group">
         <label>لطفاً یک نقش انتخاب کنید:</label>
-        <select id="roleSelect" asp-for="RoleId" class="form-control" asp-items="@(new SelectList(ViewBag.Roles, "RoleId", "RoleName"))" onchange="loadRoleDetails()">
+        <select id="roleSelect" asp-for="RoleId" class="select2 form-control mb-3 custom-select" asp-items="@selectRole" onchange="loadRoleDetails()">
             <option value="">-- لطفاً یک نقش انتخاب کنید --</option>
 
         </select>
@@ -32,14 +36,6 @@ else
                     <label asp-for="RoleName" class="control-label"></label>
                     <span class="form-control" style="border: none; background: none;">@Model.RoleName</span>
                 </div>
-
-                <h5>سطح دسترسی کاربر:</h5>
-                <ul id="permissionsList">
-                    @foreach (var permission in Model.PermissionsName)
-                    {
-                        <li>@permission</li>
-                    }
-                </ul>
 
                 <div class="panel panel-default">
                     <div class="panel-heading">
@@ -80,7 +76,7 @@ else
                 <div class="form-group">
                     <div class="form-group">
                         <button type="submit" class="btn btn-primary waves-effect waves-light">ذخیره اطلاعات</button>
-                        <button asp-action="Index" class="btn btn-danger waves-light">بازگشت به لیست </button>
+                        <a href="~/roles/index" class="btn btn-danger waves-light">بازگشت به لیست </a>
                     </div>
                 </div>
             </form>
@@ -95,6 +91,9 @@ else
 {
     <link href="~/dark-rtl/assets/plugins/treeview/themes/default/style.min.css" rel="stylesheet" />
     <link href="~/dark-rtl/assets/plugins/treeview/themes/default/style.css" rel="stylesheet" />
+    <script src="~/dark-rtl/assets/plugins/daterangepicker/daterangepicker.js"></script>
+    <script src="~/dark-rtl/assets/plugins/select2/select2.min.js"></script>
+    <script src="~/dark-rtl/assets/pages/jquery.forms-advanced.js"></script>
 }
 
 @section MyScripts {

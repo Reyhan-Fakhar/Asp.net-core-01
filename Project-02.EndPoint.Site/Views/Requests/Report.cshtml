@@ -1,0 +1,177 @@
+﻿@using Project_02.Application.Interfaces
+@model IEnumerable<Project_02.Domain.ViewModels.RequestResultViewModel>
+@inject ICustomerService CustomerService
+
+
+@{
+    ViewData["Title"] = "گزارش گیری";
+    var row = 1;
+
+    var customer = CustomerService.GetAllCustomers().Result;
+    var selectCustomer = new SelectList(customer, "CustomerId", "FullName");
+}
+
+<h1 class="no-print">گزارش</h1>
+
+<div class="container-fluid">
+    <section id="basic-datatable">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-black no-print">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <select class="select2 form-control mb-3 custom-select" asp-items="selectCustomer">
+                                    <option value="" selected="selected">-- انتخاب مشتری --</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <select class="select2 form-control mb-3 custom-select" id="ProvinceId">
+                                    <option value="">-- انتخاب استان --</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <select class="select2 form-control mb-3 custom-select" id="TownshipId">
+                                    <option value="" selected="selected">-- انتخاب شهرستان --</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="control-label">از تاریخ</label>
+                                <input type="text" autocomplete="off" value="@DateTime.Now" class="persian-dateTimePicker form-control"/>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="control-label">تا تاریخ</label>
+                                <input type="text" autocomplete="off" value="@DateTime.Now" class="persian-dateTimePicker form-control" />
+                            </div>
+                            <div class="col-md-4">
+                                <button type="button" id="applyFilter" class="btn btn-primary">اعمال فیلتر</button>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div class="card-header bg-black no-print">
+                        <a href="javascript:void(0);" onclick="Print();" class="btn btn-secondary waves-effect waves-light"><i class="mdi mdi-printer"></i> چاپ</a>
+                        <a href="@Url.Action("ExportToExcel", "Requests")" class="btn btn-success waves-effect waves-light"><i class="mdi mdi-file-xml"></i> خروجی اکسل</a>
+                    </div>
+                    <input hidden="hidden" id="StatusList" />
+                    <div class="card-content">
+                        <div class="card-body card-dashboard">
+                            <div class="table-responsive" id="orderTable">
+                                <table id="datatable" class="table table-bordered dt-responsive nowrap dataTable no-footer" role="grid" aria-describedby="datatable_info">
+                                    <div class="page-title-box">
+                                        <div  style="border:1px,solid; display:flex">
+                                            <div class="col-8" style="">
+                                                <h2>گزارش سرنخ</h2>
+                                            </div>
+                                            <div class="col-4">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <thead>
+                                        <tr role="row">
+                                            <th>@Html.DisplayNameFor(model => model.Row)</th>
+                                            <th class="sorting" tabindex="0" aria-controls="datatable" rowspan="1" colspan="1" aria-label="Category: activate to sort column ascending">@Html.DisplayNameFor(model => model.CustomerName)</th>
+                                            <th>@Html.DisplayNameFor(model => model.Date)</th>
+                                            <th>@Html.DisplayNameFor(model => model.Province)</th>
+                                            <th>@Html.DisplayNameFor(model => model.Township)</th>
+                                            <th>@Html.DisplayNameFor(model => model.Description)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var request in Model.Reverse())
+                                        {
+                                            <tr role="row">
+                                                <td>@(row++)</td>
+                                                <td class="sorting_1">@request.CustomerName</td>
+                                                <td>@request.Date</td>
+                                                <td>@request.Province</td>
+                                                <td>@request.Township</td>
+                                                <td>@request.Description</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+@section MyStyles
+{
+    <link href="~/dark-rtl/assets/plugins/sweet-alert2/sweetalert2.min.css" rel="stylesheet" />
+
+}
+@section MyScripts
+{
+    <script src="~/dark-rtl/assets/plugins/sweet-alert2/sweetalert2.min.js"></script>
+    <script src="~/dark-rtl/assets/plugins/daterangepicker/daterangepicker.js"></script>
+    <script src="~/dark-rtl/assets/plugins/select2/select2.min.js"></script>
+    <script src="~/dark-rtl/assets/pages/jquery.forms-advanced.js"></script>
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                url: '@Url.Action("GetProvinces", "Customers")',
+                type: 'GET',
+                success: function (data) {
+                    var provinceDropdown = $('#ProvinceId');
+                    provinceDropdown.empty();
+                    provinceDropdown.append('<option value="">-- انتخاب استان --</option>');
+                    $.each(data, function (index, item) {
+                        provinceDropdown.append('<option value="' + item.provinceId + '">' + item.provinceName + '</option>');
+                    });
+                }
+            });
+
+            $('#ProvinceId').change(function () {
+                var provinceId = $(this).val();
+                if (provinceId) {
+                    $.ajax({
+                        url: '@Url.Action("GetTownships", "Customers")',
+                        type: 'GET',
+                        data: { provinceId: provinceId },
+                        success: function (data) {
+                            var townshipDropdown = $('#TownshipId');
+                            townshipDropdown.empty();
+                            townshipDropdown.append('<option value="">-- انتخاب شهرستان --</option>');
+                            $.each(data, function (index, item) {
+                                townshipDropdown.append('<option value="' + item.townshipId + '">' + item.townshipName + '</option>');
+                            });
+                        }
+                    });
+                } else {
+                    $('#TownshipId').empty();
+                    $('#TownshipId').append('<option value="">-- انتخاب شهرستان --</option>');
+                }
+            });
+        });
+
+        function Print() {
+
+            var npelements = document.querySelectorAll('.no-print');
+            npelements.forEach(function (npelement) {
+                npelement.style.display = 'none';
+            });
+
+            var pelements = document.querySelectorAll('.print');
+            pelements.forEach(function (pelement) {
+                pelement.style.display = '';
+            });
+
+            window.print();
+
+
+            npelements.forEach(function (npelement) {
+                npelement.style.display = '';
+            });
+            pelements.forEach(function (pelement) {
+                pelement.style.display = 'none';
+            });
+        }
+    </script>
+}

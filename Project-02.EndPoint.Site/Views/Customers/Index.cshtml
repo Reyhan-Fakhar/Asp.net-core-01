@@ -1,9 +1,10 @@
 ﻿@using Project_02.Application.Interfaces
-@model List<Project_02.Domain.ViewModels.CustomerResultViewModel>
+@model IEnumerable<Project_02.Domain.ViewModels.CustomerResultViewModel>
 @inject IPermissionService PermissionService
 @{
-    ViewData["Title"] = "مشتریان";
+    ViewBag.Title = "لیست مشتریان";
     var userName = User.Identity.Name;
+    var row = 1;
 }
 
 <div class="container-fluid">
@@ -21,13 +22,31 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header bg-black">
-                        <div class="search-box float-left col-md-6">
+                        <div class="col-md-12">
                             <input type="text" id="mySearchText" class="form-control" placeholder="جستجو ...">
                         </div>
-                        @if (PermissionService.CheckPermission(13, @userName))
-                        {
-                            <a type="button" href="@Url.Action("Create", "Customers")" class="btn btn-primary waves-effect waves-light col-md-6">+ افزودن مشتری جدید</a>
-                        }
+                        <div class="col-md-12" style="padding:20px">
+                            @if (PermissionService.CheckPermission(13, @userName))
+                            {
+                                <a type="button" href="@Url.Action("Create", "Customers")" class="btn btn-primary waves-effect waves-light col-md-3">+ افزودن مشتری جدید</a>
+                                <a type="button" href="@Url.Action("GenerateExcel", "Customers")" class="btn btn-primary waves-effect waves-light col-md-3">ایجاد فایل اکسل</a>
+                                <form asp-action="UploadExcel" method="post" enctype="multipart/form-data">
+                                    <div asp-validation-summary="All"></div>
+                                    <div class="form-group">
+                                        <div class="col-12 mt-2">
+                                            <label for="excelFile">آپلود فایل اکسل</label>
+                                            <input type="file" name="excelFile" class="form-control" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group mb-0 row">
+                                        <div class="col-12 mt-2">
+                                            <button type="submit" class="btn btn-success">ارسال</button>
+                                        </div>
+                                    </div>
+
+                                </form>
+                            }
+                        </div>
                     </div>
                     <input hidden="hidden" id="StatusList" />
                     <div class="card-content">
@@ -36,36 +55,36 @@
                                 <table id="dataTableStuff" class="table ">
                                     <thead>
                                         <tr>
-                                            <th>@Html.DisplayNameFor(model => model.First().Row)</th>
-                                            <th>@Html.DisplayNameFor(model => model.First().FullName)</th>
-                                            <th>@Html.DisplayNameFor(model => model.First().CreateDate)</th>
-                                            <th>@Html.DisplayNameFor(model => model.First().Province)</th>
-                                            <th>@Html.DisplayNameFor(model => model.First().Township)</th>
-                                            <th>@Html.DisplayNameFor(model => model.First().PhoneNumber)</th>
-                                            <th>@Html.DisplayNameFor(model => model.First().Operation)</th>
+                                            <th>@Html.DisplayNameFor(model => model.Row)</th>
+                                            <th>@Html.DisplayNameFor(model => model.FullName)</th>
+                                            <th>@Html.DisplayNameFor(model => model.CreateDate)</th>
+                                            <th>@Html.DisplayNameFor(model => model.Province)</th>
+                                            <th>@Html.DisplayNameFor(model => model.Township)</th>
+                                            <th>@Html.DisplayNameFor(model => model.PhoneNumber)</th>
+                                            <th>@Html.DisplayNameFor(model => model.Operation)</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @for (var i = 0; i < Model.Count; i++)
+                                        @foreach (var customer in Model.Reverse())
                                         {
                                             <tr>
-                                                <td>@(i + 1)</td>
-                                                <td>@Model[i].FullName</td>
-                                                <td>@Model[i].CreateDate</td>
-                                                <td>@Model[i].Province</td>
-                                                <td>@Model[i].Township</td>
-                                                <td>@Model[i].PhoneNumber</td>
+                                                <td>@(row++)</td>
+                                                <td>@customer.FullName</td>
+                                                <td>@customer.CreateDate</td>
+                                                <td>@customer.Province</td>
+                                                <td>@customer.Township</td>
+                                                <td>@customer.PhoneNumber</td>
                                                 <td>
                                                     <form method="post" style="display:inline;">
                                                         @if (PermissionService.CheckPermission(14, @userName))
                                                         {
-                                                            <a href="@Url.Action("Edit", "Customers", new { customerId = Model[i].CustomerId })" class="tabledit-delete-button btn btn-sm btn-info" style="float: none; margin: 4px;"><span class="ti-pencil"></span></a>
+                                                            <a href="@Url.Action("Edit", "Customers", new { customerId = customer.CustomerId })" class="tabledit-delete-button btn btn-sm btn-info" style="float: none; margin: 4px;"><span class="ti-pencil"></span></a>
                                                         }
                                                         @if (PermissionService.CheckPermission(15, @userName))
                                                         {
-                                                            <button asp-action="Delete" asp-route-roleId="@Model[i].CustomerId" class="tabledit-delete-button btn btn-sm btn-danger" style="float: none; margin: 4px;"><span class="ti-trash"></span></button>
+                                                            <button type="button" onclick="DeleteCustomer(@customer.CustomerId)" class="tabledit-delete-button btn btn-sm btn-danger" style="float: none; margin: 4px;"><span class="ti-trash"></span></button>
                                                         }
-                                                        <a href="@Url.Action("Detail", "Customers", new { customerId = Model[i].CustomerId })" class="tabledit-delete-button btn btn-sm btn-primary" style="float: none; margin: 4px;"><span class="ti-id-badge"></span></a>
+                                                        <a href="@Url.Action("Detail", "Customers", new { customerId = customer.CustomerId })" class="tabledit-delete-button btn btn-sm btn-primary" style="float: none; margin: 4px;"><span class="ti-id-badge"></span></a>
                                                     </form>
                                                 </td>
                                             </tr>
@@ -81,3 +100,51 @@
     </section>
 </div>
 
+@section MyStyles
+{
+    <link href="~/dark-rtl/assets/plugins/sweet-alert2/sweetalert2.min.css" rel="stylesheet" />
+}
+@section MyScripts
+{
+    <script src="~/dark-rtl/assets/plugins/sweet-alert2/sweetalert2.min.js"></script>
+    <script>
+        function DeleteCustomer(customerId) {
+            swal.fire({
+                title: 'حذف مشتری',
+                text: "کاربر گرامی از حذف مشتری مطمئن هستید؟",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#7cacbe',
+                confirmButtonText: 'بله ، مشتری حذف شود',
+                cancelButtonText: 'خیر'
+            }).then((result) => {
+                if (result.value) {
+                    var postData = {
+                        'customerId': customerId,
+                    };
+
+                    $.ajax({
+                        contentType: 'application/x-www-form-urlencoded',
+                        dataType: 'json',
+                        type: "POST",
+                        url: "Delete",
+                        data: postData,
+                        success: function (response) {
+                            location.reload();
+                        },
+                        error: function (xhr, status, error) {
+                            swal.fire({
+                                title: 'خطا',
+                                text: 'مشکلی در حذف مشتری رخ داد!',
+                                icon: 'error',
+                                confirmButtonText: 'باشه'
+                            });
+                        }
+                    });
+                }
+            })
+        }
+
+    </script>
+}

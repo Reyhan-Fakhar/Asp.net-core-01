@@ -7,18 +7,22 @@ using Project_02.Infrastructure.Data.Context;
 
 namespace Project_02.Infrastructure.Data.Repository
 {
-    public class CustomerRepository : ICustomerRepository
+    public class CustomerRepository(DataBaseContext context) : ICustomerRepository
     {
-        private readonly DataBaseContext _context;
-        public CustomerRepository(DataBaseContext context)
-        {
-            _context = context;
-        }
+        private readonly DataBaseContext _context = context;
+
         public async Task AddCustomer(Customer customer)
         {
             await _context.Customers.AddAsync(customer);
             await _context.SaveChangesAsync();
         }
+
+        public async Task AddCustomers(List<Customer> customer)
+        {
+          await  _context.AddRangeAsync(customer);
+          await  _context.SaveChangesAsync();
+        }
+
         public async Task UpdateCustomer(Customer customer)
         {
             _context.Customers.Update(customer);

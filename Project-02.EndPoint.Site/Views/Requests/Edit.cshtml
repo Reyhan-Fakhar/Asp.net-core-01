@@ -1,26 +1,26 @@
-﻿@model Project_02.Domain.ViewModels.RequestEditRequestViewModel
-
+﻿@using Project_02.Application.Interfaces
+@model Project_02.Domain.ViewModels.RequestEditRequestViewModel
+@inject ICustomerService CustomerService
 @{
-    ViewData["Title"] = "Edit";
-    long requestId = ViewBag.RequestId;
+    ViewBag.Title = "ویرایش درخواست";
+
+    var customer = CustomerService.GetAllCustomers().Result;
+    var selectCustomer = new SelectList(customer, "CustomerId", "FullName");
+
+    var customerDetails = CustomerService.GetCustomerDetails(@Model.CustomerId).Result;
 }
 
 <h1>ویرایش</h1>
 
 <hr />
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit" method="post" asp-route-requestId="@requestId">
+    <div class="col-md-6">
+        <form asp-action="Edit" method="post">
+            <input asp-for="RequestId" type="hidden" />
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label>انتخاب مشتری:</label>
-                <select id="CustomerId" name="CustomerId" class="form-control" onclick="getCustomerDetails(this.value)">
-                    <option value="">-- لطفاً یک مشتری انتخاب کنید --</option>
-                    @foreach (var customer in ViewBag.Customers)
-                    {
-                        <option value="@customer.CustomerId">@customer.FullName </option>
-                    }
-                </select>
+                <select asp-for="CustomerId" id="CustomerId" name="CustomerId" class="select2 form-control mb-3 custom-select" onclick="getCustomerDetails(this.value)" asp-items="selectCustomer"></select>
                 <span class="text-danger"></span>
             </div>
 
@@ -28,22 +28,24 @@
                 <h5>جزئیات مشتری:</h5>
                 <p><strong>نام مشتری:</strong> <span id="customerName"></span></p>
                 <p><strong>تلفن:</strong> <span id="customerPhone"></span></p>
+                <p><strong>استان:</strong> <span id="customerProvince"></span></p>
+                <p><strong>شهرستان:</strong> <span id="customerTownship"></span></p>
                 <p><strong>آدرس:</strong> <span id="customerAddress"></span></p>
             </div>
 
             <div class="form-group">
                 <label asp-for="Date" class="control-label"></label>
-                <input type="text" autocomplete="off" value="@DateTime.Now" asp-for="Date" class="persian-dateTimePicker form-control" style="height: 28px" />
+                <input asp-for="Date" type="text" autocomplete="off" class="persian-dateTimePicker form-control" style="height: 28px"/>
                 <span asp-validation-for="Date" class="text-danger"></span>
             </div>
-            
+
             <div class="form-group">
                 <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
+                <input asp-for="Description" class="form-control" autocomplete="off" />
             </div>
             <div class="form-group">
                 <button type="submit" class="btn btn-primary waves-effect waves-light">ذخیره اطلاعات</button>
-                <button asp-action="Index" class="btn btn-danger waves-light">بازگشت به لیست </button>
+                <a href="~/requests/index" class="btn btn-danger waves-light">بازگشت به لیست </a>
             </div>
         </form>
     </div>
@@ -57,27 +59,33 @@
     <script src="~/dark-rtl/assets/vendors/js/calendar/persian-date.js"></script>
     <script src="~/dark-rtl/assets/vendors/js/calendar/persian-datepicker.js"></script>
     <script src="~/dark-rtl/assets/vendors/js/calendar/persian-datepicker-config.js"></script>
+    <script src="~/dark-rtl/assets/plugins/daterangepicker/daterangepicker.js"></script>
+    <script src="~/dark-rtl/assets/plugins/select2/select2.min.js"></script>
+    <script src="~/dark-rtl/assets/pages/jquery.forms-advanced.js"></script>
 
     <script>
-
+        
         async function getCustomerDetails(customerId) {
-            if (!customerId) {
-                $('#customerDetails').hide();
-                return;
-            }
-
+           
             try {
                 const response = await fetch('@Url.Action("GetCustomerDetails", "Requests")?customerId=' + customerId);
                 if (response.ok) {
                     const customerDetails = await response.json();
                     $('#customerName').text(customerDetails.customerName);
                     $('#customerPhone').text(customerDetails.phoneNumber);
+                    $('#customerProvince').text(customerDetails.province);
+                    $('#customerTownship').text(customerDetails.township);
                     $('#customerAddress').text(customerDetails.address);
                     $('#customerDetails').show();
                 }
             } catch (error) {
-                console.error('Error fetching customer details:', error);
+                console.error('خطا در پردازش اطلاعات:', error);
             }
         }
+
+        $(document).ready(function () {
+        getCustomerDetails(@Model.CustomerId)
+        
+        })
     </script>
 }

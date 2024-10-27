@@ -27,12 +27,17 @@ namespace Project_02.Infrastructure.Data.Repository
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
         }
+        public bool IsExistUserName(string userName)
+        {
+            return _context.Users.Any(u => u.UserName == userName);
+        }
         public async Task<List<UserResultViewModel>> GetAllUsers()
         {
             return await _context.Users.Select(user => new UserResultViewModel()
             {
                 UserId = user.UserId,
                 UserName = user.UserName,
+                FullName = user.FullName,
                 UserRole = user.Role.RoleName,
                 PhoneNumber = user.PhoneNumber,
                 IsActive = user.IsActive,
@@ -45,6 +50,12 @@ namespace Project_02.Infrastructure.Data.Repository
                 .Include(x=>x.Role)
                 .FirstOrDefaultAsync(x => x.UserId == userId);
         }
+        public async Task<List<User>> GetUsersByRoleId(long roleId)
+        {
+            return  await _context.Users
+                .Include(x => x.Role)
+                .Where(x => x.RoleId == roleId).ToListAsync();
+        }
         public async Task<UserDetailsResultViewModel> GetUserDetails(long userId)
         {
             var user = await GetUserById(userId);
@@ -53,6 +64,7 @@ namespace Project_02.Infrastructure.Data.Repository
             {
                 UserId = user.UserId,
                 UserName = user.UserName,
+                FullName = user.FullName,
                 RoleId = user.RoleId,
                 PhoneNumber = user.PhoneNumber,
                 IsActive = user.IsActive ? "فعال" : "غیرفعال",

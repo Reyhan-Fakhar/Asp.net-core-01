@@ -24,6 +24,13 @@ namespace Project_02.EndPoint.Site.Controllers
             return View(requests);
         }
 
+        [PermissionChecker(20)]
+        public async Task<IActionResult> Report()
+        {
+            var requests = await _requestService.GetAllRequests();
+            return View(requests);
+        }
+
         public async Task<IActionResult> Index2()
         {
             
@@ -33,18 +40,22 @@ namespace Project_02.EndPoint.Site.Controllers
         [HttpPost]
         public async Task<IActionResult> GetAllOrder([FromBody] DtParameters dtParameters)
         {
-
-            var dtResult = await _requestService.GetData(dtParameters);
-
-            return Json(dtResult);
+            try
+            {
+                var dtResult = await _requestService.GetData(dtParameters);
+                return Json(dtResult);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message); // یا استفاده از ILogger برای ثبت لاگ
+                return StatusCode(500, new { error = ex.Message });
+            }
         }
 
         [HttpGet]
         [PermissionChecker(17)]
         public async Task<IActionResult> Create()
         {
-            var customers = await _customerService.GetAllCustomers();
-            ViewBag.Customers = customers;
             return View(new RequestCreateRequestViewModel());
         }
         [HttpPost]
@@ -52,8 +63,6 @@ namespace Project_02.EndPoint.Site.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var customers = await _customerService.GetAllCustomers();
-                ViewBag.Customers = customers;
                 return View(model);
             }
             await _requestService.CreateRequest(model);
@@ -64,10 +73,8 @@ namespace Project_02.EndPoint.Site.Controllers
         [PermissionChecker(18)]
         public async Task<IActionResult> Edit(long requestId)
         {
-            var customers = await _customerService.GetAllCustomers();
-            ViewBag.Customers = customers;
-            ViewBag.RequestId = requestId;
-            return View();
+            var request = await _requestService.GetRequestByIdViewModel(requestId);
+            return View(request);
         }
 
         [HttpPost]
@@ -75,9 +82,6 @@ namespace Project_02.EndPoint.Site.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var customers = await _customerService.GetAllCustomers();
-                ViewBag.Customers = customers;
-                ViewBag.RequestId = requestId;
                 return View(model);
             }
             await _requestService.EditRequest(model, requestId);
@@ -96,7 +100,7 @@ namespace Project_02.EndPoint.Site.Controllers
         public async Task<IActionResult> Delete(long requestId)
         {
             await _requestService.DeleteRequest(requestId);
-            return RedirectToAction("Index");
+            return Json(new { success = true });
         }
 
         [HttpGet]
@@ -116,6 +120,18 @@ namespace Project_02.EndPoint.Site.Controllers
             });
         }
 
+        public async Task<IActionResult> GetProvinces()
+        {
+            var provinces = await _customerService.GetAllProvinces();
+            return Json(provinces);
+        }
+
+        public async Task<IActionResult> GetTownships(int provinceId)
+        {
+            var townships = await _customerService.GetTownshipsByProvinceId(provinceId);
+            return Json(townships);
+        }
+
         [HttpGet]
         public async Task<IActionResult> ExportToExcel()
         {
@@ -131,14 +147,16 @@ namespace Project_02.EndPoint.Site.Controllers
             worksheet.Cell(1, 5).Value = "شهرستان";
             worksheet.Cell(1, 6).Value = "توضیحات";
 
-            for (var i = 0; i < requests.Count; i++)
+            var row = 2;
+            for (var i = requests.Count -1; i >= 0 ; i--)
             {
-                worksheet.Cell(i + 2, 1).Value = i + 1;
-                worksheet.Cell(i + 2, 2).Value = requests[i].CustomerName;
-                worksheet.Cell(i + 2, 3).Value = requests[i].Date;
-                worksheet.Cell(i + 2, 4).Value = requests[i].Province;
-                worksheet.Cell(i + 2, 5).Value = requests[i].Township;
-                worksheet.Cell(i + 2, 6).Value = requests[i].Description;
+                worksheet.Cell(row, 1).Value = row - 1;
+                worksheet.Cell(row, 2).Value = requests[i].CustomerName;
+                worksheet.Cell(row, 3).Value = requests[i].Date;
+                worksheet.Cell(row, 4).Value = requests[i].Province;
+                worksheet.Cell(row, 5).Value = requests[i].Township;
+                worksheet.Cell(row, 6).Value = requests[i].Description;
+                row++;
             }
 
             // ذخیره فایل اکسل در حافظه

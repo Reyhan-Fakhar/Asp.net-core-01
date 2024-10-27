@@ -15,7 +15,7 @@ namespace Project_02.Infrastructure.Data.Repository
         }
         public async Task<User> AuthenticateAsync(string userName, string password)
         {
-            return await _context.Users.FirstOrDefaultAsync(u => u.UserName == userName && u.Password == password);
+            return await _context.Users.FirstOrDefaultAsync(u => u.UserName == userName && u.Password == password );
         }
     }
 }

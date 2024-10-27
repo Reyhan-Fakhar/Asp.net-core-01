@@ -8,8 +8,10 @@ namespace Project_02.Domain.Interfaces
         #region User
         Task AddUser(User user);
         Task UpdateUser(User user);
+        bool IsExistUserName(string userName);
         Task<List<UserResultViewModel>> GetAllUsers();
         Task<User> GetUserById(long userId);
+        Task<List<User>> GetUsersByRoleId(long roleId);
         Task<UserDetailsResultViewModel> GetUserDetails(long userId);
         #endregion
     }

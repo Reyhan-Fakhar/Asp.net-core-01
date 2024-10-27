@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Project_02.Domain.Interfaces;
 using Project_02.Domain.Models.Request;
 using Project_02.Domain.ViewModels;
+using Project_02.Application.Convertor;
 
 namespace Project_02.Application.Services
 {
@@ -23,7 +24,7 @@ namespace Project_02.Application.Services
             var newRequest = new Request
             {
                 CustomerId = requestCreateRequestViewModel.CustomerId,
-                Date = requestCreateRequestViewModel.Date,
+                Date = requestCreateRequestViewModel.Date.ToGregorian(),
                 Description = requestCreateRequestViewModel.Description,
             };
             await _requestRepository.AddRequest(newRequest);
@@ -32,7 +33,7 @@ namespace Project_02.Application.Services
         {
             var newRequest = await _requestRepository.GetRequestById(requestId);
             newRequest.CustomerId = editRequest.CustomerId;
-            newRequest.Date = editRequest.Date;
+            newRequest.Date = editRequest.Date.ToGregorian();
             newRequest.Description = editRequest.Description;
             newRequest.InsertTime = DateTime.Now;
 
@@ -44,6 +45,18 @@ namespace Project_02.Application.Services
             request.IsRemoved = true;
             request.RemoveTime = DateTime.Now;
             await _requestRepository.UpdateRequest(request);
+        }
+
+        public async Task<RequestEditRequestViewModel> GetRequestByIdViewModel(long requestId)
+        {
+            var request = await _requestRepository.GetRequestById(requestId);
+            return new RequestEditRequestViewModel()
+            {
+                RequestId = requestId,
+                CustomerId = request.CustomerId,
+                //Date = request.Date.ToShamsi(),
+                Description = request.Description,
+            };
         }
         public async Task<List<RequestResultViewModel>> GetAllRequests()
         {

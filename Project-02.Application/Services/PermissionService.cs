@@ -39,6 +39,7 @@ namespace Project_02.Application.Services
         {
             return await _permissionRepository.GetRoleById(roleId);
         }
+
         public async Task<List<RoleResultViewModel>> GetAllRoles()
         {
             return await _permissionRepository.GetAllRoles();

@@ -43,7 +43,6 @@ namespace Project_02.Infrastructure.Data.Repository
                     Province = request.Customer.Province.ProvinceName,
                     Township = request.Customer.Township.TownshipName,
                     Description = request.Description,
-
                 }).ToListAsync();
         }
         public async Task<Request> GetRequestById(long requestId)
@@ -92,34 +91,27 @@ namespace Project_02.Infrastructure.Data.Repository
                 var column = dtParameters.Columns[dtParameters.Order[0].Column].Data;
                 var sort = dtParameters.Order[0].Dir.ConvertDtOrderDirToSort();
 
-
-                switch (column)
+                result = column switch
                 {
-                    case "title":
-                        result = sort == Sort.OrderBy ? result.OrderBy(c => c.Customer.FullName) : result.OrderByDescending(c => c.Customer.FullName);
-                        break;
-
-                    case "code":
-                        result = sort == Sort.OrderBy ? result.OrderBy(c => c.Date) : result.OrderByDescending(c => c.Date);
-                        break;
-
-                    case "customerName":
-                        result = sort == Sort.OrderBy ? result.OrderBy(c => c.Description) : result.OrderByDescending(c => c.Description);
-                        break;
-
-                    case "lastOrderStageTitle":
-                        result = sort == Sort.OrderBy ? result.OrderBy(c => c.Customer.Province.ProvinceName) : result.OrderByDescending(c => c.Customer.Province.ProvinceName);
-                        break;
-
-                    case "userName":
-                        result = sort == Sort.OrderBy ? result.OrderBy(c => c.Customer.Township.TownshipName) : result.OrderByDescending(c => c.Customer.Township.TownshipName);
-                        break;
-
-                    default:
-                        result = sort == Sort.OrderBy ? result.OrderBy(c => c.RequestId) : result.OrderByDescending(c => c.RequestId);
-                        break;
-                }
-
+                    "title" => sort == Sort.OrderBy
+                        ? result.OrderBy(c => c.Customer.FullName)
+                        : result.OrderByDescending(c => c.Customer.FullName),
+                    "code" => sort == Sort.OrderBy
+                        ? result.OrderBy(c => c.Date)
+                        : result.OrderByDescending(c => c.Date),
+                    "customerName" => sort == Sort.OrderBy
+                        ? result.OrderBy(c => c.Description)
+                        : result.OrderByDescending(c => c.Description),
+                    "lastOrderStageTitle" => sort == Sort.OrderBy
+                        ? result.OrderBy(c => c.Customer.Province.ProvinceName)
+                        : result.OrderByDescending(c => c.Customer.Province.ProvinceName),
+                    "userName" => sort == Sort.OrderBy
+                        ? result.OrderBy(c => c.Customer.Township.TownshipName)
+                        : result.OrderByDescending(c => c.Customer.Township.TownshipName),
+                    _ => sort == Sort.OrderBy
+                        ? result.OrderBy(c => c.RequestId)
+                        : result.OrderByDescending(c => c.RequestId)
+                };
 
                 if (!string.IsNullOrEmpty(searchBy))
                 {

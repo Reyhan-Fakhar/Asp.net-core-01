@@ -3107,6 +3107,11 @@ namespace Project_02.Infrastructure.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("UserId"));
 
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
                     b.Property<DateTime>("InsertTime")
                         .HasColumnType("datetime2");
 

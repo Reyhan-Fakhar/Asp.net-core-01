@@ -24,7 +24,7 @@ namespace Project_02.Application.Security
 
                 if (!_permissionService.CheckPermission(_permissionId, userName))
                 {
-                    context.Result = new RedirectResult("/Accounts/Login?" + context.HttpContext.Request.Path);
+                    context.Result = new RedirectResult("/Accounts/NotFound?" + context.HttpContext.Request.Path);
                 }
             }
             else

@@ -15,6 +15,11 @@ namespace Project_02.Domain.Models.User
         [MaxLength(200, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string UserName { get; set; }
 
+        [Display(Name = "نام و نام خانوادگی")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید")]
+        [MaxLength(500, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+        public string FullName { get; set; }
+
         [Display(Name = "رمز عبور")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید")]
         [MinLength(8, ErrorMessage = "{0} نمی تواند کمتر از {1} کاراکتر باشد .")]

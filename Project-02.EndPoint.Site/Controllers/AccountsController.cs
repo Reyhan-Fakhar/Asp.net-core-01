@@ -33,7 +33,7 @@ namespace Project_02.EndPoint.Site.Controllers
 
             if (user == null || !ModelState.IsValid)
             {
-                ModelState.AddModelError("", "نام کاربری یا کلمه عبور اشتباه است.");
+                ViewBag.ErrorMessage = "نام کاربری یا رمز ورود اشتباه است";
                 return View(model);
             }
 
@@ -73,7 +73,7 @@ namespace Project_02.EndPoint.Site.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Edit()
+        public async Task<IActionResult> NotFound()
         {
             return View();
         }

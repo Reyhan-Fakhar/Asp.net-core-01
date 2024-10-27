@@ -10,9 +10,14 @@ namespace Project_02.Domain.ViewModels
         [MaxLength(200, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string UserName { get; set; }
 
+        [Display(Name = "نام و نام خانوادگی")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید")]
+        [MaxLength(500, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+        public string FullName { get; set; }
+
         [Display(Name = "شماره تلفن")]
         [RegularExpression(@"^((98|\+98|0098|0)*(9)[0-9]{9})+$", ErrorMessage = "شماره تلفن وارد شده معتبر نیست.")]
-        public string PhoneNumber { get; set; }
+        public string? PhoneNumber { get; set; }
 
         [Display(Name = "نقش کاربر")]
         [Required(ErrorMessage = "لطفا {0} را انتخاب کنید")]
@@ -34,6 +39,8 @@ namespace Project_02.Domain.ViewModels
         [Display(Name = "نام کاربری")]
         public string UserName { get; set; }
 
+        [Display(Name = "نام و نام خانوادگی")]
+        public string FullName { get; set; }
         [Display(Name = "نقش کاربر")]
         public string UserRole { get; set; }
 
@@ -57,6 +64,11 @@ namespace Project_02.Domain.ViewModels
         [MaxLength(200, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string UserName { get; set; }
 
+        [Display(Name = "نام و نام خانوادگی")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید")]
+        [MaxLength(500, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+        public string FullName { get; set; }
+
         [Display(Name = "شماره تلفن")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید")]
         [RegularExpression(@"^((98|\+98|0098|0)*(9)[0-9]{9})+$", ErrorMessage = "شماره تلفن وارد شده معتبر نیست.")]
@@ -65,12 +77,10 @@ namespace Project_02.Domain.ViewModels
         [Display(Name = "نقش کاربر")]
         [Required(ErrorMessage = "لطفا {0} را انتخاب کنید")]
         public long RoleId { get; set; }
-        //public string RoleName { get; set; }
 
         [Display(Name = "کلمه عبور")]
-        [Required(ErrorMessage = "لطفا {0} را وارد کنید")]
         [MaxLength(8, ErrorMessage = "{0} نمی تواند کمتر از {1} کاراکتر باشد .")]
-        public string Password { get; set; }
+        public string? Password { get; set; }
 
     }
     #endregion
@@ -96,6 +106,9 @@ namespace Project_02.Domain.ViewModels
         [Display(Name = "نام کاربری")]
         public string UserName { get; set; }
 
+        [Display(Name = "نام و نام خانوادگی")]
+        public string FullName { get; set; }
+
         public long RoleId { get; set; }
 
         [Display(Name = "نقش کاربر")]
@@ -120,6 +133,11 @@ namespace Project_02.Domain.ViewModels
         [Required(ErrorMessage = "لطفا {0} را وارد کنید")]
         [MaxLength(200, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string UserName { get; set; }
+
+        [Display(Name = "نام و نام خانوادگی")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید")]
+        [MaxLength(500, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+        public string FullName { get; set; }
 
         [Display(Name = "شماره تلفن")]
         [RegularExpression(@"^((98|\+98|0098|0)*(9)[0-9]{9})+$", ErrorMessage = "شماره تلفن وارد شده معتبر نیست.")]

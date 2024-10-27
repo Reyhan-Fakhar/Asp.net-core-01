@@ -1,16 +1,18 @@
 ﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model Project_02.Domain.ViewModels.CustomerCreateRequestViewModel
-
+@{
+    ViewBag.Title = "ایجاد مشتری";
+}
 <form asp-action="Create" method="post">
     <div class="form-group">
         <label asp-for="FullName"></label>
-        <input asp-for="FullName" class="form-control" />
+        <input asp-for="FullName" class="form-control" autocomplete="off" />
         <span asp-validation-for="FullName" class="text-danger"></span>
     </div>
 
     <div class="form-group">
         <label asp-for="ProvinceId"></label>
-        <select asp-for="ProvinceId" class="form-control" id="ProvinceId">
+        <select asp-for="ProvinceId" class="select2 form-control mb-3 custom-select" id="ProvinceId">
             <option value="">انتخاب استان</option>
         </select>
         <span asp-validation-for="ProvinceId" class="text-danger"></span>
@@ -18,7 +20,7 @@
 
     <div class="form-group">
         <label asp-for="TownshipId"></label>
-        <select asp-for="TownshipId" class="form-control" id="TownshipId">
+        <select asp-for="TownshipId" class="select2 form-control mb-3 custom-select" id="TownshipId">
             <option value="">انتخاب شهرستان</option>
         </select>
         <span asp-validation-for="TownshipId" class="text-danger"></span>
@@ -26,13 +28,13 @@
 
     <div class="form-group">
         <label asp-for="PhoneNumber"></label>
-        <input asp-for="PhoneNumber" class="form-control" />
+        <input asp-for="PhoneNumber" class="form-control" autocomplete="off" />
         <span asp-validation-for="PhoneNumber" class="text-danger"></span>
     </div>
 
     <div class="form-group">
         <label asp-for="Address"></label>
-        <input asp-for="Address" class="form-control" />
+        <input asp-for="Address" class="form-control" autocomplete="off" />
         <span asp-validation-for="Address" class="text-danger"></span>
     </div>
 
@@ -43,11 +45,14 @@
 
     <div class="form-group">
         <button type="submit" class="btn btn-primary waves-effect waves-light">ذخیره اطلاعات</button>
-        <button asp-action="Index" class="btn btn-danger waves-light">بازگشت به لیست </button>
+        <a href="~/customers/index" class="btn btn-danger waves-light">بازگشت به لیست </a>
     </div>
 </form>
 
 @section MyScripts {
+    <script src="~/dark-rtl/assets/plugins/daterangepicker/daterangepicker.js"></script>
+    <script src="~/dark-rtl/assets/plugins/select2/select2.min.js"></script>
+    <script src="~/dark-rtl/assets/pages/jquery.forms-advanced.js"></script>
 
     <script type="text/javascript">
         $(document).ready(function () {

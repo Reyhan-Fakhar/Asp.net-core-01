@@ -8,7 +8,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <title>Project-02</title>
+    <title>@ViewBag.Title</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="A premium admin dashboard template by Mannatthemes" name="description" />
     <meta content="Mannatthemes" name="author" />
@@ -18,6 +18,10 @@
 
     <!--Morris Chart CSS -->
     <link rel="stylesheet" href="~/dark-rtl/assets/plugins/morris/morris.css">
+    <!-- Plugins css -->
+    <link href="~/dark-rtl/assets/plugins/daterangepicker/daterangepicker.css" rel="stylesheet" />
+    <link href="~/dark-rtl/assets/plugins/select2/select2.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/dark-rtl/assets/plugins/bootstrap-touchspin/css/jquery.bootstrap-touchspin.min.css" rel="stylesheet" />
 
     <!-- App css -->
     <link href="~/dark-rtl/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
@@ -26,7 +30,6 @@
     <link href="~/dark-rtl/assets/css/style.css" rel="stylesheet" type="text/css" />
 
     @await RenderSectionAsync("MyStyles", false)
-
 </head>
 
 <body>
@@ -52,7 +55,7 @@
                 <li class="dropdown">
                     <a class="nav-link dropdown-toggle waves-effect waves-light nav-user" data-toggle="dropdown" href="#" role="button"
                        aria-haspopup="false" aria-expanded="false">
-                        <img src="~/dark-rtl/assets/images/users/user-4.jpg" alt="profile-user" class="rounded-circle"/>
+                        <img src="~/dark-rtl/assets/images/users/user-4.jpg" alt="profile-user" class="rounded-circle" />
                         <span class="ml-1 nav-user-name hidden-sm">@User.Identity.Name<i class="mdi mdi-chevron-down"></i> </span>
                     </a>
                     <div class="dropdown-menu">
@@ -148,7 +151,9 @@
                                             <li class="nav-item"><a class="nav-link" href="~/customers/create"><i class="dripicons-view-thumb"></i>افزودن مشتری جدید</a></li>
                                         }
                                     </ul>
-                                </li><!--end nav-item-->
+                                </li>
+
+                                <!--end nav-item-->
                             }
                             @if (PermissionService.CheckPermission(17, @userName) || PermissionService.CheckPermission(18, @userName) || PermissionService.CheckPermission(19, @userName) || PermissionService.CheckPermission(20, @userName))
                             {
@@ -163,8 +168,14 @@
                                         {
                                             <li class="nav-item"><a class="nav-link" href="~/requests/create"><i class="mdi mdi-playlist-plus"></i>افزودن درخواست جدید</a></li>
                                         }
+                                        @if (PermissionService.CheckPermission(20, @userName))
+                                        {
+                                            <li class="nav-item"><a class="nav-link" href="~/requests/report"><i class="dripicons-view-thumb"></i>گزارش سرنخ</a></li>
+                                        }
                                     </ul>
-                                </li><!--end nav-item-->
+                                </li>
+
+                                <!--end nav-item-->
                             }
                         </ul>
                     </div><!-- end  Project-->
@@ -196,14 +207,13 @@
     <script src="~/dark-rtl/assets/plugins/raphael/raphael.min.js"></script>
     <script src="~/dark-rtl/assets/plugins/moment/moment.js"></script>
     <script src="~/dark-rtl/assets/plugins/apexcharts/apexcharts.min.js"></script>
-
-
     <script src="~/dark-rtl/assets/pages/jquery.projects_dashboard.init.js"></script>
 
     <!-- App js -->
     <script src="~/dark-rtl/assets/js/app.js"></script>
-    
-    @await RenderSectionAsync("MyScripts", false)
 
-    </body>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    @await RenderSectionAsync("MyScripts", false)
+</body>
 </html>

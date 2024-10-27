@@ -1,8 +1,14 @@
-﻿@model Project_02.Domain.ViewModels.CustomerEditRequestViewModel
-
+﻿@using Project_02.Application.Interfaces
+@model Project_02.Domain.ViewModels.CustomerEditRequestViewModel
+@inject ICustomerService CustomerService
 @{
-    ViewData["Title"] = "Edit";
-    long customerId = ViewBag.CustomerId;
+    ViewBag.Title = "ویرایش مشتری";
+    var province = CustomerService.GetAllProvinces().Result;
+    var selectProvince = new SelectList(province, "ProvinceId", "ProvinceName");
+
+    var township = CustomerService.GetTownshipsByProvinceId(@Model.ProvinceId).Result;
+    var selectTownship = new SelectList(township, "TownshipId", "TownshipName");
+   
 }
 
 <h1>ویرایش مشتری</h1>
@@ -10,67 +16,58 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit" asp-route-customerId="@customerId" method="post">
+        <form asp-action="Edit" method="post">
+            <input asp-for="CustomerId" type="hidden" />
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="FullName" class="control-label"></label>
-                <input asp-for="FullName" class="form-control" />
+                <input asp-for="FullName" class="form-control" autocomplete="off" />
                 <span asp-validation-for="FullName" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="ProvinceId"></label>
-                <select asp-for="ProvinceId" class="form-control" id="ProvinceId">
-                    <option value="">انتخاب استان</option>
-                </select>
+                <select asp-for="ProvinceId" class="select2 form-control mb-3 custom-select" id="ProvinceId" asp-items="@selectProvince"></select>
                 <span asp-validation-for="ProvinceId" class="text-danger"></span>
             </div>
 
             <div class="form-group">
                 <label asp-for="TownshipId"></label>
-                <select asp-for="TownshipId" class="form-control" id="TownshipId">
-                    <option value="">انتخاب شهرستان</option>
+                <select asp-for="TownshipId" class="select2 form-control mb-3 custom-select" id="TownshipId" asp-items="@selectTownship">
+                    <option value="" selected="selected"></option>
                 </select>
                 <span asp-validation-for="TownshipId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="PhoneNumber" class="control-label"></label>
-                <input asp-for="PhoneNumber" class="form-control" />
+                <input asp-for="PhoneNumber" class="form-control" autocomplete="off" />
                 <span asp-validation-for="PhoneNumber" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Address" class="control-label"></label>
-                <input asp-for="Address" class="form-control" />
+                <input asp-for="Address" class="form-control" autocomplete="off" />
                 <span asp-validation-for="Address" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
+                <input asp-for="Description" class="form-control" autocomplete="off" />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <button type="submit" class="btn btn-primary waves-effect waves-light">ذخیره اطلاعات</button>
-                <button asp-action="Index" class="btn btn-danger waves-light">بازگشت به لیست </button>
+                <a href="~/customers/index" class="btn btn-danger waves-light">بازگشت به لیست </a>
             </div>
         </form>
     </div>
 </div>
 
 @section MyScripts {
+    
+    <script src="~/dark-rtl/assets/plugins/daterangepicker/daterangepicker.js"></script>
+    <script src="~/dark-rtl/assets/plugins/select2/select2.min.js"></script>
+    <script src="~/dark-rtl/assets/pages/jquery.forms-advanced.js"></script>
 
     <script type="text/javascript">
         $(document).ready(function () {
-            $.ajax({
-                url: '@Url.Action("GetProvinces", "Customers")',
-                type: 'GET',
-                success: function (data) {
-                    var provinceDropdown = $('#ProvinceId');
-                    provinceDropdown.empty();
-                    provinceDropdown.append('<option value="">انتخاب استان</option>');
-                    $.each(data, function (index, item) {
-                        provinceDropdown.append('<option value="' + item.provinceId + '">' + item.provinceName + '</option>');
-                    });
-                }
-            });
 
             $('#ProvinceId').change(function () {
                 var provinceId = $(this).val();
